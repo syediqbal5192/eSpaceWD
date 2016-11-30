@@ -9,8 +9,7 @@
 <title>Dashboard</title>
 
 <spring:url value="/resources/css/theme-white.css" var="themeCss" />
-<spring:url value="/resources/css/jqGrid/jqGridStyle.css" var="jqGridCss" />
-       
+<spring:url value="/resources/css/jqGrid/jqGridStyle.css" var="jqGridCss" />       
 <spring:url value="/resources/js/plugins/jquery/jquery.min.js" var="jqueryJs" />
 <spring:url value="/resources/js/plugins/jquery/jquery-ui.min.js"  var="jqueryUiJs" />
 <spring:url value="/resources/js/plugins/bootstrap/bootstrap.min.js"  var="bootstrapJs" />
@@ -36,6 +35,7 @@
  <spring:url value="/resources/js/inlineEditGrid.js"  var="inlineEditGrid" /> 
  <spring:url value="/resources/js/areaReportGrid.js"  var="areaReportGrid" /> 
  <spring:url value="/resources/js/clientGrid.js"  var="clientReportGrid" /> 
+ <spring:url value="/resources/js/customerGrid.js"  var="customerGrid" /> 
  <spring:url value="/resources/js/readinessTemplateReportGrid.js"  var="readinessTemplateReportGridJS" /> 
  
  <spring:url value="/resources/js/plugins/noty/jquery.noty.js"  var="notyJs" /> 
@@ -47,10 +47,9 @@
  <spring:url value="/resources/js/plugins/validationengine/jquery.validationEngine.js"  var="validationEngineJs2" /> 
  <spring:url value="/resources/js/plugins/jquery-validation/jquery.validate.js"  var="validateJs" /> 
 
-   
 	<link href="${themeCss}" rel="stylesheet" />	
 	<link href="${jqGridCss}" rel="stylesheet" /> 
-	
+
     <script src="${jqueryJs}"></script>
     <script src="${jqueryUiJs}"></script>
     <script src="${bootstrapJs}"></script>
@@ -80,19 +79,18 @@
     <script src="${topCenterJs}"></script>
     <script src="${themeNotyJs}"></script>
     <script src="${maskedJs}"></script>
-   
     <script src="${validationEngineJs}"></script>
     <script src="${validationEngineJs2}"></script>
     <script src="${validateJs}"></script>
-    
- <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> 
-  -->    <!--      <link rel="stylesheet" type="text/css"  href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">  -->
+
+    <script src="${customerGrid}"></script>
 <script type='text/javascript' src="http://trirand.com/blog/jqgrid/js/i18n/grid.locale-en.js"></script>
 <script type='text/javascript'  src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
 
 		
  <script type='text/javascript'>
  var readinessTemplateValues = [];
+ var warehouseNameValues = [];
  function dashboardValues()
 	{
 		$.ajax({
@@ -140,6 +138,34 @@
 		});
 	 
  }
+
+
+ function loadWarehouseName()
+ {
+
+	 $("#clientWarehouseFilter").empty();
+	 
+	 $.ajax({
+			type:'GET',
+			encoding : "UTF-8",
+			url : "listWarehouse",
+			data : "",
+		    dataType: 'json',
+		    success: function( json ) {
+		        $.each(json, function(i, value) {
+		        	
+		        	$('#clientWarehouseFilter').append($('<option>').text(value.warehouse_name).attr('value', value.warehouse_id));
+
+		        	warehouseNameValues.push(value.warehouse_name);
+		        	
+		        });
+		    }
+		});
+	 
+ }
+
+ 
+ 
 
  function loadReadinessElementName()
  {
@@ -210,8 +236,10 @@ $(document).ready(function(){
 	dashboardValues();
 	loadClientNames();
 	loadReadinessElementName();
+	loadWarehouseName();
 
 	$('#warehouseLink').css( 'cursor', 'pointer' );
+	$('#customerLink').css( 'cursor', 'pointer' );
 	$('#dashboardLink').css( 'cursor', 'pointer' );
 	$('#salesPipeLineLink').css( 'cursor', 'pointer' );
 	$('#readinessLink').css( 'cursor', 'pointer' );
@@ -242,6 +270,9 @@ $(document).ready(function(){
 		 $('#clientReportDiv').hide();
 		 $('#readinessTemplateReportDiv').hide();
 		 $('#reportDiv').hide();
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		});
 
 	
@@ -255,6 +286,9 @@ $(document).ready(function(){
 		 $("#graphicalChartDiv").hide();
 		 $('#reportDiv').hide();
 		 $('#readinessDiv').hide();
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		});
 
 	$("#tabularReportLink").click(function(){
@@ -274,7 +308,29 @@ $(document).ready(function(){
 		 $('#areaReportDiv').hide();
 		 $('#readinessTemplateReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
-		 $("#grid5").trigger("reloadGrid");
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();	
+		 
+		 
+		 $.ajax({
+				type:'GET',
+				encoding : "UTF-8",
+				url : "reloadFunctionality",
+				success: function(json) {
+			 
+			    	var statusWorkCondition = 'wIP';
+			    	$("#grid5").jqGrid('setGridParam', { 
+			            postData: {"statusWorkCondition":statusWorkCondition }
+			     }).trigger('reloadGrid'); 
+					    	
+			    	
+		  	        
+			      
+			    }
+			});
+		 
+		 
 		});
 	
 	
@@ -297,11 +353,15 @@ $(document).ready(function(){
 		 $('#readinessTemplateReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 		 $("#areaGrid").trigger("reloadGrid");
-		 
+
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		 
 		});
 	
 	$("#clientReportLink").click(function(){
+		loadWarehouseName();
 		$('#clientReportDiv').show();
 		$('#areaReportDiv').hide();
 		 $('#reportDiv').hide();
@@ -318,6 +378,10 @@ $(document).ready(function(){
 		 $('#readinessTemplateReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 		 $("#clientGrid").trigger("reloadGrid");
+
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		});
 	
 	
@@ -332,6 +396,8 @@ $(document).ready(function(){
 		 $("#warehouseDiv").hide();
 		 $("#salesPipeLineDiv").hide();
 		 $("#readinessDiv").hide();
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		 $('#dashboardDiv').hide();
 		 $('#addTitle').hide();
 		 $('#updateTitle').hide();
@@ -365,6 +431,31 @@ $(document).ready(function(){
 		 $('#clientReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 		 $('#readinessTemplateReportDiv').hide();
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
+		 
+		});
+
+	$("#customerLink").click(function(){
+		 $("#customerDiv").fadeIn(500);
+		 $("#viewCustomerDiv").fadeIn(500);
+		 $("#warehouseDiv").hide();
+		 $("#viewWarehouseDiv").hide();
+		 $("#salesPipeLineDiv").hide();
+		 $('#reportDiv').hide();
+		 $("#readinessDiv").hide();
+		 $('#dashboardDiv').hide();
+		 $('#addCustomerTitle').hide();
+		 $('#updateCustomerTitle').hide();
+		 $('#addCustomer').show();
+		 $('#saveCustomerInfo').hide();
+		 $('#cancelCustomerInfo').hide();
+		 $('#updateCustomerInfo').hide();
+		 $('#areaReportDiv').hide();
+		 $('#clientReportDiv').hide();
+		 $("#graphicalChartDiv").hide();
+		 $('#readinessTemplateReportDiv').hide();
 		});
 	
 	$("#readinessLink").click(function(){
@@ -384,7 +475,9 @@ $(document).ready(function(){
 		 $('#clientReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 		 $('#readinessTemplateReportDiv').hide();
-		 
+
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
 		});
 	
 
@@ -414,7 +507,10 @@ $(document).ready(function(){
 			 $('#areaReportDiv').hide();
 			 $('#clientReportDiv').hide();
 			 $("#graphicalChartDiv").hide();
-			 $('#readinessTemplateReportDiv').hide();			 
+			 $('#readinessTemplateReportDiv').hide();		
+
+			 $("#customerDiv").hide();
+			 $("#viewCustomerDiv").hide();	 
 			});
 	
 	/* Add Warehouse
@@ -435,7 +531,15 @@ $(document).ready(function(){
 			$("#rackBuiltupArea").val("");
 			$("#rackCarpetArea").val("");
 			$("#totalNumberOfDocks").val("");
+
+	validatorWarehouse.resetForm();
 			
+			$("#warehouseName").css("border-color","#d7d7d7");
+			$("#floorBuiltupArea").css("border-color","#d7d7d7");
+			$("#floorCarpetArea").css("border-color","#d7d7d7");
+			$("#rackBuiltupArea").css("border-color","#d7d7d7");
+			$("#rackCarpetArea").css("border-color","#d7d7d7");
+			$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 		 
 		});
 	
@@ -540,7 +644,7 @@ $(document).ready(function(){
 		 
 		 
 		 $('#allocatedWarehouse').empty();
-		 $("#customerName").val("");   
+		 $("#customerName").empty();   
 			$("#availableFloor").val("");
 			$("#availableCarpet").val("");
 			$("#estimatedFloorBuiltupArea").val("");
@@ -558,8 +662,11 @@ $(document).ready(function(){
 			$("#actualRackCarpetArea").val("");
 			$("#actualRevenue").val("");
 			$("#actualStartDate").val("");
-			
-			  $("#actualFloorBuiltupArea").attr('disabled','disabled');
+			$("#remark").val("");
+
+				$("#statusWork").val("wIP");
+				$("#statusWork").attr('disabled','disabled');
+			 	$("#actualFloorBuiltupArea").attr('disabled','disabled');
 				$("#actualFloorCarpetArea").attr('disabled','disabled');
 				$("#actualRackBuiltupArea").attr('disabled','disabled');
 				$("#actualRackCarpetArea").attr('disabled','disabled');
@@ -583,10 +690,51 @@ $(document).ready(function(){
 			        });
 			    }
 			});
+
+			$.ajax({
+				type:'GET',
+				encoding : "UTF-8",
+				url : "listCustomer",
+				data : "",
+			    dataType: 'json',
+			    success: function( json ) {
+			        $.each(json, function(i, value) {
+			        	
+			        	$('#customerName').append($('<option>').text(value.customer_name).attr('value', value.customer_id));
+			        });
+			    }
+			});
+
+
+			
 		 
 		});
 	
-	
+	$("#addCustomer").click(function(){
+
+
+				 $("#addCustomerDiv").fadeIn();
+				 $('#addCustomerTitle').fadeIn();
+				 $('#saveCustomerInfo').show();
+				 $('#cancelCustomerInfo').show();
+				 $('#addCustomer').hide();
+				 $('#updateReadinessInfo').hide();
+				 $("#viewCustomerDiv").hide();
+				 $('#dashboardDiv').hide();
+				 $('#updateCustomerTitle').hide();
+				 $('#updateCustomerInfo').hide();
+				 
+					$("#customer_name").val("");
+					$("#contact_name_1").val("");
+					$("#contact_number_1").val("");
+					$("#contact_email_id_1").val("");
+					$("#contact_name_2").val("");
+					$("#contact_number_2").val("");
+					$("#contact_email_id_2").val("");
+				
+
+				
+		});
 	
 	//Populate Client 
 	
@@ -645,7 +793,8 @@ $(document).ready(function(){
        
 		var confirmed = "confirmed";
 		if(currentStatus == confirmed){
-		
+
+
 			    $("#actualFloorBuiltupArea").prop('disabled', false);
 				$("#actualFloorCarpetArea").prop('disabled', false);
 				$("#actualRackBuiltupArea").prop('disabled', false);
@@ -744,14 +893,17 @@ $(document).ready(function(){
 	 */
 
 
-	 $("#warehouseForm").validate({
+	 var validatorWarehouse = $("#warehouseForm").validate({
 	        rules: {
 	        	warehouseName :"required",
 				floorBuiltupArea : "required",
 				floorCarpetArea : "required",
 				rackBuiltupArea : "required",
 				rackCarpetArea : "required",
-				totalNumberOfDocks : "required",
+				totalNumberOfDocks : {
+	        	      required: true,
+	        	      digits: true
+	        	    }
 	        },
 	        messages: {
 	        	warehouseName :"Please specify Warehouse Name",
@@ -759,7 +911,7 @@ $(document).ready(function(){
 				floorCarpetArea : "What is the Built-up area",
 				rackBuiltupArea : "required",
 				rackCarpetArea : "Whats the Carpet Area",
-				totalNumberOfDocks : "How many Docks ?",
+				
 	           
 	        }
 	    });
@@ -802,11 +954,20 @@ $(document).ready(function(){
 				rackBuiltupArea : rackBuiltupArea,
 				rackCarpetArea : rackCarpetArea,
 				totalNumberOfDocks : totalNumberOfDocks,
-				
-	            },
+				  },
 			success : function(data) {
 				console.log("SUCCESS: ", data);
 				$("#grid").trigger("reloadGrid");
+
+				validatorWarehouse.resetForm();
+				$("#warehouseName").css("border-color","#d7d7d7");
+				$("#floorBuiltupArea").css("border-color","#d7d7d7");
+				$("#floorCarpetArea").css("border-color","#d7d7d7");
+				$("#rackBuiltupArea").css("border-color","#d7d7d7");
+				$("#rackCarpetArea").css("border-color","#d7d7d7");
+				$("#totalNumberOfDocks").css("border-color","#d7d7d7");
+				
+				
 			},
 			error : function(e) {
 				console.log("ERROR: ", e);
@@ -817,7 +978,8 @@ $(document).ready(function(){
      
 		 			 
 		});
-	
+
+	 
 	
 	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
 	 */
@@ -866,6 +1028,13 @@ $(document).ready(function(){
 			success : function(data) {
 				console.log("SUCCESS: ", data);
 				$("#grid").trigger("reloadGrid");
+				validatorWarehouse.resetForm();
+				$("#warehouseName").css("border-color","#d7d7d7");
+				$("#floorBuiltupArea").css("border-color","#d7d7d7");
+				$("#floorCarpetArea").css("border-color","#d7d7d7");
+				$("#rackBuiltupArea").css("border-color","#d7d7d7");
+				$("#rackCarpetArea").css("border-color","#d7d7d7");
+				$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 				var msg="";
 				 $("#warehouseDivCount").html(msg).fadeIn().delay(2000);
 			},
@@ -889,9 +1058,217 @@ $(document).ready(function(){
 		 $('#cancelWarehouseInfo').hide();
 		 $('#updateWarehouseInfo').hide();
 		 $('#saveWarehouseInfo').hide();
+
+			validatorWarehouse.resetForm();
+			
+			$("#warehouseName").css("border-color","#d7d7d7");
+			$("#floorBuiltupArea").css("border-color","#d7d7d7");
+			$("#floorCarpetArea").css("border-color","#d7d7d7");
+			$("#rackBuiltupArea").css("border-color","#d7d7d7");
+			$("#rackCarpetArea").css("border-color","#d7d7d7");
+			$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 		 
 		});
 
+
+		
+	
+	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
+	 */
+
+
+	 var validatorCustomer = $("#myFormCustomer").validate({
+	        rules: {
+	        	customer_name :"required",
+				contact_name_1 : "required",
+				contact_number_1 : "required",
+				contact_emaill_id_1 : "required",
+				contact_name_2 : "required",
+				contact_number_2 : "required",
+				contact_emaill_id_2 : "required",
+				
+	        },
+	        messages: {
+	        	customer_name :"required",
+				contact_name_1 : "required",
+				contact_number_1 : "required",
+				contact_emaill_id_1 : "required",
+				contact_name_2 : "required",
+				contact_number_2 : "required",
+				contact_emaill_id_2 : "required",
+				
+	           
+	        }
+	    });
+
+	 
+	$("#saveCustomerInfo").click(function(){
+
+		if($("#myFormCustomer").valid())
+		 {
+		
+		 $("#addCustomerDiv").hide();
+		 $("#viewCustomerDiv").fadeIn();
+		 $('#dashboardDiv').hide();
+		 $('#updateCustomerInfo').hide();
+		 $("#addCustomerTitle").hide();
+		 $("#updateCustomerTitle").hide();
+		 $("#addCustomer").fadeIn();
+		 $('#cancelCustomerInfo').hide();
+		 $('#updateCustomerInfo').hide();
+		 $('#saveCustomerInfo').hide();
+		 
+		    var customer_name = $("#customer_name").val();
+		    var contact_name_1 = $("#contact_name_1").val();
+		    var contact_number_1 = $("#contact_number_1").val();
+		    var contact_email_id_1 = $("#contact_email_id_1").val();
+		    var contact_name_2 = $("#contact_name_2").val();
+		    var contact_number_2 = $("#contact_number_2").val();
+		    var contact_email_id_2 = $("#contact_email_id_2").val();
+		
+		
+		$.ajax({
+			
+			type : "POST",
+			encoding : "UTF-8",
+			url : "addCustomer",
+			datatype :'json', 
+			data : {
+				customer_name : customer_name,
+				contact_name_1 : contact_name_1,
+				contact_number_1 : contact_number_1,
+				contact_email_id_1 : contact_email_id_1,
+				contact_name_2 : contact_name_2,
+				contact_number_2 : contact_number_2,
+				contact_email_id_2 : contact_email_id_2,
+				  },
+			success : function(data) {
+				console.log("SUCCESS: ", data);
+				$("#customerGrid").trigger("reloadGrid");
+
+				validatorCustomer.resetForm();
+				
+				$("#customer_name").css("border-color","#d7d7d7");
+				$("#contact_number_1").css("border-color","#d7d7d7");
+				$("#contact_name_1").css("border-color","#d7d7d7");
+				$("#contact_email_id_1").css("border-color","#d7d7d7");
+				$("#contact_number_2").css("border-color","#d7d7d7");
+				$("#contact_name_2").css("border-color","#d7d7d7");
+				$("#contact_email_id_2").css("border-color","#d7d7d7");
+				
+				
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			
+			}
+		});	
+		 }
+     
+		 			 
+		});
+
+	 
+	
+	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
+	 */
+	 
+	$("#updateCustomerInfo").click(function(){
+
+		if($("#myFormCustomer").valid())
+		 {
+		
+		$("#addCustomerDiv").hide();
+		 $("#viewCustomerDiv").fadeIn();
+		 $('#dashboardDiv').hide();
+		 
+		 
+		 $("#addCustomerTitle").hide();
+		 $("#updateCustomerTitle").hide();
+		 $("#addCustomer").fadeIn();
+		 $('#cancelCustomerInfo').hide();
+		 $('#updateCustomerInfo').hide();
+		 $('#saveCustomerInfo').hide();
+		 
+
+
+		    var customer_id = $("#customer_id").val();
+		    var customer_name = $("#customer_name").val();
+		    var contact_name_1 = $("#contact_name_1").val();
+		    var contact_number_1 = $("#contact_number_1").val();
+		    var contact_email_id_1 = $("#contact_email_id_1").val();
+		    var contact_name_2 = $("#contact_name_2").val();
+		    var contact_number_2 = $("#contact_number_2").val();
+		    var contact_email_id_2 = $("#contact_email_id_2").val();
+		
+		
+		$.ajax({
+			
+			type : "POST",
+			encoding : "UTF-8",
+			url : "updateCustomer",
+			datatype :'json', 
+			data : {
+
+				customer_id : customer_id,
+				customer_name : customer_name,
+				contact_name_1 : contact_name_1,
+				contact_number_1 : contact_number_1,
+				contact_email_id_1 : contact_email_id_1,
+				contact_name_2 : contact_name_2,
+				contact_number_2 : contact_number_2,
+				contact_email_id_2 : contact_email_id_2,
+			   },
+			success : function(data) {
+				console.log("SUCCESS: ", data);
+				console.log("SUCCESS: ", data);
+				$("#customerGrid").trigger("reloadGrid");
+
+				validatorCustomer.resetForm();
+				
+				$("#customer_name").css("border-color","#d7d7d7");
+				$("#contact_number_1").css("border-color","#d7d7d7");
+				$("#contact_name_1").css("border-color","#d7d7d7");
+				$("#contact_email_id_1").css("border-color","#d7d7d7");
+				$("#contact_number_2").css("border-color","#d7d7d7");
+				$("#contact_name_2").css("border-color","#d7d7d7");
+				$("#contact_email_id_2").css("border-color","#d7d7d7");
+			/* 	
+				var msg="";
+				 $("#warehouseDivCount").html(msg).fadeIn().delay(2000); */
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+			
+			}
+		});				 
+		 }
+		});
+	
+	
+
+	
+	$("#cancelCustomerInfo").click(function(){
+		 $("#addCustomerDiv").hide();
+		 $("#viewCustomerDiv").fadeIn();
+		 $("#addCustomerTitle").hide();
+		 $("#updateCustomerTitle").hide();
+		 $("#addCustomer").fadeIn();
+		 $('#cancelCustomerInfo').hide();
+		 $('#updateCustomerInfo').hide();
+		 $('#saveCustomerInfo').hide();
+
+			validatorCustomer.resetForm();
+			
+			$("#customer_name").css("border-color","#d7d7d7");
+			$("#contact_number_1").css("border-color","#d7d7d7");
+			$("#contact_name_1").css("border-color","#d7d7d7");
+			$("#contact_email_id_1").css("border-color","#d7d7d7");
+			$("#contact_number_2").css("border-color","#d7d7d7");
+			$("#contact_name_2").css("border-color","#d7d7d7");
+			$("#contact_email_id_2").css("border-color","#d7d7d7");
+			
+		});
 
 	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
 	 */
@@ -1143,6 +1520,8 @@ $(document).ready(function(){
 	        	estimatedRackCarpetArea: "required",
 	        	estimatedRevenue : "required",
 	        	estimatedStartDate: "required",
+	    		remark : "required",
+	    	    
 	        },
 	        messages: {
 	        	customerName: "Please specify customer name",
@@ -1152,7 +1531,8 @@ $(document).ready(function(){
 	            estimatedRackCarpetArea : "How much is the Rack carpet area ?",
 	            estimatedRevenue: "What amount of revenue is expected ?",
 	            estimatedStartDate : "By when is this project expected to begin?",
-	           
+	    		remark : "Please enter Remark",
+	    	    
 	        }
 	    });
 
@@ -1175,7 +1555,8 @@ $(document).ready(function(){
 		var estimatedStartDate = $("#estimatedStartDate").val();
 		var allocatedWarehouse = $("#allocatedWarehouseId").val();
 		var statusWork = $("#statusWork").val();
-
+		var remark = $("#remark").val();
+		
        
 		
 			$.ajax({
@@ -1194,9 +1575,8 @@ $(document).ready(function(){
 					estimatedRevenue : estimatedRevenue,
 					allocatedWarehouse : allocatedWarehouse,
 					statusWork : statusWork,
-				
-					
-		        		        	
+					remark : remark,
+						        	
 		            },
 				success : function(data) {
 					console.log("SUCCESS: ", data);
@@ -1222,7 +1602,7 @@ $(document).ready(function(){
 					$("#estimatedStartDate").css("border-color","#d7d7d7");
 					$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
 					$("#estimatedRackCarpetArea").css("border-color","#d7d7d7");
-
+					$("#remark").css("border-color","#d7d7d7");
 					$("#myForm").resetForm();
 					
 				},
@@ -1242,38 +1622,92 @@ console.log("hello");
 	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
 	 */
 
+
+	 jQuery.validator.addMethod("availableAreaValidation", function (value, element) {
+
+			var availableFloor = parseInt($("#availableFloor2").val());
+			var actualFloorCarpetArea = parseInt($("#actualFloorCarpetArea").val());
+			var actualFloorCarpetAreaRef = parseInt($("#actualFloorCarpetAreaRef").val());
+			var availableMatchingValue;
+			console.log(availableFloor);
+			console.log(actualFloorCarpetArea);
+			console.log(actualFloorCarpetAreaRef);
+			
+			availableMatchingValue = actualFloorCarpetArea - actualFloorCarpetAreaRef;
+			/* if(actualFloorCarpetAreaRef>actualFloorCarpetArea){
+				availableMatchingValue = actualFloorCarpetAreaRef - actualFloorCarpetArea;
+				}
+			else{
+				availableMatchingValue = actualFloorCarpetArea - actualFloorCarpetAreaRef;
+				} */
+
+			console.log(availableMatchingValue);
+			if(availableMatchingValue>0)
+				{
+			if(availableMatchingValue>availableFloor)
+				{
+					return false;
+				}
+			else
+				{
+				if(actualFloorCarpetAreaRef != 0)
+				{
+				var availableFloor = parseInt($("#availableFloor2").val());
+				var newAvailableFloorArea = availableFloor - parseInt(availableMatchingValue);
+				$("#availableFloor").val(newAvailableFloorArea);
+				}
+				return true;
+					
+				}
+				}
+			else
+				{
+				if(actualFloorCarpetAreaRef != 0)
+					{
+				var availableFloor = parseInt($("#availableFloor2").val());
+				var newAvailableFloorArea = availableFloor - parseInt(availableMatchingValue);
+				$("#availableFloor").val(newAvailableFloorArea);
+					}
+					return true;
+				}
+	    }, "You are exceeding the space limit.Ref Avialable Area Field above.");
+	 
+
 	var validatorUpdate = $("#myFormUpdate").validate({
 	        rules: {
-	        	/* customerName: "required",
-	        	estimatedFloorBuiltupArea : "required",
-	        	estimatedFloorCarpetArea: "required",
-	        	estimatedRackBuiltupArea : "required",
-	        	estimatedRackCarpetArea: "required",
-	        	estimatedRevenue : "required",
-	        	estimatedStartDate: "required",
-	        	actualFloorBuiltupArea : "required", */
-				actualFloorCarpetArea : "required",
-				actualRackBuiltupArea : "required",
-				actualRackCarpetArea : "required",
-				actualRevenue : "required",
-				actualStartDate : "required",
-				remark : "required",
-	        },
+
+				actualFloorCarpetArea : {
+	                required: true,
+	                min :1,
+	                digits: true,
+	                availableAreaValidation : true
+	            },
+				actualRackBuiltupArea : {
+	                required: true,
+	                min :1,
+	                digits: true
+	            },
+				actualRackCarpetArea : {
+	                required: true,
+	                min :1,
+	                digits: true
+	            },
+				actualRevenue : {
+	                required: true,
+	                min :1,
+	                number: true
+	            },
+				actualStartDate : {
+	                required: true,
+	                date: true
+	            },
+		    },
 	        messages: {
-	        	/* customerName: "Please specify customer name",
-	            estimatedFloorBuiltupArea : "How much is the Floor built-up area ?",
-	            estimatedFloorCarpetArea: "How much is the Floor carpet area ?",
-	            estimatedRackBuiltupArea: "How much is the Rack built-up area ?",
-	            estimatedRackCarpetArea : "How much is the Rack carpet area ?",
-	            estimatedRevenue: "What amount of revenue is expected ?",
-	            estimatedStartDate : "By when is this project expected to begin?",actualFloorBuiltupArea : "required", */
-				actualFloorCarpetArea : "Enter Actual Carpert area",
-				actualRackBuiltupArea : "Enter Actual Built-up Area",
+	        	actualRackBuiltupArea : "Enter Actual Built-up Area",
 				actualRackCarpetArea : "Enter Actual Rack Space",
 				actualRevenue : "enter Actual Revenue",
 				actualStartDate : "Enter Actual Start Date ",
-				remark : "enter remark",
-	           
+			   
 	        }
 	    });
 
@@ -1283,6 +1717,7 @@ console.log("hello");
 	 
 	$("#updateSalesPipeLineInfo").click(function(){
 
+		
 		if($("#myForm").valid() && $("#myFormUpdate").valid())
 		 {
 		 
@@ -1314,16 +1749,17 @@ console.log("hello");
 			var statusWork = $("#statusWork").val();
 			var actualFloorBuiltupArea = parseInt($("#actualFloorBuiltupArea").val());
 			var actualFloorCarpetArea = parseInt($("#actualFloorCarpetArea").val());
+			var actualFloorCarpetAreaRef = parseInt($("#actualFloorCarpetAreaRef").val());
 			var actualRackBuiltupArea = parseInt($("#actualRackBuiltupArea").val());
 			var actualRackCarpetArea = parseInt($("#actualRackCarpetArea").val());
 			var actualRevenue = parseInt($("#actualRevenue").val());
 			var actualStartDate = $("#actualStartDate").val();
 			var remark = $("#remark").val();
-			alert(statusWork);
+			//alert(statusWork);
 			var empty="";
 			var confirmed1 = "confirmed";
 
-			
+	/* 		
 		if(actualFloorCarpetArea>availableFloor)
 			{
 
@@ -1339,10 +1775,10 @@ console.log("hello");
         	$('#warningPara').text(spaceExceedingWarning);
         	$('#warningDiv').show();
 			
-			} 
-		else
+			}  */
+	/* 	else
 			{
-  
+   */
 			
 			$.ajax({
 				
@@ -1357,6 +1793,7 @@ console.log("hello");
 					availableCarpet : availableCarpet,
 					estimatedFloorBuiltupArea : estimatedFloorBuiltupArea,
 					estimatedFloorCarpetArea : estimatedFloorCarpetArea,
+					actualFloorCarpetAreaRef : actualFloorCarpetAreaRef,
 					estimatedRackBuiltupArea : estimatedRackBuiltupArea,
 					estimatedRackCarpetArea : estimatedRackCarpetArea,
 					estimatedRevenue : estimatedRevenue,
@@ -1416,7 +1853,7 @@ console.log("hello");
 			});	
 	
 	           
-			}
+			//}
 }
 		else
 			{
@@ -1450,7 +1887,7 @@ console.log("hello");
 				$("#estimatedStartDate").css("border-color","#d7d7d7");
 				$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
 				$("#estimatedRackCarpetArea").css("border-color","#d7d7d7");
-			    $("#actualStartDate").css("border-color","#d7d7d7")
+			    $("#actualStartDate").css("border-color","#d7d7d7");
 			});
 	
 	$("#cancelReadinessTemplateDailog").click(function()
@@ -1485,17 +1922,17 @@ console.log("hello");
 		
 		var startDateV    = new Date(readinessTemplateEditStartDate),
 	    yr      = startDateV.getFullYear(),
-	    month   = startDateV.getMonth() < 10 ? '0' + startDateV.getMonth() : startDateV.getMonth(),
+	    month   = startDateV.getMonth() < 10 ? '0' + startDateV.getMonth()+1 : startDateV.getMonth()+1,
 	    day     = startDateV.getDate()  < 10 ? '0' + startDateV.getDate()  : startDateV.getDate(),
 	    startDate = day + '-' + month + '-' + yr;
-		alert(startDate);
+		//alert(startDate);
 
 	    var endDateV    = new Date(readinessTemplateEditEndDate),
 	    yr      = endDateV.getFullYear(),
-	    month   = endDateV.getMonth() < 10 ? '0' + endDateV.getMonth() : endDateV.getMonth(),
+	    month   = endDateV.getMonth() < 10 ? '0' + endDateV.getMonth()+1 : endDateV.getMonth()+1,
 	    day     = endDateV.getDate()  < 10 ? '0' + endDateV.getDate()  : endDateV.getDate(),
 	    endDate = day + '-' + month + '-' + yr;
-		alert(endDate);
+		//alert(endDate);
 		
 		
 		
@@ -1542,6 +1979,7 @@ console.log("hello");
 				
 			},
 			error : function(e) {
+				
 				console.log("ERROR: ", e);
 			
 			}
@@ -1606,7 +2044,7 @@ console.log("hello");
 	        	readinessTemplateEditOwnerName: "required",
 	        	readinessTemplateEditQuantity: {
 	        	      required: true,
-	        	      number: true
+	        	      digits: true
 	        	    },
 	        },
 	        messages: {
@@ -1645,14 +2083,14 @@ console.log("hello");
 
 	 	var startDateV    = new Date(readinessTemplateEditStartDate),
 	    yr      = startDateV.getFullYear(),
-	    month   = startDateV.getMonth() < 10 ? '0' + startDateV.getMonth() : startDateV.getMonth(),
+	    month   = startDateV.getMonth() < 10 ? '0' + startDateV.getMonth()+1 : startDateV.getMonth()+1,
 	    day     = startDateV.getDate()  < 10 ? '0' + startDateV.getDate()  : startDateV.getDate(),
 	    startDate = day + '-' + month + '-' + yr;
 		//alert(startDate);
 
 	    var endDateV    = new Date(readinessTemplateEditEndDate),
 	    yr      = endDateV.getFullYear(),
-	    month   = endDateV.getMonth() < 10 ? '0' + endDateV.getMonth() : endDateV.getMonth(),
+	    month   = endDateV.getMonth() < 10 ? '0' + endDateV.getMonth()+1 : endDateV.getMonth()+1,
 	    day     = endDateV.getDate()  < 10 ? '0' + endDateV.getDate()  : endDateV.getDate(),
 	    endDate = day + '-' + month + '-' + yr;
 		//alert(endDate);
@@ -1730,7 +2168,7 @@ console.log("hello");
 			{
 		
 		var filterText = $('#statusWorkFilter').val();
-		alert(filterText);
+		//alert(filterText);
 		var grid = jQuery("#grid5");
 		var postdata = grid.jqGrid('getGridParam','postData');
 		
@@ -1800,7 +2238,7 @@ console.log("hello");
 			success : function(data) {
 				console.log("SUCCESS: ", data);
 				
-				alert(data);
+				//alert(data);
 			},
 			error : function(e) {
 				console.log("ERROR: ", e);
@@ -1878,7 +2316,7 @@ console.log("hello");
 			{
 		
 		var clientRTValue = $('#clientRTName').val();
-		alert(clientRTValue);
+		//alert(clientRTValue);
 		
 		$("#readinessTemplateReportGrid").jqGrid('setGridParam', { 
             postData: {"salesPipeLineId":clientRTValue }
@@ -1886,6 +2324,37 @@ console.log("hello");
 		
 			});
 
+	
+
+	$("#clientStatusFilterButton").click(function()
+			{
+		
+		var clientStatusFilter = $('#clientStatusFilter').val();
+		//alert(clientRTValue);
+		
+		$("#areaGrid").jqGrid('setGridParam', { 
+            postData: {"clientStatusFilter":clientStatusFilter }
+     }).trigger('reloadGrid'); 
+		
+			});
+	
+
+
+	$("#clientWarehouseFilterButton").click(function()
+			{
+		
+		var clientWarehouseFilter = $('#clientWarehouseFilter').val();
+		//alert(clientRTValue);
+		
+		$("#clientGrid").jqGrid('setGridParam', { 
+            postData: {"clientWarehouseFilter":clientWarehouseFilter }
+     }).trigger('reloadGrid'); 
+		
+			});
+	
+	
+	
+	
 
     $("#hideLogout").click(function(){
     	$('#logoutDiv').hide();
@@ -1997,15 +2466,29 @@ console.log("hello");
 		var start = document.getElementById('readinessTemplateEditStartDate');
 		var end = document.getElementById('readinessTemplateEditEndDate');
 
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+		var yyyy = today.getFullYear();
+		 if(dd<10){
+		        dd='0'+dd
+		    } 
+		    if(mm<10){
+		        mm='0'+mm
+		    } 
+
+		today = yyyy+'-'+mm+'-'+dd;
+		document.getElementById('readinessTemplateEditStartDate').setAttribute("min", today);
+		
 		start.addEventListener('change', function() {
 		    if (start.value)
 		        end.min = start.value;
 		}, false);
-		end.addEventListener('change', function() {
+		/* end.addEventListener('change', function() {
 		    if (end.value)
 		        start.max = end.value;
 		}, false);
-
+ */
 		
 
 
@@ -2018,7 +2501,7 @@ console.log("hello");
 
 
 
-setInterval(dashboardValues,10000);
+//setInterval(dashboardValues,10000);
 
 
 </script>
@@ -2033,7 +2516,7 @@ setInterval(dashboardValues,10000);
                 <!-- START X-NAVIGATION -->
                 <ul class="x-navigation" >
                     <li class="xn-logo">
-                        <a href="#"><i>e</i>Space</a>
+                        <a href="#"><i>sparsh</i></a>
                         <a href="#" class="x-navigation-control"></a>
                     </li> 
                     
@@ -2059,6 +2542,9 @@ setInterval(dashboardValues,10000);
 								<span class="xn-text">WareHouse</span></a></li>
 						<li id="readinessLink"><a><span class="fa fa-car"></span>
 								<span class="xn-text">Readiness</span></a></li>
+								
+						<li id="customerLink"><a><span class="fa fa-car"></span>
+								<span class="xn-text">Customer</span></a></li>
 					  </ul>
 					   </li>
 				<li class="xn-openable">
@@ -2405,7 +2891,7 @@ setInterval(dashboardValues,10000);
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label" style="color:black;">Total no of Docks:</label>
+                                        <label class="col-md-3 control-label" style="color:black;">Total no of Shutters:</label>
                                         <div class="col-md-9">
                                             <input type="text" value="" class="form-control" id="totalNumberOfDocks" name="totalNumberOfDocks"/>                                        
                                             
@@ -2571,9 +3057,185 @@ setInterval(dashboardValues,10000);
 				</div>
 			
 			
+				<div id="customerDiv" style="display:none;">
+				
+			<div class="panel-heading ui-draggable-handle" style="background-color: #1aad98;height: 49px;">
+					
+				<div class="row">
+							<div class="col-md-4">
+								<h3 class="panel-title"
+									style="font-size: x-large; color: white;">Customer
+									Module :</h3>
+							</div>
+							<div class="col-md-4" style="float: left;">
+								<h3 id="addCustomerTitle" class="panel-title" style="margin-top: 5px; display: none; color: white;">Add Customer</h3>
+								<h3 id="updateCustomerTitle" class="panel-title"	style="margin-top: 5px; display: none; color: white;">Update Csutomer</h3>
+							</div>
+							<div class="col-md-4" style="float: right;">
+
+								<button class="btn btn-info btn-rounded pull-right"	id="addCustomer" style="background: white;">
+									Add Customer <span class="fa fa-plus fa-right"></span>
+								</button>
+
+								<button class="btn btn-info btn-rounded pull-right"	id="saveCustomerInfo" style="background: white;">
+									Save Info <span class="fa fa-save fa-right"></span>
+								</button>
+
+								<button class="btn btn-warning btn-rounded pull-right" id="updateCustomerInfo" style="background: white; dsiplay: none;">
+									Update Info <span class="fa fa-save fa-right"></span>
+								</button>
+																
+								<button class="btn btn-danger btn-rounded pull-right" id="cancelCustomerInfo" style="background: white;">
+									Cancel <span class="fa fa-undo fa-right"></span>
+								</button>
+							</div>
+						</div>
 			
 			
 			
+			
+				</div>
+
+				<div class="panel-body"	style="background: rgba(255, 255, 255, 255);">
+
+
+
+
+					<div class="row" id="viewCustomerDiv">
+					
+					
+						<div class="col-md-12" style="background:white;margin-bottom:170px;">
+					
+ <!-- START BASIC TABLE SAMPLE -->
+                            <div class="panel panel-default">
+                 
+                                <div class="panel-body" style="padding: 22px 30px;">
+
+										<table id="customerGrid" class="table"></table>
+										<div id="pagingDiv2"></div>
+
+										                   
+                                </div>
+                            </div>
+                            <!-- END BASIC TABLE SAMPLE -->
+
+						</div>
+
+
+					</div>
+					
+						<div class="row" id="addCustomerDiv" style="display:none;">
+				
+							<div class="col-md-12" style="background:white;margin-bottom:170px;">
+					
+			<!-- START BASIC TABLE SAMPLE -->
+                            <div class="panel panel-default">
+                                    
+									<div class="panel-body">
+                                    
+                                      <form id="myFormCustomer" class="form-horizontal">
+                                <div class="panel-body">                                    
+                                    <div class="form-group" style="display:none;">
+                                        <label class="col-md-3 control-label" style="color:black;">SalesPipeLine :</label>  
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="customer_id"/>
+                                         </div>
+                                    </div>
+                                    
+                         <div class="row">           
+                         <div class="col-md-8">
+                                     <div class="form-group">
+                                        <label class="col-md-3 control-label" style="color:black;">Customer Name :</label>  
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="customer_name" name="customer_name"/>
+                                         
+                                        </div>
+                                    </div>
+                                    
+                                    </div>
+                                    </div>
+                                 
+                                 <br/>
+                                    
+                                    <div class="row">
+                                <div class="col-md-6">
+                                     
+                                  
+                                    <div class="form-group">
+                                        <label class="col-md-6 control-label" style="color:black;">Contact Name :</label>                                        
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_name_1" name="contact_name_1"/>                                        
+                                          
+                                        </div>
+                                    </div>      
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-6 control-label" style="color:black;">Contact Number:</label>                                       
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_number_1" name="contact_number_1"/>
+                                            
+                                        </div>
+                                    </div>              
+                                   
+                                     <div class="form-group">                                        
+                                        <label class="col-md-6 control-label" style="color:black;"> Emaik - Id :</label>          
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_email_id_1" name="contact_email_id_1"/>                                        
+                                         
+                                        </div>
+                                    </div>  
+                                                 
+                                    
+                                   
+                                 </div>
+                         
+                      
+                                        
+                         <div class="col-md-6" >
+                             
+                                     <div class="form-group">
+                                        <label class="col-md-6 control-label" style="color:black;">Contact Name :</label>                                        
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_name_2" name="contact_name_2"/>                                        
+                                          
+                                        </div>
+                                    </div>      
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-6 control-label" style="color:black;">Contact Number:</label>                                       
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_number_2" name="contact_number_2"/>
+                                            
+                                        </div>
+                                    </div>              
+                                   
+                                     <div class="form-group">                                        
+                                        <label class="col-md-6 control-label" style="color:black;"> Emaik - Id :</label>          
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact_email_id_2" name="contact_email_id_2"/>                                        
+                                         
+                                        </div>
+                                    </div> 
+                                   
+                                    
+                                   
+                                    </div>
+                                     
+                                    </div>
+                                      
+                                      </div>                                               
+                               </form>  
+                                                                 
+                                </div>
+                            </div>
+                            <!-- END BASIC TABLE SAMPLE -->
+
+						</div>
+						</div>
+						</div>
+						</div>
+						
+					
 					<div id="salesPipeLineDiv" style="display:none;">
 				
 			<div class="panel-heading ui-draggable-handle" style="background-color: #1aad98;height: 49px;">
@@ -2674,8 +3336,10 @@ setInterval(dashboardValues,10000);
                                      <div class="form-group">
                                         <label class="col-md-3 control-label" style="color:black;">Customer Name :</label>  
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" id="customerName" name="customerName"/>
-                                         
+                                       <!--      <input type="text" class="form-control" id="customerName" name="customerName"/>
+                                       -->  
+                                            <select class="form-control" id="customerName" name="customerName"></select>
+                                       
                                         </div>
                                     </div>
                                     
@@ -2707,6 +3371,8 @@ setInterval(dashboardValues,10000);
                                            <div class="col-md-6">                                        
                                         <input type="text" class="form-control" id="availableFloor" style="color:black;" placeholder="Available Space" disabled/>
                                            <span class="help-block" style="color: #fe970a;font-weight: bolder;">Available Floor Area</span>
+                                          <input type="text" class="form-control" id="availableFloor2" style="color:black;display:none;" placeholder="Available Space" disabled/>
+                                       
                                            </div>
                                           
                                            <div class="col-md-6">                                        
@@ -2720,7 +3386,8 @@ setInterval(dashboardValues,10000);
                                         <div class="col-md-12">                                        
                                             <select class="form-control" id="statusWork" >
                                                 <option value="wIP">Work In Progress</option>
-                                                <option value="confirmed">Confirmed</option>
+                                                <option value="confirmed">Agreement Signed</option>
+                                                <option value="billable">Billable</option>
                                                 <option value="cancel">Canceled</option>
                                             </select>
                                         </div>
@@ -2779,6 +3446,16 @@ setInterval(dashboardValues,10000);
                                        
                                         </div>
                                     </div>
+                                    
+                                     <div class="form-group">
+                                        <label class="col-md-6 control-label" style="color:black;">Remark : </label>
+                                        <div class="col-md-6">
+                                            <textarea rows="10" cols="40" id="remark" name="remark" ></textarea>
+                                           
+                                        </div>
+                                    </div>
+                                    
+                                    
                                     </form>
                                  </div>
                          
@@ -2804,7 +3481,7 @@ setInterval(dashboardValues,10000);
                                         <label class="col-md-6 control-label" style="color:black;">Actual Floor Carpet area :</label>                                       
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="actualFloorCarpetArea" name="actualFloorCarpetArea" disabled/>
-                                             
+                                             <input type="text" id="actualFloorCarpetAreaRef" style="display:none;" disabled/>
                                         </div>
                                     </div>  
                                                                                                   
@@ -2845,13 +3522,7 @@ setInterval(dashboardValues,10000);
                                         </div>
                                     </div>
                                     
-                                    <div class="form-group">
-                                        <label class="col-md-6 control-label" style="color:black;">Remark : </label>
-                                        <div class="col-md-6">
-                                            <textarea rows="5" cols="25" id="remark" name="remark" ></textarea>
-                                           
-                                        </div>
-                                    </div>
+                                   
                                     
                                     </form>
                                     </div>
@@ -2867,6 +3538,9 @@ setInterval(dashboardValues,10000);
 						</div>
 
 						
+				
+				
+				
 				
 				        </div>
 
@@ -3386,7 +4060,21 @@ setInterval(dashboardValues,10000);
 										<h3 class="panel-title" style="margin-top: 5px;">Report</h3>
 									</div>
 									<div class="panel-body" style="padding: 22px 30px;">
-
+										<div class="row">
+                                       <div class="col-md-2">
+                                       <h3> Client Status : </h3> 
+                                       </div>
+                                       <div class="col-md-3">
+                                       <select id="clientStatusFilter" class="form-control">
+                                       <option value="wIP"> Work in Progress</option>
+                                       <option value="confirmed"> Confirmed / Billable</option>
+                                       </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                        <button class="btn btn-warning btn-rounded" id="clientStatusFilterButton">Apply Filter</button>
+										</div>
+										</div>
+										<br/><br/>
 										<table id="areaGrid" class="table"></table>
 										<div id="pagingDiv5"></div>
 
@@ -3396,7 +4084,7 @@ setInterval(dashboardValues,10000);
 
 										<div class="form-group">
 											<div class="col-md-12">
-												<button class="btn btn-info btn-rounded" id="excelPort">Download
+												<button class="btn btn-info btn-rounded" id="excelAreaPort">Download
 													as Excel</button>
 											</div>
 										</div>
@@ -3449,7 +4137,21 @@ setInterval(dashboardValues,10000);
 										<h3 class="panel-title" style="margin-top: 5px;">Report</h3>
 									</div>
 									<div class="panel-body" style="padding: 22px 30px;">
-
+										
+											<div class="row">
+                                       <div class="col-md-2">
+                                       <h3> Warehouse : </h3> 
+                                       </div>
+                                       <div class="col-md-3">
+                                       <select id="clientWarehouseFilter" class="form-control">
+                                       </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                        <button class="btn btn-warning btn-rounded" id="clientWarehouseFilterButton">Apply Filter</button>
+										</div>
+										</div>
+										<br/><br/>
+										
 										<table id="clientGrid" class="table"></table>
 										<div id="pagingDiv5"></div>
 
@@ -3459,7 +4161,7 @@ setInterval(dashboardValues,10000);
 
 										<div class="form-group">
 											<div class="col-md-12">
-												<button class="btn btn-info btn-rounded" id="excelPort">Download
+												<button class="btn btn-info btn-rounded" id="excelClientPort">Download
 													as Excel</button>
 											</div>
 										</div>
@@ -3520,6 +4222,7 @@ setInterval(dashboardValues,10000);
                                         <button class="btn btn-warning btn-rounded" id="clientRTButton">Apply Filter</button>
 										</div>
 										</div>
+										<br/><br/>
 										<table id="readinessTemplateReportGrid" class="table"></table>
 										<div id="pagingDiv5"></div>
 
@@ -3529,7 +4232,7 @@ setInterval(dashboardValues,10000);
 
 										<div class="form-group">
 											<div class="col-md-12">
-												<button class="btn btn-info btn-rounded" id="excelPort">Dowload
+												<button class="btn btn-info btn-rounded" id="excelReadinessPort">Dowload
 													as Excel</button>
 											</div>
 										</div>
@@ -3655,7 +4358,7 @@ setInterval(dashboardValues,10000);
 		
 		<!-- ERROR MESSAGE BOX-->
         <div class="message-box message-box-info animated fadeIn" data-sound="alert" id="warningDiv" style="display:none;">
-            <div class="mb-container" style="width: 430px;margin-left: 430px;">
+            <div class="mb-container" style="width: 630px;margin-left: 370px;">
                 <div class="mb-middle">
                     <div class="mb-title"><span class="fa fa-warning"></span>Warning ?</div>
                     <div class="mb-content">
@@ -3711,10 +4414,9 @@ setInterval(dashboardValues,10000);
                     <div class="col-md-6">
                     <h3 style="color: #f5f5f5;margin-left: 50px;"> Readiness Template </h3>
                     </div>
-                    <div class="col-md-3">
-                    <button class="btn btn-info btn-rounded " id="singleAdd" style="background: white;">Add Element</button> 
-                    </div>
-                    <div class="col-md-3">
+                   
+                    <div class="col-md-6">
+                     <button class="btn btn-info btn-rounded " id="singleAdd" style="background: white;margin-left: 150px;">Add Element</button> 
                     <input type="text" id="readinessSalesPipeLineId" class="form-control" style="display:none;" disabled>
                     <button class="btn btn-info btn-rounded " id="bulkSave" style="background: white;">Save</button> 
                     <button class="btn btn-warning btn-rounded" id="bulkUpdate" style="background: white;">Update <!-- <span class="fa fa-save"></span> --></button>  

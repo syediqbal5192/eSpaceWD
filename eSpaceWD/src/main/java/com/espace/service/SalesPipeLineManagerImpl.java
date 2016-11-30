@@ -17,26 +17,24 @@ public class SalesPipeLineManagerImpl implements SalesPipeLineManager {
 	@Autowired
 	SalesPipeLineDao salesPipeLineDao;
 	
-	
 	public String addSalesPipeLine(String customerName, Integer estimatedFloorBuiltupArea,
 			Integer estimatedFloorCarpetArea, Integer estimatedRackBuiltupArea, Integer estimatedRackCarpetArea,
-			Date estimatedStartDate,Double estimatedRevenue, String allocatedWarehouse, String statusWork) {
+			Date estimatedStartDate,Double estimatedRevenue, String allocatedWarehouse, String statusWork,String remarks) {
 		
 	//	String salesEntryStatus = salesPipeLineDao.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, estimatedStartDate, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualRackBuiltupArea, actualRackCarpetArea, actualStartDate, remark);
 	
-		String salesEntryStatus = salesPipeLineDao.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, estimatedStartDate, estimatedRevenue, allocatedWarehouse, statusWork);
+		String salesEntryStatus = salesPipeLineDao.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, estimatedStartDate, estimatedRevenue, allocatedWarehouse, statusWork,remarks);
 		return salesEntryStatus;
 		
 	}
 
-
 	public String updateSalesPipeLine(Integer salesPipeLineId, String customerName, Integer availableFloor,Integer availableRack,Integer estimatedFloorBuiltupArea,
 			Integer estimatedFloorCarpetArea, Integer estimatedRackBuiltupArea, Integer estimatedRackCarpetArea,
 			Date estimatedStartDate, Double estimatedRevenue,String allocatedWarehouse, String statusWork, Integer actualFloorBuiltupArea,
-			Integer actualFloorCarpetArea, Integer actualRackBuiltupArea, Integer actualRackCarpetArea,
+			Integer actualFloorCarpetArea, Integer actualFloorCarpetAreaRef,Integer actualRackBuiltupArea, Integer actualRackCarpetArea,
 			Date actualStartDate,Double actualRevenue, String remark) {
 		
-		String salesEntryUpdateStatus = salesPipeLineDao.updateSalesPipeLine(salesPipeLineId, customerName, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, estimatedStartDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualRackBuiltupArea, actualRackCarpetArea, actualStartDate, actualRevenue, remark);
+		String salesEntryUpdateStatus = salesPipeLineDao.updateSalesPipeLine(salesPipeLineId, customerName, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, estimatedStartDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualFloorCarpetAreaRef,actualRackBuiltupArea, actualRackCarpetArea, actualStartDate, actualRevenue, remark);
 		return salesEntryUpdateStatus;
 	}
 
@@ -80,17 +78,17 @@ public class SalesPipeLineManagerImpl implements SalesPipeLineManager {
 	}
 
 
-	public List<SalesPipeLine> ageReportController() {
+	public List<SalesPipeLine> ageReportController(String statusWorkCondition) {
 		
-        List<SalesPipeLine> salesArrayList = salesPipeLineDao.ageReportController();
+        List<SalesPipeLine> salesArrayList = salesPipeLineDao.ageReportController(statusWorkCondition);
 		
 		return salesArrayList;
 		
 	}
 	
-public List<SalesPipeLine> areaReportController() {
+public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 		
-        List<SalesPipeLine> salesArrayList = salesPipeLineDao.areaReportController();
+        List<SalesPipeLine> salesArrayList = salesPipeLineDao.areaReportController(clientStatusFilter);
 		
 		return salesArrayList;
 		
@@ -105,9 +103,9 @@ public List<String> chartSalesPipeLine() {
 	}
 
 
-public List<SalesPipeLine> clientReportController() {
+public List<SalesPipeLine> clientReportController(Integer clientWarehouseFilter) {
 	
-    List<SalesPipeLine> salesArrayList = salesPipeLineDao.clientReportController();
+    List<SalesPipeLine> salesArrayList = salesPipeLineDao.clientReportController(clientWarehouseFilter);
 	
 		return salesArrayList;
 	

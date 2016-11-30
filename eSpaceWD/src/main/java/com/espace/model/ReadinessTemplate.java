@@ -16,6 +16,11 @@ public class ReadinessTemplate {
 	String taskEndDateAct;
 	String isDeleted;
 	
+	String name;
+	 Integer x;
+	 Integer y;
+	 Boolean  drilldown;
+	
 	Date startDate;
 	Date endDate;
 	
@@ -102,6 +107,30 @@ public class ReadinessTemplate {
 	}
 	public void setTaskEndDateAct(String taskEndDateAct) {
 		this.taskEndDateAct = taskEndDateAct;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Integer getX() {
+		return x;
+	}
+	public void setX(Integer x) {
+		this.x = x;
+	}
+	public Integer getY() {
+		return y;
+	}
+	public void setY(Integer y) {
+		this.y = y;
+	}
+	public Boolean getDrilldown() {
+		return drilldown;
+	}
+	public void setDrilldown(Boolean drilldown) {
+		this.drilldown = drilldown;
 	}
 	
 	

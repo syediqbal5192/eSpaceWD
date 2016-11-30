@@ -27,7 +27,7 @@ public class ReadinessDaoImpl implements ReadinessDao {
 	
 	public ReadinessDaoImpl() throws ClassNotFoundException, SQLException
 	{
-	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace";
+	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace?autoReconnect=true";
 	String userId="Iqbal";
 	String pwd="Iqubal5192#me";
 	Class.forName("com.mysql.jdbc.Driver");

@@ -2,12 +2,19 @@ jQuery(document).ready(function () {
 
 jQuery("#grid5").jqGrid({
     url: "ageReportController",
+    postData: {
+    	statusWorkCondition: 'wIP',
+    },
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['ID','Customer Name', 'Warehouse ','Status Work','Floor Built-up Area', 'Date of Creation','Age(In Days)'],
+    colNames:['ID','ID','Customer Name', 'Warehouse ','Status Work','Floor Built-up Area', 'Date of Creation','Age(In Days)'],
     colModel:[
         {
+        	name:'salesPipeLineId',
+        	index:'salesPipeLineId', 
+        	width:0.2
+        },{
         	name:'salesPipeLineId',
         	index:'salesPipeLineId', 
         	width:60
@@ -51,7 +58,6 @@ jQuery("#grid5").jqGrid({
     height:160,
     pager: "#pagingDiv5",
     viewrecords: true,
-    loadonce: true,
     sortable: true,
     sortname: "salesPipeLineId",
     sortorder: "desc",
@@ -119,7 +125,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     }   
     
     //Generate a file name
-    var fileName = "MyReport_";
+    var fileName = "Age_Report_";
     //this will remove the blank-spaces from the title and replace it with an underscore
     fileName += ReportTitle.replace(/ /g,"_");   
     

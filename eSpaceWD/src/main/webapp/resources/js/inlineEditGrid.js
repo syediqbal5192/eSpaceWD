@@ -129,7 +129,7 @@ var taskEndDate = grid.jqGrid('getCell', rowid, 'taskEndDate');
 var ownerName = grid.jqGrid('getCell', rowid, 'ownerName');	
 var readinessElementStatus = grid.jqGrid('getCell', rowid, 'readinessElementStatus');	
 
-alert(name);
+//alert(name);
 
 $("#rowNumber").val(rowid);
 $("#readinessTemplateEditId").val(id);

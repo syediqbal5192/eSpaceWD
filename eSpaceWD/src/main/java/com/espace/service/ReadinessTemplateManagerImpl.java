@@ -11,6 +11,7 @@ import com.espace.dao.ReadinessTemplateDao;
 import com.espace.model.Readiness;
 import com.espace.model.ReadinessTemplate;
 import com.espace.model.ReadinessTemplateModel;
+import com.espace.model.Warehouse;
 
 @Service ("readinessManagerTemplate")
 public class ReadinessTemplateManagerImpl implements ReadinessTemplateManager {
@@ -27,6 +28,7 @@ public class ReadinessTemplateManagerImpl implements ReadinessTemplateManager {
 		
 		return readinessTemplateStatus;
 	}
+	
 
 
 	public List<ReadinessTemplate> listReadinessTemplate(Integer salesPipeLineId) {
@@ -100,6 +102,14 @@ public class ReadinessTemplateManagerImpl implements ReadinessTemplateManager {
 			
 			return readinessArrayList;
 		
+	}
+
+
+
+	public List<ReadinessTemplate> listReadinessDrillDown(String warehouseName) {
+		List<ReadinessTemplate> dashboardIconInfoList = readinessTemplateDao.listReadinessDrillDown(warehouseName);
+		
+		return dashboardIconInfoList;
 	}
 
 	

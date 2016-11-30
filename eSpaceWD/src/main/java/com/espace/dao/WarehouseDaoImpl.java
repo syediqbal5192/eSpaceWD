@@ -485,33 +485,38 @@ String isDeleted="No";
 		
 
 		String name="Available Space";
-		 
-		 Integer available_floor_carpet_area,availableFloorBuiltupArea,occupiedSpace;
-		 Integer floor_builtup_area;
 		
+		
+		 String customer_name;
+		 Integer actual_floor_carpet;
+		 
 		List<Warehouse> warehouseArrayList=new ArrayList<Warehouse>();
 		Warehouse warehouse = null;
 	
 		try{		        	
 			
+			WarehouseDaoImpl warehouseDao = new WarehouseDaoImpl();
 			
-			prepare=con.prepareStatement("select floor_builtup_area,available_floor_carpet_area from warehouse_master where warehouse_name=? ");
-			prepare.setString(1,warehouseName);
+			Integer warehouse_id = warehouseDao.getWarehouseId(warehouseName);
+			
+			
+			prepare=con.prepareStatement("select customer_name,actual_floor_carpet from salespipeline_master where warehouse_id=? and isDeleted='No' and isActive='Yes'");
+			prepare.setInt(1,warehouse_id);
 			res=prepare.executeQuery();
 			
 			
 			
 			while(res.next())
 			{
-				floor_builtup_area = res.getInt("floor_builtup_area");
-				available_floor_carpet_area = res.getInt("available_floor_carpet_area");
+				customer_name = res.getString("customer_name");
+				actual_floor_carpet = (int) res.getDouble("actual_floor_carpet");
 				
-				availableFloorBuiltupArea = (int) (available_floor_carpet_area*1.25);
-				occupiedSpace = (floor_builtup_area-availableFloorBuiltupArea); 
+		/*		availableFloorBuiltupArea = (int) (available_floor_carpet_area*1.25);
+				occupiedSpace = (floor_builtup_area-availableFloorBuiltupArea); */
 				warehouse = new Warehouse();
 				
-				warehouse.setX(occupiedSpace);
-				warehouse.setY(availableFloorBuiltupArea);
+				warehouse.setName(customer_name);
+				warehouse.setY(actual_floor_carpet);
 				warehouseArrayList.add(warehouse);
 				
 				
@@ -558,6 +563,62 @@ try{
 	 return warehouseName;
 	}
 	
+	public Integer getWarehouseId(String warehouseName) {
+		
+		Integer warehouseId=null;
+	
+/*try{		        	
+			
+			
+			prepare=con.prepareStatement("select warehouse_id from warehouse_master where warehouse_name=? ");
+			prepare.setString(1,warehouseName);
+			res=prepare.executeQuery();
+			
+			while(res.next())
+			{
+				warehouseId = res.getInt("warehouse_id");; 
+				
+			}
+          
+           
+		} 
+				catch (Exception e) {
+	      e.printStackTrace();
+	    }
+		
+	 return warehouseId;*/
+	 
+	
+	 Session session = HibernateUtil.getSesssion();
+		Transaction transaction = null;
+		List<WarehouseEntity> warehouseList = null;
+	      try{
+	         transaction = session.beginTransaction();
+		 Criteria criteria = session.createCriteria(WarehouseEntity.class, "warehouse");
+		 criteria.add(Restrictions.eq("warehouse.warehouse_name", warehouseName));
+	        
+	       warehouseList = new ArrayList<WarehouseEntity>();
+	        warehouseList = (List<WarehouseEntity>) criteria.list();
+	        
+	        for (int k = 0; k < warehouseList.size(); k++) {  
+				
+	        	warehouseId=warehouseList.get(k).getWarehouse_id();
+				 
+	        }
+			
+	        
+	        
+	        session.getTransaction().commit();
+	    
+	      }
+			 catch (HibernateException e) {
+				 if (transaction!=null) 
+				    	transaction.rollback();
+				    e.printStackTrace(); 
+				 }
+			  return warehouseId;
+	 
+	}
 	
 	
 

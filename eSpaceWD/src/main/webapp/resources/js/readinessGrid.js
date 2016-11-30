@@ -30,7 +30,7 @@ function editRELink(cellValue, options, rowdata, action)  {
 }
 function editRERecord(readinessId){
   
-	alert(readinessId);
+	//alert(readinessId);
 $.ajax({
 		
 		type : "POST",

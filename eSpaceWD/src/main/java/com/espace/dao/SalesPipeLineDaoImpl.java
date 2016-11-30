@@ -30,7 +30,7 @@ public Connection con;
 
 public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 {
-	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace";
+	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace?autoReconnect=true";
 	String userId="Iqbal";
 	String pwd="Iqubal5192#me";
 	Class.forName("com.mysql.jdbc.Driver");	
@@ -41,7 +41,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 
 	public String addSalesPipeLine(String customerName, Integer estimatedFloorBuiltupArea,
 			Integer estimatedFloorCarpetArea, Integer estimatedRackBuiltupArea, Integer estimatedRackCarpetArea,
-			Date estimatedStartDate, Double estimatedRevenue,String allocatedWarehouse, String statusWork) {
+			Date estimatedStartDate, Double estimatedRevenue,String allocatedWarehouse, String statusWork,String remarks) {
 		
 
 		//Converting util Date to sql Date
@@ -53,7 +53,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 		Double actualRevenue = 0.0;	
 		try{
 					
-					String insertTableSQL = "INSERT INTO salespipeline_master (customer_name, estimated_floor_builtup, estimated_floor_carpet, estimated_rack_builtup, estimated_rack_carpet, estimated_start_date,expectedRevenue, warehouse_id, status_id, isActive, isDeleted,actualRevenue) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+					String insertTableSQL = "INSERT INTO salespipeline_master (customer_name, estimated_floor_builtup, estimated_floor_carpet, estimated_rack_builtup, estimated_rack_carpet, estimated_start_date,expectedRevenue, warehouse_id, status_id, isActive, isDeleted,actualRevenue,remarks) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
                    
 					
 					prepare=con.prepareStatement(insertTableSQL);
@@ -69,6 +69,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 					prepare.setString(10, isActive);
 					prepare.setString(11, isDeleted);
 					prepare.setDouble(12, actualRevenue);
+					prepare.setString(13,remarks);
 					prepare.executeUpdate();
 		
 					
@@ -87,7 +88,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 	public String updateSalesPipeLine(Integer salesPipeLineId, String customerName,Integer availableFloor,Integer availableRack, Integer estimatedFloorBuiltupArea,
 			Integer estimatedFloorCarpetArea, Integer estimatedRackBuiltupArea, Integer estimatedRackCarpetArea,
 			Date estimatedStartDate,Double estimatedRevenue, String allocatedWarehouse, String statusWork, Integer actualFloorBuiltupArea,
-			Integer actualFloorCarpetArea, Integer actualRackBuiltupArea, Integer actualRackCarpetArea,
+			Integer actualFloorCarpetArea,Integer actualFloorCarpetAreaRef, Integer actualRackBuiltupArea, Integer actualRackCarpetArea,
 			Date actualStartDate,Double actualRevenue, String remark) {
 		
 		
@@ -96,13 +97,23 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 	    java.sql.Date startDate = new java.sql.Date(estimatedStartDate.getTime());
 	    java.sql.Date finalStartDate = new java.sql.Date(actualStartDate.getTime());
 	
-		
+	    String spaceAvialabilityStatus ="";
 		Integer warehouseId = Integer.parseInt(allocatedWarehouse);
-		
-		Integer newAvailableFloor = availableFloor - actualFloorCarpetArea;
 		Integer newAvailableRack = availableFloor - actualRackCarpetArea;
+		if(actualFloorCarpetAreaRef == 0)
+		{
+			Integer newAvailableFloor = availableFloor - actualFloorCarpetArea;
+		 spaceAvialabilityStatus = warehouseDao.updateSpaceAvialabilityWarehouse(warehouseId, newAvailableFloor, newAvailableRack);
+		}
+		else
+		{
+		 spaceAvialabilityStatus = warehouseDao.updateSpaceAvialabilityWarehouse(warehouseId, availableFloor, newAvailableRack);
+			
+			
+		}
+		
    
-	    String spaceAvialabilityStatus = warehouseDao.updateSpaceAvialabilityWarehouse(warehouseId, newAvailableFloor, newAvailableRack);
+	   
 		
 	    
 	    if(spaceAvialabilityStatus.equals("successful"))
@@ -417,7 +428,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 	}
 	
 	
-	public List<SalesPipeLine> ageReportController() {
+	public List<SalesPipeLine> ageReportController(String statusWorkCondition) {
 
 		
 
@@ -426,7 +437,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 		Integer estimatedFloorBuiltupArea;
 		
 		Date estimatedStartDate ;
-		String allocatedWarehouse ;
+		String allocatedWarehouse,warehouseName;
 		String statusWork;
 		
 		List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
@@ -434,8 +445,9 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 		ResultSet res;
 		try{		        	
 			
-			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,status_id,estimated_start_date, warehouse_id from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id='wIP' ");
-            res=prepare.executeQuery();
+			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,status_id,estimated_start_date, warehouse_id from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id=? ");
+			  prepare.setString(1, statusWorkCondition);
+			  res=prepare.executeQuery();
 			
 			
 			
@@ -453,6 +465,9 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 				long diff = Math.abs(estimatedStartDate.getTime() - date.getTime());
 				long age = diff / (24 * 60 * 60 * 1000);
 				
+				warehouseName = warehouseDao.getWarehouseName(Integer.parseInt(allocatedWarehouse));
+				
+				
 				salesPipeLine = new SalesPipeLine();
 				salesPipeLine.setSalesPipeLineId(salesPipeLineId);
 			    salesPipeLine.setCustomerName(customerName);
@@ -460,7 +475,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 			    salesPipeLine.setStatusWork(statusWork);
 			    salesPipeLine.setEstimatedStartDate(estimatedStartDate);
 			    salesPipeLine.setSalesPipeLineId(salesPipeLineId);
-			    salesPipeLine.setAllocatedWarehouse(allocatedWarehouse);
+			    salesPipeLine.setAllocatedWarehouse(warehouseName);
 			    salesPipeLine.setAge(age);
 			    salesArrayList.add(salesPipeLine);
 				
@@ -482,7 +497,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 	}
 	
 	
-public List<SalesPipeLine> areaReportController() {
+public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 
 		
 
@@ -503,8 +518,9 @@ public List<SalesPipeLine> areaReportController() {
 		ResultSet res;
 		try{		        	
 			
-			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted from salespipeline_master where isActive='Yes' and isDeleted='No' ");
-            res=prepare.executeQuery();
+			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id=?");
+			prepare.setString(1, clientStatusFilter);
+			res=prepare.executeQuery();
 			
 			
 			
@@ -560,7 +576,7 @@ public List<SalesPipeLine> areaReportController() {
 	}
 
 
-public List<SalesPipeLine> clientReportController() {
+public List<SalesPipeLine> clientReportController(Integer clientWarehouseFilter) {
 
 	
 
@@ -583,8 +599,9 @@ public List<SalesPipeLine> clientReportController() {
 	ResultSet res;
 	try{		        	
 		
-		PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted,expectedRevenue,actualRevenue from salespipeline_master where isActive='Yes' and isDeleted='No'");
-        res=prepare.executeQuery();
+		PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted,expectedRevenue,actualRevenue from salespipeline_master where isActive='Yes' and isDeleted='No' and warehouse_id=?");
+        prepare.setInt(1, clientWarehouseFilter);
+		res=prepare.executeQuery();
 		
 		
 		

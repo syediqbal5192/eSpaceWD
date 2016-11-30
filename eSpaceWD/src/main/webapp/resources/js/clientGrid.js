@@ -1,13 +1,22 @@
 jQuery(document).ready(function () {
 
+	var clientWarehouseFilter = "1";
+	
 jQuery("#clientGrid").jqGrid({
     url: "clientReportController",
+    postData: {
+    	clientWarehouseFilter: clientWarehouseFilter,
+    },
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Expected Revenue','Actual Revenue','Active','Deleted'],
+    colNames:['Customer Name','Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Expected Revenue','Actual Revenue','Active','Deleted'],
     colModel:[
-         
+{
+	name:'customerName',
+	index:'customerName', 
+	width:0.3
+}, 
         {
         	name:'customerName',
         	index:'customerName', 
@@ -55,28 +64,27 @@ jQuery("#clientGrid").jqGrid({
                 			index:'isActive', 
                 			width:50,
                 		    // stype defines the search type control - in this case HTML select (dropdownlist)
-                            stype: "select",
+                            //stype: "select",
                             // searchoptions value - name values pairs for the dropdown - they will appear as options
-                            searchoptions: {value:"Yes:Yes;No:No"} 							
+                           // searchoptions: {value:"Yes:Yes;No:No"} 							
         						},
         				        {
                 					name:'isDeleted',
                         			index:'isDeleted', 
-                        			width:50,
+                        			width:50
                         		    // stype defines the search type control - in this case HTML select (dropdownlist)
-                                    stype: "select",
+                                    //stype: "select",
                                     // searchoptions value - name values pairs for the dropdown - they will appear as options
-                                    searchoptions: {value:"Yes:Yes;No:No"} 							
+                                   // searchoptions: {value:"Yes:Yes;No:No"} 							
                 						}
         					
       
     ],
     rowNum:10,
     rowList:[5,10,20],
-    height:360,
+    height:300,
     pager: "#pagingDiv5",
     viewrecords: true,
-    loadonce: true,
     sortable: true,
     sortname: "salesPipeLineId",
     sortorder: "desc",
@@ -115,13 +123,13 @@ jQuery("#clientGrid").jqGrid({
    
 });
 // activate the toolbar searching
-$('#clientGrid').jqGrid('filterToolbar',{
+/*$('#clientGrid').jqGrid('filterToolbar',{
     // JSON stringify all data from search, including search toolbar operators
     stringResult: true,
     // instuct the grid toolbar to show the search options
     searchOperators: true
 });
-
+*/
 
 
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
@@ -171,7 +179,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     }   
     
     //Generate a file name
-    var fileName = "MyReport_";
+    var fileName = "Client_Report_";
     //this will remove the blank-spaces from the title and replace it with an underscore
     fileName += ReportTitle.replace(/ /g,"_");   
     
@@ -199,7 +207,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 }
 
 
-$('#excelPort').click(function() {
+$('#excelClientPort').click(function() {
     console.log('test');
    JSONToCSVConvertor(JSON.stringify($('#clientGrid').jqGrid('getRowData')), 'Title', true);
 });

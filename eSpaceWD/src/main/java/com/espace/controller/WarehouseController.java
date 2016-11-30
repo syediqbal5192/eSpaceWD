@@ -23,6 +23,7 @@ import com.espace.model.Warehouse;
 @Controller
 public class WarehouseController {
 
+	
 	@Autowired
 	WarehouseManager warehouseManager;
 	
@@ -40,26 +41,6 @@ public class WarehouseController {
 		Integer totalNumberOfDocks=Integer.parseInt(nvl(request.getParameter("totalNumberOfDocks")));
 				
 		String warehouseStatus= warehouseManager.addWarehouse(warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, rackCarpetArea,totalNumberOfDocks);
-		
-	/*	List file=profile.getProfileDataUsingUserId(userId);
-		
-		String nameMain=(String) file.get(0); 
-		String bioDescpOP=(String) file.get(1);
-		String gender=(String) file.get(2); 
-		String seekingOP=(String) file.get(3);
-    	request.setAttribute("MainName", nameMain);
-		request.setAttribute("bioDescpOP", bioDescpOP); 
-    	request.setAttribute("gender", gender);
-		request.setAttribute("seeking", seekingOP);*/
-	
-       /* JSONObject profileDetailsJson =new JSONObject();
-		profileDetailsJson.put("firstName",(String)file.get(0));
-        profileDetailsJson.put("bioDescp", (String) file.get(1));
-        profileDetailsJson.put("dateOfBirth",(String) file.get(2));
-        profileDetailsJson.put("age",(String) file.get(3));
-        profileDetailsJson.put("i_am",(String) file.get(4));
-        profileDetailsJson.put("seeking",(String) file.get(5));
-        profileDetailsJson.put("hobbies",(String) file.get(6));*/
 		
 		return warehouseStatus;
 		

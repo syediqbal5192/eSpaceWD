@@ -5,10 +5,10 @@ jQuery("#grid2").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Customer Name','Est. Built-up Area', 'Est. Carpet Area','Actual Built-up Area','Actual Carpet Area', 'Warehouse ','Status','Edit','Delete','Readiness Add/Edit'],
+    colNames:['SalesId','WID','Customer Name','Est. Floor Built-up Area', 'Est. Floor Carpet Area','Actual Floor Built-up Area','Actual Floor Carpet Area', 'Warehouse ','Status','Edit','Delete','Readiness Add/Edit'],
     colModel:[
-       /* {name:'salesPipeLineId',index:'salesPipeLineId', width:60},
-       */
+        {name:'salesPipeLineId',index:'salesPipeLineId', width:60},
+        {name:'warehouseId',index:'warehouseId', width:60},
         {name:'customerName',index:'customerName', width:120},
         {name:'estimatedFloorBuiltupArea',index:'estimatedFloorBuiltupArea', width:140},
         {name:'estimatedFloorCarpetArea',index:'estimatedFloorCarpetArea', width:140},
@@ -18,15 +18,19 @@ jQuery("#grid2").jqGrid({
         {name:'statusWork',index:'statusWork', width:80},
         {name:'edit',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: editSPLLink},
         {name:'delete',search:false,index:'salesPipeLineId',width:65,sortable: false,formatter: deleteSPLLink},
-        {name:'rTUpdate',search:false,index:'salesPipeLineId',width:140,sortable: false,formatter: rTUpdateLink},
+        {name:'rTUpdate',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: rTUpdateLink},
         
         
     ],
     rowNum:10,
     rowList:[20,60,100],
-    height:360,
+    height:500,
     pager: "#pagingDiv2",
     viewrecords: true,
+    loadComplete : function(){
+        $(this).jqGrid('hideCol',["warehouseId"]);
+         $(this).jqGrid('hideCol',["salesPipeLineId"]);
+       },
     caption: "",
     	 subGrid: true,
     	    subGridOptions: { "plusicon" : "ui-icon-triangle-1-e",
@@ -287,6 +291,7 @@ function rTViewRecord(salesPipeLineId)
 
 function editSPLRecord(salesPipeLineId){
   
+	$("#statusWork").prop('disabled', false);
 	
 $.ajax({
 		
@@ -313,7 +318,7 @@ $.ajax({
 			 $('#addSalesPipeLine').hide();
 			 $('#confirmed').show();
 			 
-				$("#customerName").val("");
+				$("#customerName").empty();
 				$("#availableFloor").val("");
 				$("#availableCarpet").val("");
 				$("#estimatedFloorBuiltupArea").val("");
@@ -348,6 +353,7 @@ $.ajax({
 			$("#statusWork").val(posts.statusWork);
 			$("#actualFloorBuiltupArea").val(posts.actualFloorBuiltupArea);
 			$("#actualFloorCarpetArea").val(posts.actualFloorCarpetArea);
+			$("#actualFloorCarpetAreaRef").val(posts.actualFloorCarpetArea);
 			$("#actualRackBuiltupArea").val(posts.actualRackBuiltupArea);
 			$("#actualRackCarpetArea").val(posts.actualRackCarpetArea);
 			$("#actualStartDate").val(posts.actualStartDate);
@@ -402,6 +408,7 @@ $.ajax({
 			        	 var valueOfFieldCarpet =value.available_rack_carpet_area;
 			        	 
 			        	 $("#availableFloor").val(valueOfFieldFloor);
+			        	 $("#availableFloor2").val(valueOfFieldFloor);
 			        	 $("#availableCarpet").val(valueOfFieldCarpet);
 			        	
 			        });
@@ -435,64 +442,73 @@ $.ajax({
 
 
 
-function deleteSPLLink(cellValue, options, rowdata, action)  {
-    return "<a class='btn btn-danger pull-right fa fa-times' href='javascript:deleteRecordSPL(" + rowdata.salesPipeLineId + ","+rowdata.warehouseId+","+rowdata.actualFloorCarpetArea+")'></a>";
+function deleteSPLLink(cellValue, options, rowdata, action)  
+{
+//    return "<a class='btn btn-danger pull-right fa fa-times' href='javascript:deleteRecordSPL(" + rowdata.salesPipeLineId + ","+rowdata.warehouseId+","+rowdata.actualFloorCarpetArea+")'></a>";
+	return "<button class='btn btn-danger pull-right fa fa-times' type='button' onClick='clickDeleteSalesPipeLine.call(this)'></button>"; 
+
+
+
 }
-function deleteRecordSPL(salesPipeLineId,warehouseId,estimatedFloorCarpetArea){
+
+//function deleteRecordSPL(salesPipeLineId,warehouseId,estimatedFloorCarpetArea)
+function clickDeleteSalesPipeLine()
+{
 	
-	  $('#alertDiv').show();
-	  $('#alertSalesPipeLineId').val(salesPipeLineId);
-	  $('#alertWarehousId').val(warehouseId);
-	  $('#alertFloorCarpertArea').val(estimatedFloorCarpetArea);
-	  
-	  $('#doWarehouseOperation').hide();
-	  $('#doReadinessOperation').hide();
-	  $('#doSalesPipeLineOperation').show();
+	var rowid = $(this).closest("tr.jqgrow").attr("id");
+	var grid = $('#grid2');    
+
 	
-	/* noty({
-	        text: 'Do you want to continue?',
-	        layout: 'topRight',
-	        buttons: [
-	                {
-	                	addClass: 'btn btn-success btn-clean', 
-	                	text: 'Ok', 
-	                	onClick: function($noty) 
-	                	     {
-	                                $noty.close();
-	                                noty(
-	                                		{
-	                                			text: 'You clicked "Ok" button', 
-	                                			layout: 'topRight', 
-	                                			type: 'success'
-	                                		});
-	                                $.ajax({
-	                            		
-	                            		type : "POST",
-	                            		encoding : "UTF-8",
-	                            		url : "deleteSalesPipeLineById",
-	                            		datatype :'json', 
-	                            		data : {
-	                            			salesPipeLineId : salesPipeLineId,
-	                            			warehouseId : warehouseId,
-	                            			estimatedFloorCarpetArea : estimatedFloorCarpetArea,
-	                            			        },
-	                            		success : function(data) {
-	                                          console.log("Marked for Deletion");
-	                                          $("#grid2").trigger("reloadGrid");
-	                            		           },
-	                            		error : function(e) {
-	                            			console.log("ERROR: ", e);
-	                            		
-	                            		}
-	                            	});
-	                                
-	                }
-	                },
-	                {addClass: 'btn btn-danger btn-clean', text: 'Cancel', onClick: function($noty) {
-	                    $noty.close();
-	                    noty({text: 'You clicked "Cancel" button', layout: 'topRight', type: 'error'});
-	                    }
-	                }
-	            ]
-	    })     */                   
+	var salesPipeLineId = grid.jqGrid('getCell', rowid, 'salesPipeLineId');	
+	var warehouseId = grid.jqGrid('getCell', rowid, 'warehouseId');	
+	var estimatedFloorCarpetArea = grid.jqGrid('getCell', rowid, 'actualFloorCarpetArea');
+	
+	//alert(salesPipeLineId+""+warehouseId+""+estimatedFloorCarpetArea);
+	
+	 $.ajax({
+			type:'GET',
+			encoding : "UTF-8",
+			url : "listReadinessTemplate",
+			data : 
+			{
+				salesPipeLineId : salesPipeLineId,
+			},
+			success: function(json) {
+	
+				var post = JSON.parse(json);
+				console.log(json);
+				
+				console.log(post.length);
+					
+				if (post.length == 0 ) 
+				{
+					
+					
+					  $('#alertDiv').show();
+					  $('#alertSalesPipeLineId').val(salesPipeLineId);
+					  $('#alertWarehousId').val(warehouseId);
+					  $('#alertFloorCarpertArea').val(estimatedFloorCarpetArea);
+					  
+					  $('#doWarehouseOperation').hide();
+					  $('#doReadinessOperation').hide();
+					  $('#doSalesPipeLineOperation').show();
+					
+					
+				    }
+				else
+				{
+									
+					var warehouseWarning = "Readiness Stil in Progress Stage .Please Verify";
+		        	$('#warningPara').text(warehouseWarning);
+		        	$('#warningDiv').show();
+		        	
+					
+					
+				}
+		    }
+		});
+	
+	
+
+                 
 }

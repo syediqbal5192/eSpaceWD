@@ -18,7 +18,6 @@ import com.espace.service.ProfileManager;
 @Controller
 public class LoginController {
 
-
 	@Autowired
 	LoginManager loginManager;
 	

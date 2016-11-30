@@ -48,10 +48,10 @@ public class SalesPipeLineController {
 		Double estimatedRevenue = Double.parseDouble(nvl(request.getParameter("estimatedRevenue")));
 		String allocatedWarehouse = nvl(request.getParameter("allocatedWarehouse"));
 		String statusWork = nvl(request.getParameter("statusWork"));
-		
+		String remark = nvl(request.getParameter("remark"));
 		
 	
-		String salesEntryStatus= salesPipeLineManager.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork);
+		String salesEntryStatus= salesPipeLineManager.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork,remark);
 		return salesEntryStatus;
 		
 	}
@@ -75,6 +75,7 @@ public class SalesPipeLineController {
 		String statusWork = nvl(request.getParameter("statusWork"));
 		Integer actualFloorBuiltupArea=Integer.parseInt(nvl(request.getParameter("actualFloorBuiltupArea")));
 		Integer actualFloorCarpetArea=Integer.parseInt(nvl(request.getParameter("actualFloorCarpetArea")));
+		Integer actualFloorCarpetAreaRef=Integer.parseInt(nvl(request.getParameter("actualFloorCarpetAreaRef")));
 		Integer actualRackBuiltupArea=Integer.parseInt(nvl(request.getParameter("actualRackBuiltupArea")));
 		Integer actualRackCarpetArea=Integer.parseInt(nvl(request.getParameter("actualRackCarpetArea")));
 		Double actualRevenue = Double.parseDouble(nvl(request.getParameter("actualRevenue")));
@@ -84,7 +85,7 @@ public class SalesPipeLineController {
 		String remark = nvl(request.getParameter("remark"));
 		
 		
-		String salesEntryUpdateStatus=salesPipeLineManager.updateSalesPipeLine(salesPipeLineId, customerName, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualRackBuiltupArea, actualRackCarpetArea, finalStartDate, actualRevenue, remark);
+		String salesEntryUpdateStatus=salesPipeLineManager.updateSalesPipeLine(salesPipeLineId, customerName, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualFloorCarpetAreaRef,actualRackBuiltupArea, actualRackCarpetArea, finalStartDate, actualRevenue, remark);
 		return salesEntryUpdateStatus;
 		
 	}
@@ -124,7 +125,8 @@ public class SalesPipeLineController {
 		response.setContentType("application/json");
 		
 		List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
-		salesArrayList = salesPipeLineManager.ageReportController();
+		String statusWorkCondition = nvl(request.getParameter("statusWorkCondition"));
+		salesArrayList = salesPipeLineManager.ageReportController(statusWorkCondition);
 	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	    String json = gson.toJson(salesArrayList);
 		return json;
@@ -134,8 +136,11 @@ public class SalesPipeLineController {
 	public @ResponseBody String areaReportController(HttpSession session,HttpServletRequest request,HttpServletResponse response){
 		response.setContentType("application/json");
 		
+
+		String clientStatusFilter = nvl(request.getParameter("clientStatusFilter"));
+		
 		List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
-		salesArrayList = salesPipeLineManager.areaReportController();
+		salesArrayList = salesPipeLineManager.areaReportController(clientStatusFilter);
 	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	    String json = gson.toJson(salesArrayList);
 		return json;
@@ -145,8 +150,11 @@ public class SalesPipeLineController {
 	public @ResponseBody String clientReportController(HttpSession session,HttpServletRequest request,HttpServletResponse response){
 		response.setContentType("application/json");
 		
+
+		Integer clientWarehouseFilter = Integer.parseInt(nvl(request.getParameter("clientWarehouseFilter")));
+
 		List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
-		salesArrayList = salesPipeLineManager.clientReportController();
+		salesArrayList = salesPipeLineManager.clientReportController(clientWarehouseFilter);
 	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	    String json = gson.toJson(salesArrayList);
 		return json;
@@ -196,6 +204,21 @@ public class SalesPipeLineController {
 		
 		
 	}
+	
+	
+
+	@RequestMapping(value="/reloadFunctionality",method=RequestMethod.GET)
+	public @ResponseBody String reloadFunctionality(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+		response.setContentType("application/json");
+		
+		
+		return "reload";
+		
+		
+		
+		
+	}
+	
 	
 	
 	

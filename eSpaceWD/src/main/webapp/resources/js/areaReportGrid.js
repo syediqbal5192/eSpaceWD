@@ -1,13 +1,22 @@
 jQuery(document).ready(function () {
 
+	var clientStatusFilter = "confirmed";
+	
 jQuery("#areaGrid").jqGrid({
     url: "areaReportController",
+    postData: {
+    	clientStatusFilter: clientStatusFilter,
+    },
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Date of Creation'],
+    colNames:['Customer Name','Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Date of Creation'],
     colModel:[
-       
+{
+	name:'customerName',
+	index:'customerName', 
+	width:0.1
+},
         {
         	name:'customerName',
         	index:'customerName', 
@@ -18,9 +27,9 @@ jQuery("#areaGrid").jqGrid({
         			index:'statusWork', 
         			width:120,
         		    // stype defines the search type control - in this case HTML select (dropdownlist)
-                    stype: "select",
+                    //stype: "select",
                     // searchoptions value - name values pairs for the dropdown - they will appear as options
-                    searchoptions: {value:"ALL:ALL;wIP:InProgress;confirmed:Confirmed"}
+                    //searchoptions: {value:"ALL;wIP:InProgress;confirmed:Confirmed"}
                 
         		},
         {
@@ -71,16 +80,15 @@ jQuery("#areaGrid").jqGrid({
     height:360,
     pager: "#pagingDiv5",
     viewrecords: true,
-    loadonce: true,
     sortable: true,
     sortname: "customerName",
     sortorder: "desc",
     viewrecords: true,
+    loadonce: false,
     gridview: true,
     autoencode: true,
     ignoreCase: true,   //  Make the "Search" popup search case-insensitive 
     footerrow: true,
-    toppager:true,
     loadComplete : function(){
     	var $grid = $("#areaGrid");
         var total = 'Total : '
@@ -104,12 +112,12 @@ jQuery("#areaGrid").jqGrid({
    
 });
 // activate the toolbar searching
-$('#areaGrid').jqGrid('filterToolbar',{
+/*$('#areaGrid').jqGrid('filterToolbar',{
     // JSON stringify all data from search, including search toolbar operators
     stringResult: true,
     // instuct the grid toolbar to show the search options
     searchOperators: true
-});
+});*/
 
 
 
@@ -160,7 +168,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     }   
     
     //Generate a file name
-    var fileName = "MyReport_";
+    var fileName = "Area_Report_";
     //this will remove the blank-spaces from the title and replace it with an underscore
     fileName += ReportTitle.replace(/ /g,"_");   
     
@@ -188,7 +196,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 }
 
 
-$('#excelPort').click(function() {
+$('#excelAreaPort').click(function() {
     console.log('test');
    JSONToCSVConvertor(JSON.stringify($('#areaGrid').jqGrid('getRowData')), 'Title', true);
 });

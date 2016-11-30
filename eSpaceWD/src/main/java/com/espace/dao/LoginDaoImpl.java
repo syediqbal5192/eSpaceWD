@@ -1,14 +1,19 @@
 package com.espace.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
+
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import com.espace.entity.UserMasterEntity;
+import com.espace.persistance.HibernateUtil;
 
 
 
@@ -16,22 +21,43 @@ import org.springframework.stereotype.Repository;
 public class LoginDaoImpl implements LoginDao {
 
 
-	Connection con;
-	PreparedStatement prepare;			
-	ResultSet res;
 	
-	public LoginDaoImpl() throws ClassNotFoundException, SQLException
-	{
-	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace";
-	String userId="Iqbal";
-	String pwd="Iqubal5192#me";
-	Class.forName("com.mysql.jdbc.Driver");
-	con=DriverManager.getConnection(url, userId, pwd);
+	
+public String loginLogin(String userName, String Password) {
+		
+	Session session = HibernateUtil.getSesssion();
+	Transaction transaction = null; 
+	List<UserMasterEntity> userList = null;
+	 try
+	 {
+		 transaction= session.beginTransaction();
+	 Criteria criteria = session.createCriteria(UserMasterEntity.class, "userMaster");
+	 criteria.add(Restrictions.eq("userMaster.email_id", userName));
+        criteria.add(Restrictions.eq("userMaster.password", Password));    
+	 
+      
+        userList = new ArrayList<UserMasterEntity>();
+        userList = (List<UserMasterEntity>) criteria.list();
+        if(userList.size() > 0)
+		{
+        	 session.getTransaction().commit();
+			return "successful";
+			
+			
+		}
+       
+	 }
+	 catch (HibernateException e) {
+		 if (transaction!=null) 
+		    	transaction.rollback();
+		    e.printStackTrace(); 
+		 }
+	 session.getTransaction().commit();	 
+	 return "failure";
+
 	}
 	
-	
-	
-	public String loginLogin(String userName, String Password) {
+/*	public String loginLogin(String userName, String Password) {
 		
 		Connection connection = null;
 		
@@ -67,7 +93,7 @@ public class LoginDaoImpl implements LoginDao {
 				
 				return "failure";
 
-	}
+	}*/
 
 	public String signupLogicDao(String firstName, String designation, String emailId, String password) {
 		
@@ -83,7 +109,7 @@ URL: https://chromozm-demowork.rhcloud.com/phpmyadmin/
 
 */
 		
-		Connection con = null;
+	/*	Connection con = null;
 		
 		PreparedStatement prepare;		
 		
@@ -111,8 +137,9 @@ URL: https://chromozm-demowork.rhcloud.com/phpmyadmin/
 				} catch (SQLException e) {}
 			}
 		} 
-				return "failed";
+				return "failed";*/
 		
+		return "";
 		
 		
 	}

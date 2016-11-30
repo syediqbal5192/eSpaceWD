@@ -1,6 +1,6 @@
 jQuery(document).ready(function () {
 
-jQuery("#grid5").jqGrid({
+jQuery("#grid51").jqGrid({
     url: "clientReportController",
     async : false,
     datatype: "json",
@@ -178,7 +178,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 }
 
 
-$('#excelPort').click(function() {
+$('#x').click(function() {
     console.log('test');
    JSONToCSVConvertor(JSON.stringify($('#grid5').jqGrid('getRowData')), 'Title', true);
 });

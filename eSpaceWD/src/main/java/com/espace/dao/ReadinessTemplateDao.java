@@ -7,6 +7,7 @@ import java.util.List;
 import com.espace.model.Readiness;
 import com.espace.model.ReadinessTemplate;
 import com.espace.model.ReadinessTemplateModel;
+import com.espace.model.Warehouse;
 
 public interface ReadinessTemplateDao {
 
@@ -30,5 +31,8 @@ public interface ReadinessTemplateDao {
 	public HashMap<String, String> getReadinessTemplateById(Integer readinessTemplateId);
 
 	public String deleteReadinessTemplateById(Integer readinessId,Integer salesPipeLineId);
+	
+
+	public List<ReadinessTemplate> listReadinessDrillDown(String warehouseName);
 	
 }

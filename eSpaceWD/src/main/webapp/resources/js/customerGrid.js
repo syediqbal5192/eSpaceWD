@@ -1,21 +1,22 @@
 jQuery(document).ready(function () {
 
-jQuery("#grid").jqGrid({
-    url: "listWarehouse",
+jQuery("#customerGrid").jqGrid({
+    url: "listCustomer",
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Id','Warehouse Name','Floor Built-up Area', 'Floor Carpet Area' , 'Rack Built-up Area','Rack Carpet Area','Total Shutters','Edit','Delete'],
+    colNames:['Id','Customer Name','Contact Name', 'Contact Number' , 'Email Id','Contact Name','Conatct Number','Email Id','Edit','Delete'],
     colModel:[
-        {name:'warehouse_id',index:'warehouse_id', width:0.5},
-        {name:'warehouse_name',index:'warehouse_name', width:140},
-        {name:'floor_builtup_area',index:'floor_builtup_area', width:140},
-        {name:'floor_carpet_area',index:'floor_carpet_area', width:140},
-        {name:'rack_builtup_area',index:'rack_builtup_area', width:120},
-        {name:'rack_carpet_area',index:'rack_carpet_area', width:120},
-        {name:'total_docks',index:'total_docks', width:120},
-        {name:'edit',search:false,index:'warehouse_id',width:55,sortable: false,formatter: editLinkH},
-        {name:'delete',search:false,index:'warehouse_id',width:60,sortable: false,formatter: deleteLinkH},
+        {name:'customer_id',index:'customer_id', width:0.5},
+        {name:'customer_name',index:'customer_name', width:100},
+        {name:'contact_name_1',index:'contact_name_1', width:140},
+        {name:'contact_number_1',index:'contact_number_1', width:140},
+        {name:'contact_email_1',index:'contact_email_1', width:140},
+        {name:'contact_name_2',index:'contact_name_2', width:120},
+        {name:'contact_number_2',index:'contact_number_2', width:120},
+        {name:'contact_email_1',index:'contact_email_1', width:140},
+        {name:'edit',search:false,index:'customer_id',width:55,sortable: false,formatter: editLinkH},
+        {name:'delete',search:false,index:'customer_id',width:60,sortable: false,formatter: deleteLinkH},
          
     ],
     rowNum:10,
@@ -30,57 +31,57 @@ jQuery("#grid").jqGrid({
 function editLinkH(cellValue, options, rowdata, action)  {
     
 	var warehouseId = rowdata.warehouse_id;
-	return "<a class='btn btn-info pull-right fa fa-pencil-square-o' href='javascript:editRecordWH(" + rowdata.warehouse_id + ")'></a>";
+	return "<a class='btn btn-info pull-right fa fa-pencil-square-o' href='javascript:editRecordWH(" + rowdata.customer_id + ")'></a>";
 
 	
 	
 }
-function editRecordWH(warehouseId){
+function editRecordWH(customer_id){
   
 	
 $.ajax({
 		
 		type : "POST",
 		encoding : "UTF-8",
-		url : "getWarehouseDetailsById",
+		url : "getCustomerById",
 		datatype :'json', 
 		data : {
-			warehouseId : warehouseId,
+			customer_id : customer_id,
 			        },
 		success : function(data) {
 
-			 $("#addWarehouseDiv").fadeIn(500);
-			 $("#viewWarehouseDiv").hide();
+			 $("#addCustomerDiv").fadeIn(500);
+			 $("#viewCustomerDiv").hide();
 			 $('#dashboardDiv').hide();
 
-			 $('#addTitle').hide();
-			 $('#saveWarehouseInfo').hide();
+			 $('#addCustomerTitle').hide();
+			 $('#saveCustomerInfo').hide();
 			 
-			 $('#updateTitle').fadeIn();
-			 $('#updateWarehouseInfo').show();
-			 $('#cancelWarehouseInfo').show();
-			 $('#addWarehouse').hide();
+			 $('#updateCustomerTitle').fadeIn();
+			 $('#updateCustomerInfo').show();
+			 $('#cancelCustomerInfo').show();
+			 $('#addCustomer').hide();
 			 
-				$("#warehouseName").val("");
-				$("#floorBuiltupArea").val("");
-				$("#floorCarpetArea").val("");
-				$("#rackBuiltupArea").val("");
-				$("#rackCarpetArea").val("");
-				$("#totalNumberOfDocks").val("");
-				$("#numberOfDocksAvailable").val("");
+				$("#customer_name").val("");
+				$("#contact_name_1").val("");
+				$("#contact_number_1").val("");
+				$("#contact_email_id_1").val("");
+				$("#contact_name_2").val("");
+				$("#contact_number_2").val("");
+				$("#contact_email_id_2").val("");
 			 
 			
 			 var posts = JSON.parse(data);
 			console.log("SUCCESS: ", posts.warehouse_name);
 			
-			$("#warehouseId").val(posts.warehouse_id);
-			$("#warehouseName").val(posts.warehouse_name);
-			$("#floorBuiltupArea").val(posts.floor_builtup_area);
-			$("#floorCarpetArea").val(posts.floor_carpet_area);
-			$("#rackBuiltupArea").val(posts.rack_builtup_area);
-			$("#rackCarpetArea").val(posts.rack_carpet_area);
-			$("#totalNumberOfDocks").val(posts.total_docks);
-			$("#numberOfDocksAvailable").val(posts.availabe_docks);
+			$("#customer_id").val(posts[0].customer_id);
+			$("#customer_name").val(posts[0].customer_name);
+			$("#contact_name_1").val(posts[0].contact_name_1);
+			$("#contact_number_1").val(posts[0].contact_number_1);
+			$("#contact_email_id_1").val(posts[0].contact_email_1);
+			$("#contact_name_2").val(posts[0].contact_name_2);
+			$("#contact_number_2").val(posts[0].contact_number_2);
+			$("#contact_email_id_2").val(posts[0].contact_email_2);
 			
           
 			

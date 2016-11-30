@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.espace.model.Readiness;
 import com.espace.model.ReadinessTemplate;
 import com.espace.model.ReadinessTemplateModel;
+import com.espace.model.Warehouse;
 
 @Repository ("readinessTemplateDaoImpl")
 public class ReadinessTemplateDaoImpl implements ReadinessTemplateDao {
@@ -32,7 +33,7 @@ public class ReadinessTemplateDaoImpl implements ReadinessTemplateDao {
 	
 	public ReadinessTemplateDaoImpl() throws ClassNotFoundException, SQLException
 	{
-	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace";
+	String url="jdbc:mysql://citiswd-mysql-iqbal.crr7bged4sau.ap-south-1.rds.amazonaws.com:3306/citi_espace?autoReconnect=true";
 	String userId="Iqbal";
 	String pwd="Iqubal5192#me";
 	Class.forName("com.mysql.jdbc.Driver");
@@ -603,6 +604,57 @@ public class ReadinessTemplateDaoImpl implements ReadinessTemplateDao {
 	public static String nvl(String str) {
         return (str == null) ? "" : str.trim();
     }
+
+
+	public List<ReadinessTemplate> listReadinessDrillDown(String companyName) {
+		
+
+		String readiness_element_name;
+		Integer readinessElementQuantity;
+		
+		String isDeleted="No";
+		List<ReadinessTemplate> readinessElementsArrayList=new ArrayList<ReadinessTemplate>();
+		ReadinessTemplate readinessTemplate = null;
+		
+		try{		        	
+			//prepare=con.prepareStatement("select rt_id,company_name,sp_id,re_id,quantity,owner_name,readiness_element_status,start_end,end_date from readiness_template where sp_id=?");
+			
+			prepare=con.prepareStatement("select re_name,quantity from readiness_templateR where company_name=? and isDeleted=?");
+			prepare.setString(1, companyName);
+			prepare.setString(2,isDeleted);
+			res=prepare.executeQuery();
+		
+			
+			while(res.next())
+			{
+				
+				readiness_element_name = res.getString("re_name");
+				readinessElementQuantity =Integer.parseInt(res.getString("quantity"));
+				
+				readinessTemplate = new ReadinessTemplate();
+				
+				readinessTemplate.setName(readiness_element_name);
+				readinessTemplate.setY(readinessElementQuantity);
+				readinessTemplate.setDrilldown(true);
+				
+				readinessElementsArrayList.add(readinessTemplate);
+				
+				
+			}
+
+            res.close();			
+		} 
+				catch (Exception e) {
+	      e.printStackTrace();
+	    }
+		 
+			
+		return readinessElementsArrayList;
+		
+
+		
+		
+	}
 	
 	
 

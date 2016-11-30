@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.espace.model.Readiness;
 import com.espace.model.ReadinessTemplate;
 import com.espace.model.ReadinessTemplateModel;
+import com.espace.model.Warehouse;
 import com.espace.service.ReadinessManager;
 import com.espace.service.ReadinessTemplateManager;
 import com.google.gson.Gson;
@@ -200,6 +201,18 @@ public @ResponseBody String deleteWarehouseById(HttpSession session,HttpServletR
 	
 }
 
+
+@RequestMapping(value="/listReadinessDrillDown",method=RequestMethod.GET)
+public @ResponseBody String getListWarehouseDrillDown(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+	response.setContentType("application/json");
+	
+	String customerName = nvl(request.getParameter("customerName"));
+	List<ReadinessTemplate> warehouseArrayList=new ArrayList<ReadinessTemplate>();
+	warehouseArrayList = readinessTemplateManager.listReadinessDrillDown(customerName);
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    String json = gson.toJson(warehouseArrayList);
+	return json;
+}
 
 		
 	public static String nvl(String str) {
