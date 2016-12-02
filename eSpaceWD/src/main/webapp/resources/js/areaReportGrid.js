@@ -23,8 +23,8 @@ jQuery("#areaGrid").jqGrid({
         	width:150
         },
         {
-        			name:'statusWork',
-        			index:'statusWork', 
+        			name:'statusNew',
+        			index:'statusNew', 
         			width:120,
         		    // stype defines the search type control - in this case HTML select (dropdownlist)
                     //stype: "select",
@@ -53,24 +53,10 @@ jQuery("#areaGrid").jqGrid({
         				width:150
         			},
         {
-        					name:'estimatedStartDate',
-        					index:'estimatedStartDate', 
+        					name:'dateOfCreation',
+        					index:'dateOfCreation', 
         					width:150,
-        					/*sorttype:'date',
-                            searchoptions: {
-                                // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                                // use it to place a third party control to customize the toolbar
-                                dataInit: function (element) {
-                                    $(element).datepicker({
-                                        id: 'estimatedStartDate',
-                                        dateFormat: 'yy-mm-dd',
-                                        //minDate: new Date(2010, 0, 1),
-                                        maxDate: new Date(2020, 0, 1),
-                                        showOn: 'focus'
-                                    });
-                                },
-                               
-                            }*/
+        					
 
         				}
         /*{name:'ageingDays',index:'ageingDays', width:100},*/

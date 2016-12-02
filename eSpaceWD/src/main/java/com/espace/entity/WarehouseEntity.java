@@ -23,7 +23,7 @@ public class WarehouseEntity {
 	 
 	 Integer rack_builtup_area; 
 	 
-	 Integer rack_carpet_area;
+	 Integer palette_positions;
 	 
 	 Integer available_floor_carpet_area;
 	 
@@ -50,7 +50,7 @@ public class WarehouseEntity {
 		this.floor_builtup_area = floor_builtup_area;
 		this.floor_carpet_area = floor_carpet_area;
 		this.rack_builtup_area = rack_builtup_area;
-		this.rack_carpet_area = rack_carpet_area;
+		this.palette_positions = palette_positions;
 		this.total_docks = total_docks; 
 		this.isActive = isActive;
 		this.isDeleted = isDeleted;
@@ -103,16 +103,15 @@ public class WarehouseEntity {
 		this.rack_builtup_area = rack_builtup_area;
 	}
 
-	@Column(name = "rack_carpet_area")
-	public Integer getRack_carpet_area() {
-		return rack_carpet_area;
+	@Column(name = "palette_positions")	
+	public Integer getPalette_positions() {
+		return palette_positions;
 	}
 
-	public void setRack_carpet_area(Integer rack_carpet_area) {
-		this.rack_carpet_area = rack_carpet_area;
+	public void setPalette_positions(Integer palette_positions) {
+		this.palette_positions = palette_positions;
 	}
 
-	
 	@Column(name = "available_floor_carpet_area")
 	public Integer getAvailable_floor_carpet_area() {
 		return available_floor_carpet_area;
@@ -159,6 +158,5 @@ public class WarehouseEntity {
 	}
 	 
 	
-	 
 
 }

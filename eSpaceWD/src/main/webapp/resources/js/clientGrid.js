@@ -10,7 +10,7 @@ jQuery("#clientGrid").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Customer Name','Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Expected Revenue','Actual Revenue','Active','Deleted'],
+    colNames:['Customer Name','Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Expected Revenue','Actual Revenue','Sellable Area','Active','Deleted'],
     colModel:[
 {
 	name:'customerName',
@@ -23,8 +23,8 @@ jQuery("#clientGrid").jqGrid({
         	width:120
         },
         {
-        			name:'statusWork',
-        			index:'statusWork', 
+        			name:'statusNew',
+        			index:'statusNew', 
         			width:80
         		},
         {
@@ -56,6 +56,13 @@ jQuery("#clientGrid").jqGrid({
         			{
         				name:'actualRevenue',
         				index:'actualRevenue', 
+        				width:110
+        				
+        			},
+
+        			{
+        				name:'totalSellableArea',
+        				index:'totalSellableArea', 
         				width:110
         				
         			},

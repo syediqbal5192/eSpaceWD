@@ -54,7 +54,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
 	
 	
 
-public String addWarehouse(String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea,Integer rackBuiltupArea, Integer rackCarpetArea, Integer totalNumberOfDocks) {
+public String addWarehouse(String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea,Integer rackBuiltupArea, Integer palette_positions, Integer totalNumberOfDocks) {
 	
 String isActive="Yes";
 String isDeleted="No";		
@@ -70,9 +70,9 @@ String isDeleted="No";
     warehouse.setFloor_builtup_area(floorBuiltupArea);
     warehouse.setFloor_carpet_area(floorCarpetArea);
     warehouse.setRack_builtup_area(rackBuiltupArea);
-    warehouse.setRack_carpet_area(rackCarpetArea);
+    warehouse.setPalette_positions(palette_positions);
     warehouse.setAvailable_floor_carpet_area(floorCarpetArea);
-    warehouse.setAvailable_rack_carpet_area(rackCarpetArea);
+    warehouse.setAvailable_rack_carpet_area(rackBuiltupArea);
     warehouse.setIsActive(isActive);
     warehouse.setIsDeleted(isDeleted);
     warehouse.setTotal_docks(totalNumberOfDocks);
@@ -132,7 +132,7 @@ String isDeleted="No";
 		 String floor_builtup_area;
 		 String floor_carpet_area;
 		 String rack_builtup_area; 
-		 String rack_carpet_area;
+		 String palette_positions;
 		 String total_docks;	
 		
 		 HashMap<String, String> outputList= new HashMap<String, String>();
@@ -140,7 +140,7 @@ String isDeleted="No";
 					
 					/*Class.forName("com.mysql.jdbc.Driver");
 					con=DriverManager.getConnection(url, userId, pwd);*/
-					prepare=con.prepareStatement("select warehouse_name,floor_builtup_area,floor_carpet_area,rack_builtup_area,rack_builtup_area,rack_carpet_area,total_docks from warehouse_master where warehouse_id=?");
+					prepare=con.prepareStatement("select warehouse_name,floor_builtup_area,floor_carpet_area,rack_builtup_area,rack_builtup_area,palette_positions,total_docks from warehouse_master where warehouse_id=?");
 		            prepare.setInt(1, warehouseId);
 
 					res=prepare.executeQuery();
@@ -152,7 +152,7 @@ String isDeleted="No";
 				    	  floor_builtup_area = String.valueOf(res.getInt("floor_builtup_area"));
 						  floor_carpet_area = String.valueOf(res.getInt("floor_carpet_area"));
 						  rack_builtup_area = String.valueOf(res.getInt("rack_builtup_area"));
-						  rack_carpet_area = String.valueOf(res.getInt("rack_carpet_area"));
+						  palette_positions = String.valueOf(res.getInt("palette_positions"));
 						  total_docks = String.valueOf(res.getInt("total_docks"));
 						 
 						  
@@ -161,7 +161,7 @@ String isDeleted="No";
 				    	  outputList.put("floor_builtup_area", floor_builtup_area);
 				    	  outputList.put("floor_carpet_area",floor_carpet_area);
 				    	  outputList.put("rack_builtup_area",rack_builtup_area);
-				    	  outputList.put("rack_carpet_area",rack_carpet_area);
+				    	  outputList.put("palette_positions",palette_positions);
 				    	  outputList.put("total_docks",total_docks);
 				    	 
 				       }
@@ -182,7 +182,7 @@ String isDeleted="No";
 		
 	}
 
-	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer rackCarpetArea, Integer totalNumberOfDocks) {
+	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions, Integer totalNumberOfDocks) {
 		
 		
 		Session session = HibernateUtil.getSesssion();
@@ -195,7 +195,7 @@ String isDeleted="No";
 	         warehouse.setFloor_builtup_area(floorBuiltupArea);
 	         warehouse.setFloor_carpet_area(floorCarpetArea);
 	         warehouse.setRack_builtup_area(rackBuiltupArea);
-	         warehouse.setRack_carpet_area(rackCarpetArea);
+	         warehouse.setPalette_positions(palette_positions);
 	         warehouse.setTotal_docks(totalNumberOfDocks);
 	        
 			 session.update(warehouse); 
@@ -299,12 +299,14 @@ String isDeleted="No";
 		
 		String totalWarehouse = getTotalWarehouseAre();
 		String totalClientsCount = getClientCount(); 
-	    String totalSpaceUtilizedCount = getSumCount();  
+	    String totalSpaceUtilizedCount = getSumCount(); 
+	    String totalSpaceAvailableCount = getTotalSpaceSum();
 
           dashboardIconInfoList.put("totalWarehouse", totalWarehouse);
           dashboardIconInfoList.put("totalClientsCount", totalClientsCount);
           dashboardIconInfoList.put("totalSpaceUtilizedCount", totalSpaceUtilizedCount);
-		
+          dashboardIconInfoList.put("totalSpaceAvailableCount", totalSpaceAvailableCount);
+  		
 			
 		return dashboardIconInfoList;
 		
@@ -407,6 +409,39 @@ String isDeleted="No";
 		return totalSpaceUtilizedCount;
 		
 	}
+	
+	public static String getTotalSpaceSum()
+	{
+		String totalSpaceAvailableCount = null;
+		
+		
+		Session session = HibernateUtil.getSesssion();
+		   Transaction transaction = null;
+		 
+	      try{
+		         transaction = session.beginTransaction();
+  
+       Criteria criteriaSum = session.createCriteria(WarehouseEntity.class, "warehouse");
+	     criteriaSum.add(Restrictions.eq("warehouse.isActive", "Yes"));
+	     criteriaSum.add(Restrictions.eq("warehouse.isDeleted", "No"));  
+	        
+       criteriaSum.setProjection(Projections.sum("available_floor_carpet_area"));
+       List sumSPL = criteriaSum.list();
+
+       totalSpaceAvailableCount = String.valueOf(sumSPL.get(0));
+
+       session.getTransaction().commit();
+       
+		} 
+				catch (Exception e) {
+					if (transaction!=null) transaction.rollback();
+			         e.printStackTrace(); 
+			         }
+		
+		return totalSpaceAvailableCount;
+		
+	}
+	
 
 	public String deleteWarehouse(Integer warehouseId) {
 
@@ -446,7 +481,7 @@ String isDeleted="No";
 		
 		try{		        	
 		
-			PreparedStatement prepare=con.prepareStatement("select warehouse_id,warehouse_name,floor_builtup_area,floor_carpet_area,rack_builtup_area,rack_builtup_area,rack_carpet_area,total_docks from warehouse_master where isActive='Yes' and isDeleted='No' ");
+			PreparedStatement prepare=con.prepareStatement("select warehouse_id,warehouse_name,floor_builtup_area from warehouse_master where isActive='Yes' and isDeleted='No' ");
            res=prepare.executeQuery();
 			
 			
@@ -566,27 +601,6 @@ try{
 	public Integer getWarehouseId(String warehouseName) {
 		
 		Integer warehouseId=null;
-	
-/*try{		        	
-			
-			
-			prepare=con.prepareStatement("select warehouse_id from warehouse_master where warehouse_name=? ");
-			prepare.setString(1,warehouseName);
-			res=prepare.executeQuery();
-			
-			while(res.next())
-			{
-				warehouseId = res.getInt("warehouse_id");; 
-				
-			}
-          
-           
-		} 
-				catch (Exception e) {
-	      e.printStackTrace();
-	    }
-		
-	 return warehouseId;*/
 	 
 	
 	 Session session = HibernateUtil.getSesssion();

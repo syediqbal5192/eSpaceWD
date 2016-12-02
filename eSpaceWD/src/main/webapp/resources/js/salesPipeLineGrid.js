@@ -5,17 +5,19 @@ jQuery("#grid2").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['SalesId','WID','Customer Name','Est. Floor Built-up Area', 'Est. Floor Carpet Area','Actual Floor Built-up Area','Actual Floor Carpet Area', 'Warehouse ','Status','Edit','Delete','Readiness Add/Edit'],
+    colNames:['SalesId','WID','Customer Name','Warehouse ','Customer Type','Est. Floor Built-up Area', 'Est. Floor Carpet Area','Actual Floor Built-up Area','Actual Floor Carpet Area', 'Actual Rack Area','Status','Edit','Delete','Readiness Add/Edit'],
     colModel:[
-        {name:'salesPipeLineId',index:'salesPipeLineId', width:60},
-        {name:'warehouseId',index:'warehouseId', width:60},
-        {name:'customerName',index:'customerName', width:120},
-        {name:'estimatedFloorBuiltupArea',index:'estimatedFloorBuiltupArea', width:140},
-        {name:'estimatedFloorCarpetArea',index:'estimatedFloorCarpetArea', width:140},
-        {name:'actualFloorBuiltupArea',index:'actualFloorBuiltupArea', width:140},
-        {name:'actualFloorCarpetArea',index:'actualFloorCarpetArea', width:140},
-        {name:'allocatedWarehouse',index:'allocatedWarehouse', width:70},
-        {name:'statusWork',index:'statusWork', width:80},
+        {name:'salesPipeLineId',index:'salesPipeLineId', width:10},
+        {name:'warehouseId',index:'warehouseId', width:10},
+        {name:'customerName',index:'customerName', width:60},
+        {name:'allocatedWarehouse',index:'allocatedWarehouse', width:90},
+        {name:'customerType',index:'customerType', width:60},
+        {name:'estimatedFloorBuiltupArea',index:'estimatedFloorBuiltupArea', width:120},
+        {name:'estimatedFloorCarpetArea',index:'estimatedFloorCarpetArea', width:120},
+        {name:'actualFloorBuiltupArea',index:'actualFloorBuiltupArea', width:120},
+        {name:'actualFloorCarpetArea',index:'actualFloorCarpetArea', width:120},
+        {name:'actualRackBuiltupArea',index:'actualRackBuiltupArea', width:120},
+        {name:'statusNew',index:'statusNew', width:100},
         {name:'edit',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: editSPLLink},
         {name:'delete',search:false,index:'salesPipeLineId',width:65,sortable: false,formatter: deleteSPLLink},
         {name:'rTUpdate',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: rTUpdateLink},
@@ -319,19 +321,20 @@ $.ajax({
 			 $('#confirmed').show();
 			 
 				$("#customerName").empty();
+				$("#customerType").empty();
 				$("#availableFloor").val("");
 				$("#availableCarpet").val("");
 				$("#estimatedFloorBuiltupArea").val("");
 				$("#estimatedFloorCarpetArea").val("");
 				$("#estimatedRackBuiltupArea").val("");
-				$("#estimatedRackCarpetArea").val("");
+				$("#estimated_palette_positions").val("");
 				$("#estimatedStartDate").val("");
 				$("#allocatedWarehouse").empty();
 				//$("#statusWork").empty();
 				$("#actualFloorBuiltupArea").val("");
 				$("#actualFloorCarpetArea").val("");
 				$("#actualRackBuiltupArea").val("");
-				$("#actualRackCarpetArea").val("");
+				$("#actual_palette_positions").val("");
 				$("#actualStartDate").val("");
 				$("#remark").val("");
 				var remark = $("#remark").val();
@@ -339,13 +342,15 @@ $.ajax({
 			
 			 var posts = JSON.parse(data);
 			console.log("SUCCESS: ", posts.salePLId);
+			console.log("Customer Id : ",posts.customerName);
 			
 			$("#sp_Id").val(posts.salePLId);
-			$("#customerName").val(posts.customerName);
+			$("#customerName").val(posts.customerName);     	
+			$('#customerType').append($('<option>').text(posts.customerType).attr('value', posts.customerType));
 			$("#estimatedFloorBuiltupArea").val(posts.estimatedFloorBuiltupArea);
 			$("#estimatedFloorCarpetArea").val(posts.estimatedFloorCarpetArea);
 			$("#estimatedRackBuiltupArea").val(posts.estimatedRackBuiltupArea);
-			$("#estimatedRackCarpetArea").val(posts.estimatedRackCarpetArea);
+			$("#estimated_palette_positions").val(posts.estimated_palette_positions);
 			$("#estimatedStartDate").val(posts.estimatedStartDate);
 			$("#estimatedRevenue").val(posts.estimatedRevenue);
 			$("#allocatedWarehouse").val(posts.allocatedWarehouse);
@@ -355,7 +360,8 @@ $.ajax({
 			$("#actualFloorCarpetArea").val(posts.actualFloorCarpetArea);
 			$("#actualFloorCarpetAreaRef").val(posts.actualFloorCarpetArea);
 			$("#actualRackBuiltupArea").val(posts.actualRackBuiltupArea);
-			$("#actualRackCarpetArea").val(posts.actualRackCarpetArea);
+			$("#actualRackBuiltupAreaRef").val(posts.actualRackBuiltupArea);
+			$("#actual_palette_positions").val(posts.actual_palette_positions);
 			$("#actualStartDate").val(posts.actualStartDate);
 			$("#actualRevenue").val(parseInt(posts.actualRevenue));
 			$("#remark").val(posts.remarks);
@@ -367,7 +373,7 @@ $.ajax({
 				    $("#actualFloorBuiltupArea").prop('disabled', false);
 					$("#actualFloorCarpetArea").prop('disabled', false);
 					$("#actualRackBuiltupArea").prop('disabled', false);
-					$("#actualRackCarpetArea").prop('disabled', false);
+					$("#actual_palette_positions").prop('disabled', false);
 					$("#actualStartDate").prop('disabled', false);
 					$("#actualRevenue").prop('disabled', false);
 		
@@ -378,7 +384,7 @@ $.ajax({
 				  $("#actualFloorBuiltupArea").attr('disabled','disabled');
 					$("#actualFloorCarpetArea").attr('disabled','disabled');
 					$("#actualRackBuiltupArea").attr('disabled','disabled');
-					$("#actualRackCarpetArea").attr('disabled','disabled');
+					$("#actual_palette_positions").attr('disabled','disabled');
 					$("#actualStartDate").attr('disabled','disabled');
 					$("#actualRevenue").attr('disabled', 'disabled');
 		
@@ -410,7 +416,32 @@ $.ajax({
 			        	 $("#availableFloor").val(valueOfFieldFloor);
 			        	 $("#availableFloor2").val(valueOfFieldFloor);
 			        	 $("#availableCarpet").val(valueOfFieldCarpet);
+			        	 $("#availableRack2").val(valueOfFieldCarpet);
 			        	
+			        });
+			        
+			        
+			      
+			    }
+			});
+			
+          var customer_id = parseInt(posts.customerName);
+			
+			//Populate Dropdown
+
+			$.ajax({
+				type:'POST',
+				encoding : "UTF-8",
+				url : "getCustomerById",
+				data : 
+					{
+					customer_id:customer_id,
+					},
+			    dataType: 'json',
+			    success: function( json ) {
+			        $.each(json, function(i, value) {
+			        	
+			        	$('#customerName').append($('<option>').text(value.customer_name).attr('value', value.customer_id));
 			        });
 			        
 			        
@@ -462,8 +493,8 @@ function clickDeleteSalesPipeLine()
 	var salesPipeLineId = grid.jqGrid('getCell', rowid, 'salesPipeLineId');	
 	var warehouseId = grid.jqGrid('getCell', rowid, 'warehouseId');	
 	var estimatedFloorCarpetArea = grid.jqGrid('getCell', rowid, 'actualFloorCarpetArea');
-	
-	//alert(salesPipeLineId+""+warehouseId+""+estimatedFloorCarpetArea);
+	var actualRackBuiltupArea = grid.jqGrid('getCell',rowid, 'actualRackBuiltupArea');
+//	alert(salesPipeLineId+""+warehouseId+""+estimatedFloorCarpetArea);
 	
 	 $.ajax({
 			type:'GET',
@@ -488,6 +519,7 @@ function clickDeleteSalesPipeLine()
 					  $('#alertSalesPipeLineId').val(salesPipeLineId);
 					  $('#alertWarehousId').val(warehouseId);
 					  $('#alertFloorCarpertArea').val(estimatedFloorCarpetArea);
+					  $('#alertRackArea').val(actualRackBuiltupArea);
 					  
 					  $('#doWarehouseOperation').hide();
 					  $('#doReadinessOperation').hide();

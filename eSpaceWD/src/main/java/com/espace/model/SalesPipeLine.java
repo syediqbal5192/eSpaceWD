@@ -7,17 +7,18 @@ public class SalesPipeLine {
 	
 	Integer salesPipeLineId;
 	String customerName;
+	String customerType;
 	Integer estimatedFloorBuiltupArea;
 	Integer estimatedFloorCarpetArea;
 	Integer estimatedRackBuiltupArea;
-	Integer estimatedRackCarpetArea;
+	Integer estimated_palette_positions;
 	Date estimatedStartDate ;
 	String allocatedWarehouse ;
 	String statusWork ;
 	Integer actualFloorBuiltupArea;
 	Integer actualFloorCarpetArea;
 	Integer actualRackBuiltupArea;
-	Integer actualRackCarpetArea;
+	Integer actual_palette_positions;
 	Date actualStartDate;
 	String remark;
 	Long age;
@@ -25,9 +26,10 @@ public class SalesPipeLine {
 	String isDeleted;
 	Integer expectedRevenue;
 	Integer actualRevenue;
-	
-	
+	String statusNew;
+	Integer totalSellableArea;
 	Integer warehouseId;
+	String dateOfCreation;
 	
 	public Integer getSalesPipeLineId() {
 		return salesPipeLineId;
@@ -59,12 +61,7 @@ public class SalesPipeLine {
 	public void setEstimatedRackBuiltupArea(Integer estimatedRackBuiltupArea) {
 		this.estimatedRackBuiltupArea = estimatedRackBuiltupArea;
 	}
-	public Integer getEstimatedRackCarpetArea() {
-		return estimatedRackCarpetArea;
-	}
-	public void setEstimatedRackCarpetArea(Integer estimatedRackCarpetArea) {
-		this.estimatedRackCarpetArea = estimatedRackCarpetArea;
-	}
+	
 	public Date getEstimatedStartDate() {
 		return estimatedStartDate;
 	}
@@ -101,12 +98,7 @@ public class SalesPipeLine {
 	public void setActualRackBuiltupArea(Integer actualRackBuiltupArea) {
 		this.actualRackBuiltupArea = actualRackBuiltupArea;
 	}
-	public Integer getActualRackCarpetArea() {
-		return actualRackCarpetArea;
-	}
-	public void setActualRackCarpetArea(Integer actualRackCarpetArea) {
-		this.actualRackCarpetArea = actualRackCarpetArea;
-	}
+	
 	public Date getActualStartDate() {
 		return actualStartDate;
 	}
@@ -154,6 +146,42 @@ public class SalesPipeLine {
 	}
 	public void setActualRevenue(Integer actualRevenue) {
 		this.actualRevenue = actualRevenue;
+	}
+	public String getStatusNew() {
+		return statusNew;
+	}
+	public void setStatusNew(String statusNew) {
+		this.statusNew = statusNew;
+	}
+	public Integer getEstimated_palette_positions() {
+		return estimated_palette_positions;
+	}
+	public void setEstimated_palette_positions(Integer estimated_palette_positions) {
+		this.estimated_palette_positions = estimated_palette_positions;
+	}
+	public Integer getActual_palette_positions() {
+		return actual_palette_positions;
+	}
+	public void setActual_palette_positions(Integer actual_palette_positions) {
+		this.actual_palette_positions = actual_palette_positions;
+	}
+	public String getCustomerType() {
+		return customerType;
+	}
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
+	}
+	public Integer getTotalSellableArea() {
+		return totalSellableArea;
+	}
+	public void setTotalSellableArea(Integer totalSellableArea) {
+		this.totalSellableArea = totalSellableArea;
+	}
+	public String getDateOfCreation() {
+		return dateOfCreation;
+	}
+	public void setDateOfCreation(String dateOfCreation) {
+		this.dateOfCreation = dateOfCreation;
 	}
 	
 	

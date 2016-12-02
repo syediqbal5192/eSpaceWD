@@ -37,10 +37,10 @@ public class WarehouseController {
 	    Integer floorBuiltupArea=Integer.parseInt(nvl(request.getParameter("floorBuiltupArea")));
 	    Integer floorCarpetArea=Integer.parseInt(nvl(request.getParameter("floorCarpetArea")));
 	    Integer rackBuiltupArea=Integer.parseInt(nvl(request.getParameter("rackBuiltupArea")));
-	    Integer rackCarpetArea=Integer.parseInt(nvl(request.getParameter("rackCarpetArea")));
+	    Integer palette_positions=Integer.parseInt(nvl(request.getParameter("palette_positions")));
 		Integer totalNumberOfDocks=Integer.parseInt(nvl(request.getParameter("totalNumberOfDocks")));
 				
-		String warehouseStatus= warehouseManager.addWarehouse(warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, rackCarpetArea,totalNumberOfDocks);
+		String warehouseStatus= warehouseManager.addWarehouse(warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions,totalNumberOfDocks);
 		
 		return warehouseStatus;
 		
@@ -55,11 +55,11 @@ public class WarehouseController {
 	    Integer floorBuiltupArea=Integer.parseInt(nvl(request.getParameter("floorBuiltupArea")));
 	    Integer floorCarpetArea=Integer.parseInt(nvl(request.getParameter("floorCarpetArea")));
 	    Integer rackBuiltupArea=Integer.parseInt(nvl(request.getParameter("rackBuiltupArea")));
-	    Integer rackCarpetArea=Integer.parseInt(nvl(request.getParameter("rackCarpetArea")));
+	    Integer palette_positions=Integer.parseInt(nvl(request.getParameter("palette_positions")));
 		Integer totalNumberOfDocks = Integer.parseInt(nvl(request.getParameter("totalNumberOfDocks")));
 	
 		
-		String status=warehouseManager.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, rackCarpetArea, totalNumberOfDocks);
+		String status=warehouseManager.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks);
 		
 		
 		

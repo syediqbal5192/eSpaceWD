@@ -8,16 +8,12 @@ jQuery("#grid5").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['ID','ID','Customer Name', 'Warehouse ','Status Work','Floor Built-up Area', 'Date of Creation','Age(In Days)'],
+    colNames:['ID','Customer Name', 'Warehouse ','Status Work','Floor Built-up Area', 'Date of Creation','Age(In Days)'],
     colModel:[
         {
         	name:'salesPipeLineId',
         	index:'salesPipeLineId', 
         	width:0.2
-        },{
-        	name:'salesPipeLineId',
-        	index:'salesPipeLineId', 
-        	width:60
         }, 
         {
         	name:'customerName',
@@ -41,8 +37,8 @@ jQuery("#grid5").jqGrid({
         				width:150
         			},
         {
-        					name:'estimatedStartDate',
-        					index:'estimatedStartDate', 
+        					name:'dateOfCreation',
+        					index:'dateOfCreation', 
         					width:150
 
         				},

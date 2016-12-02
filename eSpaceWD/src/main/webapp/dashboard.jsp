@@ -46,6 +46,9 @@
  <spring:url value="/resources/js/plugins/validationengine/languages/jquery.validationEngine-en.js"  var="validationEngineJs" />  
  <spring:url value="/resources/js/plugins/validationengine/jquery.validationEngine.js"  var="validationEngineJs2" /> 
  <spring:url value="/resources/js/plugins/jquery-validation/jquery.validate.js"  var="validateJs" /> 
+<spring:url value="/resources/img/SPARSH.PNG"  var="logoImg" /> 
+
+
 
 	<link href="${themeCss}" rel="stylesheet" />	
 	<link href="${jqGridCss}" rel="stylesheet" /> 
@@ -105,10 +108,12 @@
 	    	var a= data.totalWarehouse;
 	    	var b = data.totalSpaceUtilizedCount;
 	    	var c = data.totalClientsCount;
+	    	var d = data.totalSpaceAvailableCount;
 	    	
 	    	    $('#totalWarehouse').val(a);
 				$('#totalSpaceUtilizedCount').val(parseInt(b));
 				$('#totalClientsCount').val(c);
+				$('#totalSpaceAvailableCount').val(d);
 	    }
 	});
 }
@@ -529,7 +534,7 @@ $(document).ready(function(){
 			$("#floorBuiltupArea").val("");
 			$("#floorCarpetArea").val("");
 			$("#rackBuiltupArea").val("");
-			$("#rackCarpetArea").val("");
+			$("#palette_positions").val("");
 			$("#totalNumberOfDocks").val("");
 
 	validatorWarehouse.resetForm();
@@ -538,7 +543,7 @@ $(document).ready(function(){
 			$("#floorBuiltupArea").css("border-color","#d7d7d7");
 			$("#floorCarpetArea").css("border-color","#d7d7d7");
 			$("#rackBuiltupArea").css("border-color","#d7d7d7");
-			$("#rackCarpetArea").css("border-color","#d7d7d7");
+			$("#palette_positions").css("border-color","#d7d7d7");
 			$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 		 
 		});
@@ -645,13 +650,13 @@ $(document).ready(function(){
 		 
 		 $('#allocatedWarehouse').empty();
 		 $("#customerName").empty();   
+		 $("#customerType").empty();   
 			$("#availableFloor").val("");
 			$("#availableCarpet").val("");
 			$("#estimatedFloorBuiltupArea").val("");
 			$("#estimatedFloorCarpetArea").val("");
 			$("#estimatedRackBuiltupArea").val("");
-			$("#estimatedRackCarpetArea").val("");
-			$("#estimatedRackCarpetArea").val("");
+			$("#estimated_palette_positions").val("");
 			$("#estimatedRevenue").val("");
 			$("#estimatedStartDate").val("");
 			$("#allocatedWarehouse").val("");
@@ -659,7 +664,7 @@ $(document).ready(function(){
 			$("#actualFloorBuiltupArea").val("");
 			$("#actualFloorCarpetArea").val("");
 			$("#actualRackBuiltupArea").val("");
-			$("#actualRackCarpetArea").val("");
+			$("#actual_palette_positions").val("");
 			$("#actualRevenue").val("");
 			$("#actualStartDate").val("");
 			$("#remark").val("");
@@ -669,7 +674,7 @@ $(document).ready(function(){
 			 	$("#actualFloorBuiltupArea").attr('disabled','disabled');
 				$("#actualFloorCarpetArea").attr('disabled','disabled');
 				$("#actualRackBuiltupArea").attr('disabled','disabled');
-				$("#actualRackCarpetArea").attr('disabled','disabled');
+				$("#actual_palette_positions").attr('disabled','disabled');
 				$("#actualRevenue").attr('disabled','disabled');
 				$("#actualStartDate").attr('disabled','disabled');
 			
@@ -705,6 +710,21 @@ $(document).ready(function(){
 			    }
 			});
 
+		
+
+			var customerType = [  			{
+									"customer_type" : "Sub Lease",						
+				},{
+					"customer_type" : "3PL",
+					},{
+						"customer_type" : "Temporary",
+						},{
+							"customer_type" : "4PL",
+							}];
+			$.each(customerType, function(i, value) {
+	        	
+	        	$('#customerType').append($('<option>').text(value.customer_type).attr('value', value.customer_type));
+	        });
 
 			
 		 
@@ -798,7 +818,7 @@ $(document).ready(function(){
 			    $("#actualFloorBuiltupArea").prop('disabled', false);
 				$("#actualFloorCarpetArea").prop('disabled', false);
 				$("#actualRackBuiltupArea").prop('disabled', false);
-				$("#actualRackCarpetArea").prop('disabled', false);
+				$("#actual_palette_positions").prop('disabled', false);
 				$("#actualRevenue").prop('disabled', false);
 				$("#actualStartDate").prop('disabled', false);
 	
@@ -809,7 +829,7 @@ $(document).ready(function(){
 			  $("#actualFloorBuiltupArea").attr('disabled','disabled');
 				$("#actualFloorCarpetArea").attr('disabled','disabled');
 				$("#actualRackBuiltupArea").attr('disabled','disabled');
-				$("#actualRackCarpetArea").attr('disabled','disabled');
+				$("#actual_palette_positions").attr('disabled','disabled');
 				$("#actualRevenue").attr('disabled','disabled');
 				$("#actualStartDate").attr('disabled','disabled');
 			
@@ -841,7 +861,7 @@ $(document).ready(function(){
 	   $("#floorBuiltupArea").val(floorBuiltupArea);
 	});
 	
-
+	
 	$('#floorBuiltupArea').change(function () {
 	   var floorBuiltupArea = $('#floorBuiltupArea').val();
 	   if(floorBuiltupArea>0){
@@ -849,7 +869,27 @@ $(document).ready(function(){
 		   $("#floorCarpetArea").val(floorCarpetArea);
 		  }
 	  });
-	   
+
+
+	
+
+	$('#palette_positions').change(function () {
+		   var palette_positions = $('#palette_positions').val();
+		   var rackBuiltupArea = parseInt((palette_positions*25));
+		   $("#rackBuiltupArea").val(rackBuiltupArea);
+		});
+
+	$('#estimated_palette_positions').change(function () {
+		   var estimated_palette_positions = $('#estimated_palette_positions').val();
+		   var rackBuiltupArea = parseInt((estimated_palette_positions*25));
+		   $("#estimatedRackBuiltupArea").val(rackBuiltupArea);
+		});
+
+	$('#actual_palette_positions').change(function () {
+		   var actual_palette_positions = $('#actual_palette_positions').val();
+		   var rackBuiltupArea = parseInt((actual_palette_positions*25));
+		   $("#actualRackBuiltupArea").val(rackBuiltupArea);
+		});
 	
 		$('#estimatedFloorCarpetArea').change(function () {
 			   var estimatedFloorCarpetArea = $('#estimatedFloorCarpetArea').val();
@@ -899,7 +939,7 @@ $(document).ready(function(){
 				floorBuiltupArea : "required",
 				floorCarpetArea : "required",
 				rackBuiltupArea : "required",
-				rackCarpetArea : "required",
+				palette_positions : "required",
 				totalNumberOfDocks : {
 	        	      required: true,
 	        	      digits: true
@@ -910,7 +950,7 @@ $(document).ready(function(){
 				floorBuiltupArea : "What is the Built-up area",
 				floorCarpetArea : "What is the Built-up area",
 				rackBuiltupArea : "required",
-				rackCarpetArea : "Whats the Carpet Area",
+				palette_positions : "Whats the Carpet Area",
 				
 	           
 	        }
@@ -937,7 +977,7 @@ $(document).ready(function(){
 		var floorBuiltupArea = $("#floorBuiltupArea").val();
 		var floorCarpetArea = $("#floorCarpetArea").val();
 		var rackBuiltupArea = $("#rackBuiltupArea").val();
-		var rackCarpetArea = $("#rackCarpetArea").val();
+		var palette_positions = $("#palette_positions").val();
 		var totalNumberOfDocks = $("#totalNumberOfDocks").val();
 		
 		
@@ -952,7 +992,7 @@ $(document).ready(function(){
 				floorBuiltupArea : floorBuiltupArea,
 				floorCarpetArea : floorCarpetArea,
 				rackBuiltupArea : rackBuiltupArea,
-				rackCarpetArea : rackCarpetArea,
+				palette_positions : palette_positions,
 				totalNumberOfDocks : totalNumberOfDocks,
 				  },
 			success : function(data) {
@@ -964,7 +1004,7 @@ $(document).ready(function(){
 				$("#floorBuiltupArea").css("border-color","#d7d7d7");
 				$("#floorCarpetArea").css("border-color","#d7d7d7");
 				$("#rackBuiltupArea").css("border-color","#d7d7d7");
-				$("#rackCarpetArea").css("border-color","#d7d7d7");
+				$("#palette_positions").css("border-color","#d7d7d7");
 				$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 				
 				
@@ -1006,7 +1046,7 @@ $(document).ready(function(){
 		var floorBuiltupArea = $("#floorBuiltupArea").val();
 		var floorCarpetArea = $("#floorCarpetArea").val();
 		var rackBuiltupArea = $("#rackBuiltupArea").val();
-		var rackCarpetArea = $("#rackCarpetArea").val();
+		var palette_positions = $("#palette_positions").val();
 		var totalNumberOfDocks = $("#totalNumberOfDocks").val();
 	
 		
@@ -1022,7 +1062,7 @@ $(document).ready(function(){
 				floorBuiltupArea : floorBuiltupArea,
 				floorCarpetArea : floorCarpetArea,
 				rackBuiltupArea : rackBuiltupArea,
-				rackCarpetArea : rackCarpetArea,
+				palette_positions : palette_positions,
 				totalNumberOfDocks : totalNumberOfDocks,
 			   },
 			success : function(data) {
@@ -1033,7 +1073,7 @@ $(document).ready(function(){
 				$("#floorBuiltupArea").css("border-color","#d7d7d7");
 				$("#floorCarpetArea").css("border-color","#d7d7d7");
 				$("#rackBuiltupArea").css("border-color","#d7d7d7");
-				$("#rackCarpetArea").css("border-color","#d7d7d7");
+				$("#palette_positions").css("border-color","#d7d7d7");
 				$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 				var msg="";
 				 $("#warehouseDivCount").html(msg).fadeIn().delay(2000);
@@ -1065,7 +1105,7 @@ $(document).ready(function(){
 			$("#floorBuiltupArea").css("border-color","#d7d7d7");
 			$("#floorCarpetArea").css("border-color","#d7d7d7");
 			$("#rackBuiltupArea").css("border-color","#d7d7d7");
-			$("#rackCarpetArea").css("border-color","#d7d7d7");
+			$("#palette_positions").css("border-color","#d7d7d7");
 			$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 		 
 		});
@@ -1422,7 +1462,7 @@ $(document).ready(function(){
 				floorBuiltupArea : floorBuiltupArea,
 				floorCarpetArea : floorCarpetArea,
 				rackBuiltupArea : rackBuiltupArea,
-				rackCarpetArea : rackCarpetArea,
+				palette_positions : palette_positions,
 	        		        	
 	            },
 			success : function(data) {
@@ -1460,7 +1500,7 @@ $(document).ready(function(){
 		var floorBuiltupArea = $("#floorBuiltupArea").val();
 		var floorCarpetArea = $("#floorCarpetArea").val();
 		var rackBuiltupArea = $("#rackBuiltupArea").val();
-		var rackCarpetArea = $("#rackCarpetArea").val();
+		var palette_positions = $("#palette_positions").val();
 		
 
 		
@@ -1476,7 +1516,7 @@ $(document).ready(function(){
 				floorBuiltupArea : floorBuiltupArea,
 				floorCarpetArea : floorCarpetArea,
 				rackBuiltupArea : rackBuiltupArea,
-				rackCarpetArea : rackCarpetArea,
+				palette_positions : palette_positions,
 	        		        	
 	            },
 			success : function(data) {
@@ -1517,7 +1557,7 @@ $(document).ready(function(){
 	        	estimatedFloorBuiltupArea : "required",
 	        	estimatedFloorCarpetArea: "required",
 	        	estimatedRackBuiltupArea : "required",
-	        	estimatedRackCarpetArea: "required",
+	        	estimated_palette_positions: "required",
 	        	estimatedRevenue : "required",
 	        	estimatedStartDate: "required",
 	    		remark : "required",
@@ -1528,7 +1568,7 @@ $(document).ready(function(){
 	            estimatedFloorBuiltupArea : "How much is the Floor built-up area ?",
 	            estimatedFloorCarpetArea: "How much is the Floor carpet area ?",
 	            estimatedRackBuiltupArea: "How much is the Rack built-up area ?",
-	            estimatedRackCarpetArea : "How much is the Rack carpet area ?",
+	            estimated_palette_positions : "How much is the Rack carpet area ?",
 	            estimatedRevenue: "What amount of revenue is expected ?",
 	            estimatedStartDate : "By when is this project expected to begin?",
 	    		remark : "Please enter Remark",
@@ -1547,10 +1587,11 @@ $(document).ready(function(){
 		 {
 		 var empty="";
 		var customerName = $("#customerName").val();
+		var customerType = $("#customerType").val();
 		var estimatedFloorBuiltupArea = $("#estimatedFloorBuiltupArea").val();
 		var estimatedFloorCarpetArea = $("#estimatedFloorCarpetArea").val();
 		var estimatedRackBuiltupArea = $("#estimatedRackBuiltupArea").val();
-		var estimatedRackCarpetArea = $("#estimatedRackCarpetArea").val();
+		var estimated_palette_positions = $("#estimated_palette_positions").val();
 		var estimatedRevenue = $("#estimatedRevenue").val();
 		var estimatedStartDate = $("#estimatedStartDate").val();
 		var allocatedWarehouse = $("#allocatedWarehouseId").val();
@@ -1567,10 +1608,11 @@ $(document).ready(function(){
 				datatype :'json', 
 				data : {
 					customerName : customerName,
+					customerType : customerType,
 					estimatedFloorBuiltupArea : estimatedFloorBuiltupArea,
 					estimatedFloorCarpetArea : estimatedFloorCarpetArea,
 					estimatedRackBuiltupArea : estimatedRackBuiltupArea,
-					estimatedRackCarpetArea : estimatedRackCarpetArea,
+					estimated_palette_positions : estimated_palette_positions,
 					estimatedStartDate : estimatedStartDate,
 					estimatedRevenue : estimatedRevenue,
 					allocatedWarehouse : allocatedWarehouse,
@@ -1601,7 +1643,7 @@ $(document).ready(function(){
 					$("#estimatedRevenue").css("border-color","#d7d7d7");
 					$("#estimatedStartDate").css("border-color","#d7d7d7");
 					$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
-					$("#estimatedRackCarpetArea").css("border-color","#d7d7d7");
+					$("#estimated_palette_positions").css("border-color","#d7d7d7");
 					$("#remark").css("border-color","#d7d7d7");
 					$("#myForm").resetForm();
 					
@@ -1673,24 +1715,109 @@ console.log("hello");
 	    }, "You are exceeding the space limit.Ref Avialable Area Field above.");
 	 
 
+
+	 jQuery.validator.addMethod("availableRackValidation", function (value, element) {
+
+			var availableRack = parseInt($("#availableRack2").val());
+			var actualRackBuiltupArea = parseInt($("#actualRackBuiltupArea").val());
+			var actualRackBuiltupAreaRef = parseInt($("#actualRackBuiltupAreaRef").val());
+			var availableMatchingValue;
+			console.log(availableRack);
+			console.log(actualRackBuiltupArea);
+			console.log(actualRackBuiltupAreaRef);
+			
+			availableMatchingValue = actualRackBuiltupArea - actualRackBuiltupAreaRef;
+			/* if(actualFloorCarpetAreaRef>actualFloorCarpetArea){
+				availableMatchingValue = actualFloorCarpetAreaRef - actualFloorCarpetArea;
+				}
+			else{
+				availableMatchingValue = actualFloorCarpetArea - actualFloorCarpetAreaRef;
+				} */
+
+			console.log(availableMatchingValue);
+			if(availableMatchingValue>0)
+				{
+			if(availableMatchingValue>availableRack)
+				{
+					return false;
+				}
+			else
+				{
+				if(actualRackBuiltupAreaRef != 0)
+				{
+				var availableRack = parseInt($("#availableRack2").val());
+				var newAvailableFloorArea = availableRack - parseInt(availableMatchingValue);
+				$("#availableCarpet").val(newAvailableFloorArea);
+				}
+				return true;
+					
+				}
+				}
+			else
+				{
+				if(actualRackBuiltupAreaRef != 0)
+					{
+				var availableRack = parseInt($("#availableRack2").val());
+				var newAvailableFloorArea = availableRack - parseInt(availableMatchingValue);
+				$("#availableCarpet").val(newAvailableFloorArea);
+					}
+					return true;
+				}
+	    }, "You are exceeding the space limit.Ref Avialable Area Field above.");
+	 
+
+	 
+	 jQuery.validator.addMethod("valueCheck", function (value, element) {
+
+		 var actualFloorCarpetArea = parseInt($("#actualFloorCarpetArea").val());
+		 var actualRackBuiltupArea = parseInt($("#actualRackBuiltupArea").val());
+		 var actual_palette_position = parseInt($("#actual_palette_positions").val());
+
+		 if(actualFloorCarpetArea == 0 && actualRackBuiltupArea==0 && actual_palette_position == 0)
+			 {
+				return false;	
+
+			 }
+		 else
+			 {
+				if(actualFloorCarpetArea==0 && actualRackBuiltupArea!=0 && actual_palette_position != 0)
+					{
+						return true;
+					}
+				else if(actualFloorCarpetArea!=0 && actualRackBuiltupArea==0 && actual_palette_position == 0)
+					{
+					   return true;
+					}
+				else{
+					return false;
+					}
+
+					}
+			 
+			
+	    }, "Value Cant be Zero");
+
+
+		
 	var validatorUpdate = $("#myFormUpdate").validate({
 	        rules: {
 
 				actualFloorCarpetArea : {
 	                required: true,
-	                min :1,
 	                digits: true,
+	                valueCheck : true,
 	                availableAreaValidation : true
 	            },
 				actualRackBuiltupArea : {
 	                required: true,
-	                min :1,
-	                digits: true
+	                digits: true,
+	                valueCheck: true,
+	                availableRackValidation : true
 	            },
-				actualRackCarpetArea : {
+	            actual_palette_positions : {
 	                required: true,
-	                min :1,
-	                digits: true
+	                digits: true,
+	                valueCheck: true
 	            },
 				actualRevenue : {
 	                required: true,
@@ -1703,8 +1830,7 @@ console.log("hello");
 	            },
 		    },
 	        messages: {
-	        	actualRackBuiltupArea : "Enter Actual Built-up Area",
-				actualRackCarpetArea : "Enter Actual Rack Space",
+	        	actual_palette_positions : "Enter Actual Rack Space",
 				actualRevenue : "enter Actual Revenue",
 				actualStartDate : "Enter Actual Start Date ",
 			   
@@ -1737,12 +1863,13 @@ console.log("hello");
 		 
 		    var salesPipeLineId = $("#sp_Id").val();
 			var customerName = $("#customerName").val();
+			var customerType = $("#customerType").val();
 			var availableFloor = parseInt($("#availableFloor").val());
 			var availableCarpet = $("#availableCarpet").val();
 			var estimatedFloorBuiltupArea = $("#estimatedFloorBuiltupArea").val();
 			var estimatedFloorCarpetArea = $("#estimatedFloorCarpetArea").val();
 			var estimatedRackBuiltupArea = $("#estimatedRackBuiltupArea").val();
-			var estimatedRackCarpetArea = $("#estimatedRackCarpetArea").val();
+			var estimated_palette_positions = $("#estimated_palette_positions").val();
 			var estimatedRevenue = $("#estimatedRevenue").val();
 			var estimatedStartDate = $("#estimatedStartDate").val();
 			var allocatedWarehouse = $("#allocatedWarehouse").val();
@@ -1751,7 +1878,8 @@ console.log("hello");
 			var actualFloorCarpetArea = parseInt($("#actualFloorCarpetArea").val());
 			var actualFloorCarpetAreaRef = parseInt($("#actualFloorCarpetAreaRef").val());
 			var actualRackBuiltupArea = parseInt($("#actualRackBuiltupArea").val());
-			var actualRackCarpetArea = parseInt($("#actualRackCarpetArea").val());
+			var actual_palette_positions = parseInt($("#actual_palette_positions").val());
+			var actualRackBuiltupAreaRef = parseInt($("#actualRackBuiltupAreaRef").val());
 			var actualRevenue = parseInt($("#actualRevenue").val());
 			var actualStartDate = $("#actualStartDate").val();
 			var remark = $("#remark").val();
@@ -1789,13 +1917,15 @@ console.log("hello");
 				data : {
 					salesPipeLineId : salesPipeLineId,
 					customerName : customerName,
+					customerType : customerType,
 					availableFloor : availableFloor,
 					availableCarpet : availableCarpet,
 					estimatedFloorBuiltupArea : estimatedFloorBuiltupArea,
 					estimatedFloorCarpetArea : estimatedFloorCarpetArea,
 					actualFloorCarpetAreaRef : actualFloorCarpetAreaRef,
+					actualRackBuiltupAreaRef : actualRackBuiltupAreaRef,
 					estimatedRackBuiltupArea : estimatedRackBuiltupArea,
-					estimatedRackCarpetArea : estimatedRackCarpetArea,
+					estimated_palette_positions : estimated_palette_positions,
 					estimatedRevenue : estimatedRevenue,
 					estimatedStartDate : estimatedStartDate,
 					allocatedWarehouse : allocatedWarehouse,
@@ -1803,7 +1933,7 @@ console.log("hello");
 					actualFloorBuiltupArea : actualFloorBuiltupArea,
 					actualFloorCarpetArea : actualFloorCarpetArea,
 					actualRackBuiltupArea : actualRackBuiltupArea,
-					actualRackCarpetArea : actualRackCarpetArea,
+					actual_palette_positions : actual_palette_positions,
 					actualRevenue : actualRevenue,
 					actualStartDate : actualStartDate,
 					remark : remark,
@@ -1886,7 +2016,13 @@ console.log("hello");
 				$("#estimatedRevenue").css("border-color","#d7d7d7");
 				$("#estimatedStartDate").css("border-color","#d7d7d7");
 				$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
-				$("#estimatedRackCarpetArea").css("border-color","#d7d7d7");
+				$("#estimated_palette_positions").css("border-color","#d7d7d7");
+
+				$("#actualFloorBuiltupArea").css("border-color","#d7d7d7");
+				$("#actualFloorCarpetArea").css("border-color","#d7d7d7");
+				$("#actualRevenue").css("border-color","#d7d7d7");
+				$("#actualRackBuiltupArea").css("border-color","#d7d7d7");
+				$("#actual_palette_positions").css("border-color","#d7d7d7");	
 			    $("#actualStartDate").css("border-color","#d7d7d7");
 			});
 	
@@ -2429,7 +2565,7 @@ console.log("hello");
 				 var salesPipeline_id = $('#alertSalesPipeLineId').val();
 				 var warehouse_id = $('#alertWarehousId').val();
 				 var actualFloorCarpetArea_value = $('#alertFloorCarpertArea').val();
-
+				 var alertRackArea = $('#alertRackArea').val();	
 					  $.ajax({
               		
               		type : "POST",
@@ -2440,6 +2576,7 @@ console.log("hello");
               			salesPipeLineId : salesPipeline_id,
               			warehouseId : warehouse_id,
               			estimatedFloorCarpetArea : actualFloorCarpetArea_value,
+              			alertRackArea : alertRackArea,
               			        },
               		success : function(data) {
                             console.log("Marked for Deletion");
@@ -2501,7 +2638,7 @@ console.log("hello");
 
 
 
-//setInterval(dashboardValues,10000);
+setInterval(dashboardValues,10000);
 
 
 </script>
@@ -2516,8 +2653,9 @@ console.log("hello");
                 <!-- START X-NAVIGATION -->
                 <ul class="x-navigation" >
                     <li class="xn-logo">
-                        <a href="#"><i>sparsh</i></a>
-                        <a href="#" class="x-navigation-control"></a>
+                        <!-- <a href="#"><i>sparsh</i></a> -->
+                        <!--  --><a href="#" class="x-navigation-control"></a>
+                        <img src="${logoImg}" alt="John Doe"/>
                     </li> 
                     
                     <li class="xn-profile">
@@ -2613,7 +2751,7 @@ console.log("hello");
                  <div id="dashboardDiv" style="margin-left: 30px;"> 
 				 
                     <div class="row" style="margin-top: 30px;">
-                        <div class="col-md-4" id="warehouseDivCount">
+                        <div class="col-md-3" id="warehouseDivCount">
                             
                              <div class="widget widget-default widget-item-icon">
                                 <div class="widget-item-left">
@@ -2628,7 +2766,7 @@ console.log("hello");
                             </div>  
                             
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             
                             <!-- START WIDGET MESSAGES -->
                             <div class="widget widget-default widget-item-icon" >
@@ -2645,7 +2783,25 @@ console.log("hello");
                             <!-- END WIDGET MESSAGES -->
                             
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            
+                            <!-- START WIDGET REGISTRED -->
+                            <div class="widget widget-default widget-item-icon" >
+                                <div class="widget-item-left">
+                                    <span class="fa fa-database"></span>
+                                </div>
+                                <div class="widget-data">
+                                    <div class="widget-int num-count"><input type="text"  style="background:white;border:none;width:150px;" id="totalSpaceAvailableCount" disabled /></div>
+                                    <div class="widget-title" style="text-transform: capitalize;">Total Space Available</div>
+                                    <div class="widget-subtitle"></div>
+                                </div>
+                                                     
+                            </div>                            
+                            <!-- END WIDGET REGISTRED -->
+                            
+                        </div>
+                        
+                         <div class="col-md-3">
                             
                             <!-- START WIDGET REGISTRED -->
                             <div class="widget widget-default widget-item-icon" >
@@ -2875,9 +3031,9 @@ console.log("hello");
                                     </div> 
                                     
                                      <div class="form-group">                                        
-                                        <label class="col-md-3 control-label" style="color:black;">Rack Carpet area :</label>          
+                                        <label class="col-md-3 control-label" style="color:black;">Number of Palette Postions  :</label>          
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" id="rackCarpetArea" name="rackCarpetArea"/>                                        
+                                            <input type="text" class="form-control" id="palette_positions" name="palette_positions"/>                                        
                                             
                                         </div>
                                     </div> 
@@ -3156,11 +3312,15 @@ console.log("hello");
                                     </div>
                                  
                                  <br/>
-                                    
+                                    <hr/>
                                     <div class="row">
                                 <div class="col-md-6">
-                                     
-                                  
+                                    
+                                    
+                                    <div class="form-group">
+                                    <span class="fa fa-user col-md-6 control-label"></span> Primary Contact  
+                                    </div>
+                                    <hr style="width: 256px;margin-left: 200px;color: blue;"/>
                                     <div class="form-group">
                                         <label class="col-md-6 control-label" style="color:black;">Contact Name :</label>                                        
                                         <div class="col-md-6">
@@ -3178,7 +3338,7 @@ console.log("hello");
                                     </div>              
                                    
                                      <div class="form-group">                                        
-                                        <label class="col-md-6 control-label" style="color:black;"> Emaik - Id :</label>          
+                                        <label class="col-md-6 control-label" style="color:black;"> Email - Id :</label>          
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="contact_email_id_1" name="contact_email_id_1"/>                                        
                                          
@@ -3192,7 +3352,10 @@ console.log("hello");
                       
                                         
                          <div class="col-md-6" >
-                             
+                             <div class="form-group">
+                                    <span class="fa fa-user col-md-6 control-label"></span> Secondary Contact  
+                                    </div>
+                                    <hr style="width: 256px;margin-left: 200px;color: blue;"/>
                                      <div class="form-group">
                                         <label class="col-md-6 control-label" style="color:black;">Contact Name :</label>                                        
                                         <div class="col-md-6">
@@ -3210,7 +3373,7 @@ console.log("hello");
                                     </div>              
                                    
                                      <div class="form-group">                                        
-                                        <label class="col-md-6 control-label" style="color:black;"> Emaik - Id :</label>          
+                                        <label class="col-md-6 control-label" style="color:black;"> Email - Id :</label>          
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="contact_email_id_2" name="contact_email_id_2"/>                                        
                                          
@@ -3332,7 +3495,7 @@ console.log("hello");
                                     </div>
                                     
                          <div class="row">           
-                         <div class="col-md-8">
+                         <div class="col-md-6">
                                      <div class="form-group">
                                         <label class="col-md-3 control-label" style="color:black;">Customer Name :</label>  
                                         <div class="col-md-9">
@@ -3344,6 +3507,24 @@ console.log("hello");
                                     </div>
                                     
                                     </div>
+                                    
+                                     <div class="col-md-6">
+                                     <div class="form-group">
+                                        <label class="col-md-3 control-label" style="color:black;">Customer Type :</label>  
+                                        <div class="col-md-9">
+                                          <select class="form-control" id="customerType" name="customerType">
+                                          <option value="subLease">Sub Lease</option>
+                                       <option value="3PL">3 PL</option>
+                                       <option value="temporary">Temporary</option>
+                                       <option value="4PL">4 PL</option>
+                                          </select>
+                                       
+                                        </div>
+                                    </div>
+                                    
+                                    </div>
+                                    
+                                    
                                     </div>
                                  
                                  <br/>
@@ -3378,6 +3559,8 @@ console.log("hello");
                                            <div class="col-md-6">                                        
                                         <input type="text" class="form-control" id="availableCarpet" style="color:black;" placeholder="Available Space" disabled/>
                                           <span class="help-block" style="color: #e04b4a;font-weight: bolder;">Available Rack Area</span>
+                                           <input type="text" class="form-control" id="availableRack2" style="color:black;display:none;" placeholder="Available Space" disabled/>
+                                       
                                            </div>
                                     </div>  
                                     </div>
@@ -3416,9 +3599,9 @@ console.log("hello");
                                     </div>              
                                    
                                      <div class="form-group">                                        
-                                        <label class="col-md-6 control-label" style="color:black;">Estimated Rack Carpet area :</label>          
+                                        <label class="col-md-6 control-label" style="color:black;">Pallete Postions:</label>          
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" id="estimatedRackCarpetArea" name="estimatedRackCarpetArea"/>                                        
+                                            <input type="text" class="form-control" id="estimated_palette_positions" name="estimated_palette_positions"/>                                        
                                          
                                         </div>
                                     </div>  
@@ -3489,9 +3672,9 @@ console.log("hello");
                                                 
                                     
                                     <div class="form-group">                                        
-                                        <label class="col-md-6 control-label" style="color:black;">Actual Rack Carpet area :</label>          
+                                        <label class="col-md-6 control-label" style="color:black;">Actual Pallete Positions :</label>          
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control" id="actualRackCarpetArea" name="actualRackCarpetArea" disabled/>                                        
+                                            <input type="text" class="form-control" id="actual_palette_positions" name="actual_palette_positions" disabled/>                                        
                                          
                                         </div>
                                     </div>  
@@ -3500,7 +3683,8 @@ console.log("hello");
                                         <label class="col-md-6 control-label" style="color:black;">Actual Rack Builtup area :</label>
                                         <div class="col-md-6">
                                             <input type="text" value="" class="form-control" id="actualRackBuiltupArea" name="actualRackBuiltupArea" disabled/>                                        
-                                         
+                                                 <input type="text" id="actualRackBuiltupAreaRef" style="display:none;" disabled/>
+                                     
                                         </div>
                                     </div>
                                     
@@ -3767,9 +3951,7 @@ console.log("hello");
 					
  <!-- START BASIC TABLE SAMPLE -->
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title" style="margin-top:5px;">Report</h3>
-                                </div> 
+                                
                                 <div class="panel-body" style="padding: 22px 30px;">
 
 										<table id="grid5" class="table"></table>
@@ -4056,9 +4238,7 @@ console.log("hello");
 
 								<!-- START BASIC TABLE SAMPLE -->
 								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h3 class="panel-title" style="margin-top: 5px;">Report</h3>
-									</div>
+								
 									<div class="panel-body" style="padding: 22px 30px;">
 										<div class="row">
                                        <div class="col-md-2">
@@ -4067,7 +4247,8 @@ console.log("hello");
                                        <div class="col-md-3">
                                        <select id="clientStatusFilter" class="form-control">
                                        <option value="wIP"> Work in Progress</option>
-                                       <option value="confirmed"> Confirmed / Billable</option>
+                                       <option value="confirmed"> Agreement Signed</option>
+                                       <option value="billable"> Billable</option>
                                        </select>
                                         </div>
                                         <div class="col-md-3">
@@ -4133,9 +4314,7 @@ console.log("hello");
 
 								<!-- START BASIC TABLE SAMPLE -->
 								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h3 class="panel-title" style="margin-top: 5px;">Report</h3>
-									</div>
+									
 									<div class="panel-body" style="padding: 22px 30px;">
 										
 											<div class="row">
@@ -4385,7 +4564,8 @@ console.log("hello");
                        <input type="text" id="alertSalesPipeLineId" style="font-size: small;display:none;" />                    
                        <input type="text" id="alertWarehousId" style="font-size: small;display:none;" />                    
                        <input type="text" id="alertFloorCarpertArea" style="font-size: small;display:none;" />                    
-                       
+                       <input type="text" id="alertRackArea" style="font-size: small;display:none;" />                    
+                      
                        
                     </div>
                     <div class="mb-footer">

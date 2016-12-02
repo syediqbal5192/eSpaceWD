@@ -17,15 +17,15 @@ public class WarehouseManagerImpl implements WarehouseManager {
 	WarehouseDao warehouseDao;
 	
 	
-	public String addWarehouse(String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea,Integer rackBuiltupArea, Integer rackCarpetArea ,Integer totalNumberOfDocks) {
-		String warehouseStatus = warehouseDao.addWarehouse(warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, rackCarpetArea, totalNumberOfDocks);
+	public String addWarehouse(String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea,Integer rackBuiltupArea, Integer palette_positions ,Integer totalNumberOfDocks) {
+		String warehouseStatus = warehouseDao.addWarehouse(warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks);
 		
 		return warehouseStatus;
 	}
 
-	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer rackCarpetArea,Integer totalNumberOfDocks) {
+	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions,Integer totalNumberOfDocks) {
      
-		String warehouseStatus = warehouseDao.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, rackCarpetArea, totalNumberOfDocks);
+		String warehouseStatus = warehouseDao.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks);
 		return warehouseStatus;
 	}
 

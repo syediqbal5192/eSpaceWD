@@ -15,7 +15,7 @@ jQuery("#customerGrid").jqGrid({
         {name:'contact_name_2',index:'contact_name_2', width:120},
         {name:'contact_number_2',index:'contact_number_2', width:120},
         {name:'contact_email_1',index:'contact_email_1', width:140},
-        {name:'edit',search:false,index:'customer_id',width:55,sortable: false,formatter: editLinkH},
+        {name:'edit',search:false,index:'customer_id',width:55,sortable: false,formatter: editLinkCustomer},
         {name:'delete',search:false,index:'customer_id',width:60,sortable: false,formatter: deleteLinkH},
          
     ],
@@ -28,15 +28,15 @@ jQuery("#customerGrid").jqGrid({
 });
 });
 
-function editLinkH(cellValue, options, rowdata, action)  {
+function editLinkCustomer(cellValue, options, rowdata, action)  {
     
 	var warehouseId = rowdata.warehouse_id;
-	return "<a class='btn btn-info pull-right fa fa-pencil-square-o' href='javascript:editRecordWH(" + rowdata.customer_id + ")'></a>";
+	return "<a class='btn btn-info pull-right fa fa-pencil-square-o' href='javascript:editRecordCustomer(" + rowdata.customer_id + ")'></a>";
 
 	
 	
 }
-function editRecordWH(customer_id){
+function editRecordCustomer(customer_id){
   
 	
 $.ajax({

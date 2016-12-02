@@ -38,10 +38,11 @@ public class SalesPipeLineController {
 	public @ResponseBody String addWarehouse(HttpSession session,HttpServletRequest request,HttpServletResponse response) throws ParseException{
 		
 		String customerName = nvl(request.getParameter("customerName"));
+		String customerType = nvl(request.getParameter("customerType"));
 		Integer estimatedFloorBuiltupArea=Integer.parseInt(nvl(request.getParameter("estimatedFloorBuiltupArea")));
 		Integer estimatedFloorCarpetArea=Integer.parseInt(nvl(request.getParameter("estimatedFloorCarpetArea")));
 		Integer estimatedRackBuiltupArea=Integer.parseInt(nvl(request.getParameter("estimatedRackBuiltupArea")));
-		Integer estimatedRackCarpetArea=Integer.parseInt(nvl(request.getParameter("estimatedRackCarpetArea")));
+		Integer estimated_palette_positions=Integer.parseInt(nvl(request.getParameter("estimated_palette_positions")));
 		String estimatedStartDate = nvl(request.getParameter("estimatedStartDate"));
 		    DateFormat formatterStart = new SimpleDateFormat("yyyy-MM-dd");
 		    Date startDate = formatterStart.parse(estimatedStartDate);
@@ -51,7 +52,7 @@ public class SalesPipeLineController {
 		String remark = nvl(request.getParameter("remark"));
 		
 	
-		String salesEntryStatus= salesPipeLineManager.addSalesPipeLine(customerName, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork,remark);
+		String salesEntryStatus= salesPipeLineManager.addSalesPipeLine(customerName, customerType,estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimated_palette_positions, startDate, estimatedRevenue, allocatedWarehouse, statusWork,remark);
 		return salesEntryStatus;
 		
 	}
@@ -61,12 +62,13 @@ public class SalesPipeLineController {
 		
 		Integer salesPipeLineId = Integer.parseInt(nvl(request.getParameter("salesPipeLineId")));
 		String customerName = nvl(request.getParameter("customerName"));
+		String customerType = nvl(request.getParameter("customerType"));
 		Integer availableFloor=Integer.parseInt(nvl(request.getParameter("availableFloor")));
 		Integer availableRack=Integer.parseInt(nvl(request.getParameter("availableCarpet")));
 		Integer estimatedFloorBuiltupArea=Integer.parseInt(nvl(request.getParameter("estimatedFloorBuiltupArea")));
 		Integer estimatedFloorCarpetArea=Integer.parseInt(nvl(request.getParameter("estimatedFloorCarpetArea")));
 		Integer estimatedRackBuiltupArea=Integer.parseInt(nvl(request.getParameter("estimatedRackBuiltupArea")));
-		Integer estimatedRackCarpetArea=Integer.parseInt(nvl(request.getParameter("estimatedRackCarpetArea")));
+		Integer estimated_palette_positions=Integer.parseInt(nvl(request.getParameter("estimated_palette_positions")));
 		String estimatedStartDate = nvl(request.getParameter("estimatedStartDate"));
 		 DateFormat formatterStart3 = new SimpleDateFormat("yyyy-MM-dd");
 		    Date startDate = formatterStart3.parse(estimatedStartDate);
@@ -76,16 +78,27 @@ public class SalesPipeLineController {
 		Integer actualFloorBuiltupArea=Integer.parseInt(nvl(request.getParameter("actualFloorBuiltupArea")));
 		Integer actualFloorCarpetArea=Integer.parseInt(nvl(request.getParameter("actualFloorCarpetArea")));
 		Integer actualFloorCarpetAreaRef=Integer.parseInt(nvl(request.getParameter("actualFloorCarpetAreaRef")));
+		Integer actualRackBuiltupAreaRef=Integer.parseInt(nvl(request.getParameter("actualRackBuiltupAreaRef")));
 		Integer actualRackBuiltupArea=Integer.parseInt(nvl(request.getParameter("actualRackBuiltupArea")));
-		Integer actualRackCarpetArea=Integer.parseInt(nvl(request.getParameter("actualRackCarpetArea")));
+		Integer actual_palette_positions=Integer.parseInt(nvl(request.getParameter("actual_palette_positions")));
 		Double actualRevenue = Double.parseDouble(nvl(request.getParameter("actualRevenue")));
 		String actualStartDate = nvl(request.getParameter("actualStartDate"));
-		DateFormat formatterStart2 = new SimpleDateFormat("yyyy-MM-dd");
-			Date finalStartDate = formatterStart2.parse(actualStartDate);
+		Date finalStartDate;
+		if(actualStartDate.equals(""))
+		{
+			DateFormat formatterStart2 = new SimpleDateFormat("yyyy-MM-dd");
+			finalStartDate = formatterStart2.parse("2016-01-01");
+			
+		}
+		else
+		{
+			DateFormat formatterStart2 = new SimpleDateFormat("yyyy-MM-dd");
+			finalStartDate = formatterStart2.parse(actualStartDate);
+		}
 		String remark = nvl(request.getParameter("remark"));
 		
 		
-		String salesEntryUpdateStatus=salesPipeLineManager.updateSalesPipeLine(salesPipeLineId, customerName, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimatedRackCarpetArea, startDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualFloorCarpetAreaRef,actualRackBuiltupArea, actualRackCarpetArea, finalStartDate, actualRevenue, remark);
+		String salesEntryUpdateStatus=salesPipeLineManager.updateSalesPipeLine(salesPipeLineId, customerName, customerType, availableFloor, availableRack, estimatedFloorBuiltupArea, estimatedFloorCarpetArea, estimatedRackBuiltupArea, estimated_palette_positions, startDate, estimatedRevenue, allocatedWarehouse, statusWork, actualFloorBuiltupArea, actualFloorCarpetArea, actualFloorCarpetAreaRef, actualRackBuiltupAreaRef, actualRackBuiltupArea, actual_palette_positions, finalStartDate, actualRevenue, remark);
 		return salesEntryUpdateStatus;
 		
 	}
@@ -99,8 +112,9 @@ public class SalesPipeLineController {
 		Integer salesPipeLineId = Integer.parseInt(nvl(request.getParameter("salesPipeLineId")));
 		Integer warehouseId = Integer.parseInt(nvl(request.getParameter("warehouseId")));
 		Integer estimatedFloorCarpetArea = Integer.parseInt(nvl(request.getParameter("estimatedFloorCarpetArea")));
+		Integer estimatedRackBuiltupArea = Integer.parseInt(nvl(request.getParameter("alertRackArea")));
 		
-		String status=salesPipeLineManager.deleteSalesPipeLine(salesPipeLineId, warehouseId, estimatedFloorCarpetArea);
+		String status=salesPipeLineManager.deleteSalesPipeLine(salesPipeLineId, warehouseId, estimatedFloorCarpetArea,estimatedRackBuiltupArea);
 		
 		
 		

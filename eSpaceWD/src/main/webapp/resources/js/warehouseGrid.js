@@ -5,14 +5,14 @@ jQuery("#grid").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Id','Warehouse Name','Floor Built-up Area', 'Floor Carpet Area' , 'Rack Built-up Area','Rack Carpet Area','Total Shutters','Edit','Delete'],
+    colNames:['Id','Warehouse Name','Floor Built-up Area', 'Floor Carpet Area' , 'Rack Built-up Area','No. of Palette Postion','Total Shutters','Edit','Delete'],
     colModel:[
         {name:'warehouse_id',index:'warehouse_id', width:0.5},
         {name:'warehouse_name',index:'warehouse_name', width:140},
         {name:'floor_builtup_area',index:'floor_builtup_area', width:140},
         {name:'floor_carpet_area',index:'floor_carpet_area', width:140},
         {name:'rack_builtup_area',index:'rack_builtup_area', width:120},
-        {name:'rack_carpet_area',index:'rack_carpet_area', width:120},
+        {name:'palette_positions',index:'palette_positions', width:120},
         {name:'total_docks',index:'total_docks', width:120},
         {name:'edit',search:false,index:'warehouse_id',width:55,sortable: false,formatter: editLinkH},
         {name:'delete',search:false,index:'warehouse_id',width:60,sortable: false,formatter: deleteLinkH},
@@ -78,7 +78,7 @@ $.ajax({
 			$("#floorBuiltupArea").val(posts.floor_builtup_area);
 			$("#floorCarpetArea").val(posts.floor_carpet_area);
 			$("#rackBuiltupArea").val(posts.rack_builtup_area);
-			$("#rackCarpetArea").val(posts.rack_carpet_area);
+			$("#palette_positions").val(posts.palette_positions);
 			$("#totalNumberOfDocks").val(posts.total_docks);
 			$("#numberOfDocksAvailable").val(posts.availabe_docks);
 			
