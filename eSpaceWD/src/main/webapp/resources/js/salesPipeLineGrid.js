@@ -1,26 +1,30 @@
 jQuery(document).ready(function () {
 
+	var status = "confirmed";
+	
 jQuery("#grid2").jqGrid({
-    url: "listSalesPipeLine",
+    url: "listSalesPipeLineById",
+    postData: {
+    	status: status,
+    },
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['SalesId','WID','Customer Name','Warehouse ','Customer Type','Est. Floor Built-up Area', 'Est. Floor Carpet Area','Actual Floor Built-up Area','Actual Floor Carpet Area', 'Actual Rack Area','Status','Edit','Delete','Readiness Add/Edit'],
+    colNames:['SalesId','WID','Customer Name','Warehouse ','Customer Type','Est. Floor Built-up Area', 'Actual Floor Carpet Area','Actual Floor Built-up Area','Actual Rack Area','Status','Edit','Delete','Readiness Add/Edit'],
     colModel:[
-        {name:'salesPipeLineId',index:'salesPipeLineId', width:10},
+        {name:'salesPipeLineId',index:'salesPipeLineId', width:0.5},
         {name:'warehouseId',index:'warehouseId', width:10},
-        {name:'customerName',index:'customerName', width:60},
+        {name:'customerName',index:'customerName', width:140},
         {name:'allocatedWarehouse',index:'allocatedWarehouse', width:90},
-        {name:'customerType',index:'customerType', width:60},
-        {name:'estimatedFloorBuiltupArea',index:'estimatedFloorBuiltupArea', width:120},
-        {name:'estimatedFloorCarpetArea',index:'estimatedFloorCarpetArea', width:120},
-        {name:'actualFloorBuiltupArea',index:'actualFloorBuiltupArea', width:120},
-        {name:'actualFloorCarpetArea',index:'actualFloorCarpetArea', width:120},
-        {name:'actualRackBuiltupArea',index:'actualRackBuiltupArea', width:120},
-        {name:'statusNew',index:'statusNew', width:100},
-        {name:'edit',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: editSPLLink},
-        {name:'delete',search:false,index:'salesPipeLineId',width:65,sortable: false,formatter: deleteSPLLink},
-        {name:'rTUpdate',search:false,index:'salesPipeLineId',width:60,sortable: false,formatter: rTUpdateLink},
+        {name:'customerType',index:'customerType', width:80},
+        {name:'estimatedFloorBuiltupArea',index:'estimatedFloorBuiltupArea', width:90},
+        {name:'actualFloorCarpetArea',index:'actualFloorCarpetArea', width:90},
+        {name:'actualFloorBuiltupArea',index:'actualFloorBuiltupArea', width:90},
+        {name:'actualRackBuiltupArea',index:'actualRackBuiltupArea', width:90},
+        {name:'statusNew',index:'statusNew', width:130},
+        {name:'edit',search:false,index:'salesPipeLineId',width:75,sortable: false,formatter: editSPLLink},
+        {name:'delete',search:false,index:'salesPipeLineId',width:75,sortable: false,formatter: deleteSPLLink},
+        {name:'rTUpdate',search:false,index:'salesPipeLineId',width:80,sortable: false,formatter: rTUpdateLink},
         
         
     ],
@@ -31,63 +35,9 @@ jQuery("#grid2").jqGrid({
     viewrecords: true,
     loadComplete : function(){
         $(this).jqGrid('hideCol',["warehouseId"]);
-         $(this).jqGrid('hideCol',["salesPipeLineId"]);
        },
     caption: "",
-    	 subGrid: true,
-    	    subGridOptions: { "plusicon" : "ui-icon-triangle-1-e",
-    	                      "minusicon" :"ui-icon-triangle-1-s",
-    	                      "openicon" : "ui-icon-arrowreturn-1-e",
-    	                      "reloadOnExpand" : false,
-    	                      "selectOnExpand" : true },
-    	    subGridRowExpanded: function(subgrid_id, row_id) {
-    	        var subgrid_table_id, pager_id; subgrid_table_id = subgrid_id+"_t";
-    	        
-    	        var currentRow = $("#grid2").jqGrid('getRowData', row_id);
-                var salesPipeLineId = currentRow.salesPipeLineId;
-               
-    	        pager_id = "p_"+subgrid_table_id;
-    	        $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
-    	        $("#"+subgrid_table_id).jqGrid({
-    	        	 url: "listReadinessTemplate",
-    	        	    async : false,
-    	        	    postData: {
-    	        	    	salesPipeLineId: salesPipeLineId,
-    	        	    },
-    	        	    datatype: "json",
-    	        	    jsonReader: {repeatitems: false, id: "ref"},
-    	        	    colNames:['readinessTemplateId','Company Name','Readiness Name','readinessElementQuantity','Owner Name','Element Status','Start Date','End Date','Update'],
-    	        	    colModel:[
-    	        	        {name:'readinessTemplateId',index:'readinessTemplateId',width:40},
-    	        	        {name:'companyName',index:'companyName', width:140},
-    	        	        {name:'readinessName',index:'readinessName', width:140},
-    	        	        {name:'readinessElementQuantity',index:'readinessElementQuantity',width:40},
-    	        	        {name:'ownerName',index:'ownerName', width:140},
-    	        	        {name:'readinessElementStatus',index:'readinessElementStatus',width:40},
-    	        	        {name:'taskStartDate',index:'taskStartDate', width:140},
-    	        	        {name:'taskEndDate',index:'taskEndDate', width:140},
-    	        	        {name:'edit',search:false,index:'readinessTemplateId',width:60,sortable: false,formatter: updateReadinessTemplateLink},
-    	        	        
-    	        	         
-    	        	    ],
-    	            rowNum:20,
-    	            pager: pager_id,
-    	            sortname: 'num',
-    	            sortorder: "asc", height: '100%' });
-    	         $("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,{edit:false,add:false,del:false});
-    	        
-    	         var subNames = ["num", "item", "qty"];
-    	         var mysubdata = [];
-    	         for (var i = 0; i < subgridData.length; i++) {
-    	            mysubdata[i] = {};
-    	            for (var j = 0; j < subgridData[i].length; j++) {
-    	                mysubdata[i][subNames[j]] = subgridData[i][j];
-    	             }
-    	         }
-    	         for (var i = 0; i <= mysubdata.length; i++) {
-    	           $("#"+subgrid_table_id).jqGrid('addRowData', i + 1, mysubdata[i]);
-    	         }
-    	    }
+
 });
 });
 
@@ -207,22 +157,64 @@ function updateReadinessTemplateRecord(readinessTemplateId)
 
 
 function rTUpdateLink(cellValue, options, rowdata, action)  {
-    
-	return "<a class='btn btn-warning pull-right fa fa-file-text-o' href='javascript:rTUpdateRecord(" + rowdata.salesPipeLineId + ")' style='width:90px;'>  </a>";
+
+	return "<button class='btn btn-warning pull-right fa fa-file-text-o' type='button' onClick='clickFunctionSalesPipeLine.call(this)'></button>";
+
+	
+//	return "<a class='btn btn-warning pull-right fa fa-file-text-o' href='javascript:rTUpdateRecord(" + rowdata.salesPipeLineId + ")' style='width:90px;'>  </a>";
 	
 } 
 
 function rTViewLink(cellValue, options, rowdata, action)  {
     
 	var salesPipeLineId = rowdata.salesPipeLineId;
+//	return "<a class='btn btn-success pull-right fa fa-eye' href='javascript:rTViewRecord(" + rowdata.salesPipeLineId + ")' style='width:90px;'> </a>";
+
 	return "<a class='btn btn-success pull-right fa fa-eye' href='javascript:rTViewRecord(" + rowdata.salesPipeLineId + ")' style='width:90px;'> </a>";
 
+	
 }
 
+
+function clickFunctionSalesPipeLine()
+{
+	
+	var rowid = $(this).closest("tr.jqgrow").attr("id");
+	var grid = $('#grid2');    
+
+
+	var id = grid.jqGrid('getCell', rowid, 'salesPipeLineId');	
+	var name = grid.jqGrid('getCell', rowid, 'customerName');	
+	    	
+	    	$('#readinessTemplateCompanyName').val(name);
+	    	$('#readinessSalesPipeLineId').val(id);
+	    	
+	    	
+	    	$("#inlineEditGrid").jqGrid('setGridParam', { 
+	            postData: {"salesPipeLineId":id }
+	     }).trigger('reloadGrid'); 
+	    	
+	    	
+  	
+	    	$('#readinessTemplate').show();
+	    	$('#addReadinessTemplateGrid').hide();
+	    	$('#editReadinessTemplateGrid').show();
+	    	$('#bulkSave').hide();
+	    	$("#updateReadinessOrderTitle").show();
+	    	$("#addReadinessOrderTitle").hide();
+	    	$('#bulkUpdate').show();
+	        
+	  
+	
+	
+	
+}
+
+
+/*
 function rTUpdateRecord(salesPipeLineId)
 {
-//alert(salesPipeLineId);
-	
+
 	$.ajax({
 		type:'GET',
 		encoding : "UTF-8",
@@ -264,7 +256,7 @@ function rTUpdateRecord(salesPipeLineId)
 	
 	
 }
-
+*/
 function buttonFormatter() {
 	/*return "<a class='btn btn-danger pull-right fa fa-times' href='javascript:deleteRecordRT()'></a>";
 	*/return "<button class='btn btn-danger pull-right fa fa-times' type='button' onClick='clickFunction1.call(this)'></button>";
@@ -293,7 +285,25 @@ function rTViewRecord(salesPipeLineId)
 
 function editSPLRecord(salesPipeLineId){
   
+	
 	$("#statusWork").prop('disabled', false);
+	
+	validatorUpdate.resetForm();
+	
+	$("#customerName").css("border-color","#d7d7d7");
+	$("#estimatedFloorBuiltupArea").css("border-color","#d7d7d7");
+	$("#estimatedFloorCarpetArea").css("border-color","#d7d7d7");
+	$("#estimatedRevenue").css("border-color","#d7d7d7");
+	$("#estimatedStartDate").css("border-color","#d7d7d7");
+	$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
+	$("#estimated_palette_positions").css("border-color","#d7d7d7");
+	$("#remark").css("border-color","#d7d7d7");
+	$("#actualFloorBuiltupArea").css("border-color","#d7d7d7");
+	$("#actualFloorCarpetArea").css("border-color","#d7d7d7");
+	$("#actualRevenue").css("border-color","#d7d7d7");
+	$("#actualRackBuiltupArea").css("border-color","#d7d7d7");
+	$("#actual_palette_positions").css("border-color","#d7d7d7");	
+    $("#actualStartDate").css("border-color","#d7d7d7");
 	
 $.ajax({
 		
@@ -358,7 +368,7 @@ $.ajax({
 			$("#statusWork").val(posts.statusWork);
 			$("#actualFloorBuiltupArea").val(posts.actualFloorBuiltupArea);
 			$("#actualFloorCarpetArea").val(posts.actualFloorCarpetArea);
-			$("#actualFloorCarpetAreaRef").val(posts.actualFloorCarpetArea);
+			$("#actualFloorCarpetAreaRef").val(posts.actualFloorBuiltupArea);
 			$("#actualRackBuiltupArea").val(posts.actualRackBuiltupArea);
 			$("#actualRackBuiltupAreaRef").val(posts.actualRackBuiltupArea);
 			$("#actual_palette_positions").val(posts.actual_palette_positions);
@@ -376,6 +386,11 @@ $.ajax({
 					$("#actual_palette_positions").prop('disabled', false);
 					$("#actualStartDate").prop('disabled', false);
 					$("#actualRevenue").prop('disabled', false);
+					
+					$('#statusWork').empty();
+					$("#statusWork").append('<option value="confirmed">Agreement Signed</option>');
+					$("#statusWork").append('<option value="billable">Billable</option>');
+					$("#statusWork").append('<option value="cancel">Canceled</option>');
 		
 				}
 			else
@@ -390,6 +405,25 @@ $.ajax({
 		
 				
 				}
+			var wIP = "wIP";
+			if(workStatus == wIP)
+				{
+				$('#statusWork').empty();
+				$("#statusWork").append('<option value="wIP">Work In Progress</option>');
+				$("#statusWork").append('<option value="confirmed">Agreement Signed</option>');
+				$("#statusWork").append('<option value="cancel">Canceled</option>');
+				
+				}
+			
+			var billable = "billable";
+			if(workStatus == billable)
+				{
+				$('#statusWork').empty();
+				$("#statusWork").append('<option value="billable">Billable</option>');
+				$("#statusWork").append('<option value="cancel">Canceled</option>');
+				
+				}
+			
 			
 			/*alert(posts.allocatedWarehouse);*/
 			
@@ -492,7 +526,7 @@ function clickDeleteSalesPipeLine()
 	
 	var salesPipeLineId = grid.jqGrid('getCell', rowid, 'salesPipeLineId');	
 	var warehouseId = grid.jqGrid('getCell', rowid, 'warehouseId');	
-	var estimatedFloorCarpetArea = grid.jqGrid('getCell', rowid, 'actualFloorCarpetArea');
+	var estimatedFloorCarpetArea = grid.jqGrid('getCell', rowid, 'actualFloorBuiltupArea');
 	var actualRackBuiltupArea = grid.jqGrid('getCell',rowid, 'actualRackBuiltupArea');
 //	alert(salesPipeLineId+""+warehouseId+""+estimatedFloorCarpetArea);
 	
@@ -523,7 +557,8 @@ function clickDeleteSalesPipeLine()
 					  
 					  $('#doWarehouseOperation').hide();
 					  $('#doReadinessOperation').hide();
-					  $('#doSalesPipeLineOperation').show();
+					  $('#doSalesPipeLineOperation').show(); 
+					  $('#doCustomerOperation').hide();
 					
 					
 				    }

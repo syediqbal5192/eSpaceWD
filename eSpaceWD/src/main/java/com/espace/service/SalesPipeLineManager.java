@@ -20,6 +20,8 @@ public interface SalesPipeLineManager {
 
 	public List<SalesPipeLine> listSalesPipeLine();
 
+	public List<SalesPipeLine> listSalesPipeLineByStatus(String customerName);
+	
 	public List<String> chartSalesPipeLine();
 	
 	public List<SalesPipeLine> ageReportController(String statusWorkCondition);

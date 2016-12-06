@@ -16,7 +16,7 @@ jQuery("#customerGrid").jqGrid({
         {name:'contact_number_2',index:'contact_number_2', width:120},
         {name:'contact_email_1',index:'contact_email_1', width:140},
         {name:'edit',search:false,index:'customer_id',width:55,sortable: false,formatter: editLinkCustomer},
-        {name:'delete',search:false,index:'customer_id',width:60,sortable: false,formatter: deleteLinkH},
+        {name:'delete',search:false,index:'customer_id',width:60,sortable: false,formatter: deleteLinkCustomer},
          
     ],
     rowNum:10,
@@ -37,7 +37,15 @@ function editLinkCustomer(cellValue, options, rowdata, action)  {
 	
 }
 function editRecordCustomer(customer_id){
-  
+ 
+	validatorCustomer.resetForm();
+	$("#customer_name").css("border-color","#d7d7d7");
+	$("#contact_number_1").css("border-color","#d7d7d7");
+	$("#contact_name_1").css("border-color","#d7d7d7");
+	$("#contact_email_id_1").css("border-color","#d7d7d7");
+	$("#contact_number_2").css("border-color","#d7d7d7");
+	$("#contact_name_2").css("border-color","#d7d7d7");
+	$("#contact_email_id_2").css("border-color","#d7d7d7");
 	
 $.ajax({
 		
@@ -97,16 +105,16 @@ $.ajax({
 
 
 
-function deleteLinkH(cellValue, options, rowdata, action)  {
+function deleteLinkCustomer(cellValue, options, rowdata, action)  {
 
 	//return "<button class='btn btn-danger pull-right fa fa-times' href='javascript:deleteRecordWH("+rowdata")'></button>"; 
-		return "<button class='btn btn-danger pull-right fa fa-times' type='button' onClick='clickEditWarehouse.call(this)'></button>"; 
+		return "<button class='btn btn-danger pull-right fa fa-times' type='button' onClick='clickDeleteCustomer.call(this)'></button>"; 
 	
 }
 
 
 /*function deleteRecordWH(warehouseId){*/
-	function clickEditWarehouse()
+	function clickDeleteCustomer()
 	{
 	
     var value1 = $('#grid2').jqGrid('getCol','allocatedWarehouse');
@@ -148,7 +156,8 @@ function deleteLinkH(cellValue, options, rowdata, action)  {
         	
         	  $('#alertDiv').show();
     		  $('#alertPara').val(id);
-    		  $('#doWarehouseOperation').show();
+    		  $('#doCustomerOperation').show();
+    		  $('#doWarehouseOperation').hide();
     		  $('#doReadinessOperation').hide();
               $('#doSalesPipeLineOperation').hide();
     	

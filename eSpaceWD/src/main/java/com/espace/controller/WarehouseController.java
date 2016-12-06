@@ -57,9 +57,11 @@ public class WarehouseController {
 	    Integer rackBuiltupArea=Integer.parseInt(nvl(request.getParameter("rackBuiltupArea")));
 	    Integer palette_positions=Integer.parseInt(nvl(request.getParameter("palette_positions")));
 		Integer totalNumberOfDocks = Integer.parseInt(nvl(request.getParameter("totalNumberOfDocks")));
-	
+		Integer availableWarehouseFloor=Integer.parseInt(nvl(request.getParameter("availableWarehouseFloor")));
+		Integer availableWarehouseRack = Integer.parseInt(nvl(request.getParameter("availableWarehouseRack")));
 		
-		String status=warehouseManager.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks);
+		
+		String status=warehouseManager.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks,availableWarehouseFloor,availableWarehouseRack);
 		
 		
 		

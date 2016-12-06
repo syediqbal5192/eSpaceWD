@@ -13,9 +13,9 @@ jQuery("#grid3").jqGrid({
         {name:'delete',search:false,index:'re_id',width:155,sortable: false,formatter: deleteRELink},
          
     ],
-    rowNum:10,
+    rowNum:5,
     rowList:[5,10,20],
-    height:360,
+    height:800,
     pager: "#pagingDiv3",
     viewrecords: true,
     caption: ""
@@ -130,6 +130,7 @@ function clickDeleteReadiness(){
 		  $('#alertPara').val(id);
 		  $('#doWarehouseOperation').hide();
 		  $('#doReadinessOperation').show();
+		  $('#doCustomerOperation').hide();
 		  $('#doSalesPipeLineOperation').hide();
 		  
 		/*  

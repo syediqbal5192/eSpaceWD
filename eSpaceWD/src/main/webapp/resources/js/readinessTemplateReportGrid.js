@@ -49,7 +49,7 @@ jQuery(document).ready(function () {
 	        width:120 
 	    }],
 	    pager: '#pager',
-	    height:500,
+	    height:360,
 	    width:950
 	    
 	});

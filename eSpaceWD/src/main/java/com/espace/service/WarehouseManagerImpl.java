@@ -23,9 +23,9 @@ public class WarehouseManagerImpl implements WarehouseManager {
 		return warehouseStatus;
 	}
 
-	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions,Integer totalNumberOfDocks) {
+	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions,Integer totalNumberOfDocks,Integer availableWarehouseFloor, Integer availableWarehouseRack) {
      
-		String warehouseStatus = warehouseDao.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks);
+		String warehouseStatus = warehouseDao.updateWarehouse(warehouseId, warehouseName, floorBuiltupArea, floorCarpetArea, rackBuiltupArea, palette_positions, totalNumberOfDocks,availableWarehouseFloor,availableWarehouseRack);
 		return warehouseStatus;
 	}
 

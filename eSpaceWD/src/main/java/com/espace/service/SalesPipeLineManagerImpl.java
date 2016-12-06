@@ -110,6 +110,13 @@ public List<SalesPipeLine> clientReportController(Integer clientWarehouseFilter)
 		return salesArrayList;
 	
 }
+
+public List<SalesPipeLine> listSalesPipeLineByStatus(String customerName) {
+	
+	  List<SalesPipeLine> salesArrayList = salesPipeLineDao.listSalesPipeLineByStatus(customerName);
+		
+			return salesArrayList;
+}
 	
 	
 	

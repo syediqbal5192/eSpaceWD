@@ -10,7 +10,7 @@ public interface WarehouseManager {
 
 	public String addWarehouse(String warehouseName,Integer floorBuiltupArea,Integer floorCarpetArea,Integer rackBuiltupArea,Integer palette_positions,Integer totalNumberOfDocks);
 	
-	public String updateWarehouse(Integer warehouseId,String warehouseName,Integer floorBuiltupArea,Integer floorCarpetArea,Integer rackBuiltupArea,Integer palette_positions,Integer totalNumberOfDocks);
+	public String updateWarehouse(Integer warehouseId,String warehouseName,Integer floorBuiltupArea,Integer floorCarpetArea,Integer rackBuiltupArea,Integer palette_positions,Integer totalNumberOfDocks,Integer availableWarehouseFloor, Integer availableWarehouseRack );
 
 	public String deleteWarehouse(Integer warehouseId);
 

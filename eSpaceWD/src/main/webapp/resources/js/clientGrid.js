@@ -89,7 +89,7 @@ jQuery("#clientGrid").jqGrid({
     ],
     rowNum:10,
     rowList:[5,10,20],
-    height:300,
+    height:360,
     pager: "#pagingDiv5",
     viewrecords: true,
     sortable: true,

@@ -134,6 +134,19 @@ public class SalesPipeLineController {
 		return json;
 	}
 	
+	@RequestMapping(value="/listSalesPipeLineById",method=RequestMethod.GET)
+	public @ResponseBody String getSalesPipeLineListById(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+		response.setContentType("application/json");
+		
+		String status = nvl(request.getParameter("status"));
+		
+		List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
+		salesArrayList = salesPipeLineManager.listSalesPipeLineByStatus(status);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	    String json = gson.toJson(salesArrayList);
+		return json;
+	}
+	
 	@RequestMapping(value="/ageReportController",method=RequestMethod.GET)
 	public @ResponseBody String ageReportController(HttpSession session,HttpServletRequest request,HttpServletResponse response){
 		response.setContentType("application/json");

@@ -51,7 +51,7 @@ jQuery("#grid5").jqGrid({
     ],
     rowNum:5,
     rowList:[20,60,100],
-    height:160,
+    height:400,
     pager: "#pagingDiv5",
     viewrecords: true,
     sortable: true,

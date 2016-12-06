@@ -37,6 +37,13 @@ function editLinkH(cellValue, options, rowdata, action)  {
 }
 function editRecordWH(warehouseId){
   
+	validatorWarehouse.resetForm();
+	$("#warehouseName").css("border-color","#d7d7d7");
+	$("#floorBuiltupArea").css("border-color","#d7d7d7");
+	$("#floorCarpetArea").css("border-color","#d7d7d7");
+	$("#rackBuiltupArea").css("border-color","#d7d7d7");
+	$("#palette_positions").css("border-color","#d7d7d7");
+	$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 	
 $.ajax({
 		
@@ -77,12 +84,17 @@ $.ajax({
 			$("#warehouseName").val(posts.warehouse_name);
 			$("#floorBuiltupArea").val(posts.floor_builtup_area);
 			$("#floorCarpetArea").val(posts.floor_carpet_area);
+			$("#floorCarpetAreaRef").val(posts.floor_builtup_area);
 			$("#rackBuiltupArea").val(posts.rack_builtup_area);
+			$("#rackBuiltupAreaRef").val(posts.rack_builtup_area);
 			$("#palette_positions").val(posts.palette_positions);
 			$("#totalNumberOfDocks").val(posts.total_docks);
 			$("#numberOfDocksAvailable").val(posts.availabe_docks);
+			$('#availableWarehouseFloor').val("0");
+			$('#availableWarehouseRack').val("0");
+	          
 			
-          
+			
 			
 		},
 		error : function(e) {
@@ -144,10 +156,10 @@ function deleteLinkH(cellValue, options, rowdata, action)  {
         else
         	{
         	
-        	
         	  $('#alertDiv').show();
     		  $('#alertPara').val(id);
     		  $('#doWarehouseOperation').show();
+    		  $('#doCustomerOperation').hide();
     		  $('#doReadinessOperation').hide();
               $('#doSalesPipeLineOperation').hide();
     	

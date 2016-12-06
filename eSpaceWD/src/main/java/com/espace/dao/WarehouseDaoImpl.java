@@ -71,7 +71,7 @@ String isDeleted="No";
     warehouse.setFloor_carpet_area(floorCarpetArea);
     warehouse.setRack_builtup_area(rackBuiltupArea);
     warehouse.setPalette_positions(palette_positions);
-    warehouse.setAvailable_floor_carpet_area(floorCarpetArea);
+    warehouse.setAvailable_floor_carpet_area(floorBuiltupArea);
     warehouse.setAvailable_rack_carpet_area(rackBuiltupArea);
     warehouse.setIsActive(isActive);
     warehouse.setIsDeleted(isDeleted);
@@ -182,7 +182,7 @@ String isDeleted="No";
 		
 	}
 
-	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions, Integer totalNumberOfDocks) {
+	public String updateWarehouse(Integer warehouseId,String warehouseName, Integer floorBuiltupArea, Integer floorCarpetArea, Integer rackBuiltupArea, Integer palette_positions, Integer totalNumberOfDocks,Integer availableWarehouseFloor, Integer availableWarehouseRack) {
 		
 		
 		Session session = HibernateUtil.getSesssion();
@@ -197,7 +197,16 @@ String isDeleted="No";
 	         warehouse.setRack_builtup_area(rackBuiltupArea);
 	         warehouse.setPalette_positions(palette_positions);
 	         warehouse.setTotal_docks(totalNumberOfDocks);
-	        
+	       
+	         Integer available_floor_carpet_area = warehouse.getAvailable_floor_carpet_area();
+	         Integer available_rack_area = warehouse.getAvailable_rack_carpet_area();
+	         
+	         Integer newFloorAvailable = available_floor_carpet_area + availableWarehouseFloor ;
+	         Integer newRackAvailable = available_rack_area + availableWarehouseRack;
+	         
+	         warehouse.setAvailable_floor_carpet_area(newFloorAvailable);
+	         warehouse.setAvailable_rack_carpet_area(newRackAvailable);
+	         
 			 session.update(warehouse); 
 	         transaction.commit();
 	         return "successful"; 
@@ -393,7 +402,7 @@ String isDeleted="No";
 	     criteriaSum.add(Restrictions.eq("salesPipeLine.isActive", "Yes"));
 	     criteriaSum.add(Restrictions.eq("salesPipeLine.isDeleted", "No"));  
 	        
-       criteriaSum.setProjection(Projections.sum("actualFloorCarpetArea"));
+       criteriaSum.setProjection(Projections.sum("actualFloorBuiltupArea"));
        List sumSPL = criteriaSum.list();
 
        totalSpaceUtilizedCount = String.valueOf(sumSPL.get(0));
@@ -469,7 +478,51 @@ String isDeleted="No";
 		
 	      return "failed";
 		}
+	
+	
+	public List<Warehouse> listWarehouseData() {
+
+		String totalSpaceAvailableCount = null;
+		List<Warehouse> warehouseArrayList=new ArrayList<Warehouse>();
+		Warehouse warehouse = null;
 		
+		
+		Session session = HibernateUtil.getSesssion();
+		   Transaction transaction = null;
+		 
+	      try{
+		         transaction = session.beginTransaction();
+  
+       Criteria criteriaSum = session.createCriteria(WarehouseEntity.class, "warehouse");
+	     criteriaSum.add(Restrictions.eq("warehouse.isActive", "Yes"));
+	     criteriaSum.add(Restrictions.eq("warehouse.isDeleted", "No"));  
+	        
+       criteriaSum.setProjection(Projections.sum("available_floor_carpet_area"));
+       List sumSPL = criteriaSum.list();
+
+       totalSpaceAvailableCount = String.valueOf(sumSPL.get(0));
+		warehouse = new Warehouse();
+		warehouse.setName("");
+		warehouse.setY(Integer.parseInt(totalSpaceAvailableCount));
+		warehouseArrayList.add(warehouse);
+
+       session.getTransaction().commit();
+       
+		} 
+				catch (Exception e) {
+					if (transaction!=null) transaction.rollback();
+			         e.printStackTrace(); 
+			         }
+		
+	
+return warehouseArrayList;
+
+
+}
+
+	
+	
+	
 		
 	public List<Warehouse> listWarehouseByActive() {
 		

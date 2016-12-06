@@ -46,7 +46,7 @@
  <spring:url value="/resources/js/plugins/validationengine/languages/jquery.validationEngine-en.js"  var="validationEngineJs" />  
  <spring:url value="/resources/js/plugins/validationengine/jquery.validationEngine.js"  var="validationEngineJs2" /> 
  <spring:url value="/resources/js/plugins/jquery-validation/jquery.validate.js"  var="validateJs" /> 
-<spring:url value="/resources/img/SPARSH.PNG"  var="logoImg" /> 
+ <spring:url value="/resources/img/SPARSH.PNG"  var="logoImg" /> 
 
 
 
@@ -89,11 +89,15 @@
     <script src="${customerGrid}"></script>
 <script type='text/javascript' src="http://trirand.com/blog/jqgrid/js/i18n/grid.locale-en.js"></script>
 <script type='text/javascript'  src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
 
 		
  <script type='text/javascript'>
  var readinessTemplateValues = [];
  var warehouseNameValues = [];
+ var validatorWarehouse;
+ var validatorCustomer;
+ var validatorUpdate;
  function dashboardValues()
 	{
 		$.ajax({
@@ -536,6 +540,8 @@ $(document).ready(function(){
 			$("#rackBuiltupArea").val("");
 			$("#palette_positions").val("");
 			$("#totalNumberOfDocks").val("");
+			$("#floorCarpetAreaRef").val("0");
+			$("#rackBuiltupAreaRef").val("0");
 
 	validatorWarehouse.resetForm();
 			
@@ -670,7 +676,6 @@ $(document).ready(function(){
 			$("#remark").val("");
 
 				$("#statusWork").val("wIP");
-				$("#statusWork").attr('disabled','disabled');
 			 	$("#actualFloorBuiltupArea").attr('disabled','disabled');
 				$("#actualFloorCarpetArea").attr('disabled','disabled');
 				$("#actualRackBuiltupArea").attr('disabled','disabled');
@@ -727,6 +732,26 @@ $(document).ready(function(){
 	        });
 
 			
+			validator.resetForm();
+			validatorUpdate.resetForm();
+			
+			$("#customerName").css("border-color","#d7d7d7");
+			$("#estimatedFloorBuiltupArea").css("border-color","#d7d7d7");
+			$("#estimatedFloorCarpetArea").css("border-color","#d7d7d7");
+			$("#estimatedRevenue").css("border-color","#d7d7d7");
+			$("#estimatedStartDate").css("border-color","#d7d7d7");
+			$("#estimatedRackBuiltupArea").css("border-color","#d7d7d7");
+			$("#estimated_palette_positions").css("border-color","#d7d7d7");
+			$("#remark").css("border-color","#d7d7d7");
+			$("#actualFloorBuiltupArea").css("border-color","#d7d7d7");
+			$("#actualFloorCarpetArea").css("border-color","#d7d7d7");
+			$("#actualRevenue").css("border-color","#d7d7d7");
+			$("#actualRackBuiltupArea").css("border-color","#d7d7d7");
+			$("#actual_palette_positions").css("border-color","#d7d7d7");	
+		    $("#actualStartDate").css("border-color","#d7d7d7");
+
+		    $('#statusWork').empty();
+			$("#statusWork").append('<option value="wIP">Work In Progress</option>');
 		 
 		});
 	
@@ -751,7 +776,15 @@ $(document).ready(function(){
 					$("#contact_name_2").val("");
 					$("#contact_number_2").val("");
 					$("#contact_email_id_2").val("");
-				
+
+					validatorCustomer.resetForm();
+					$("#customer_name").css("border-color","#d7d7d7");
+					$("#contact_number_1").css("border-color","#d7d7d7");
+					$("#contact_name_1").css("border-color","#d7d7d7");
+					$("#contact_email_id_1").css("border-color","#d7d7d7");
+					$("#contact_number_2").css("border-color","#d7d7d7");
+					$("#contact_name_2").css("border-color","#d7d7d7");
+					$("#contact_email_id_2").css("border-color","#d7d7d7");
 
 				
 		});
@@ -759,6 +792,20 @@ $(document).ready(function(){
 	//Populate Client 
 	
 	
+	$('#statusFilterSPL').change(function () {
+		   var status = $('#statusFilterSPL').val();
+		   
+		    $('#statusFilterSPL').prop("selected", true);
+			  
+		    $("#grid2").jqGrid('setGridParam', { 
+	            postData: {"status":status }
+	     }).trigger('reloadGrid'); 
+  	
+			   
+		   		} );
+
+
+
 	
 	
 //Populate warehouse available area based on Warehouse Selected id= #allocatedWarehouse
@@ -856,9 +903,28 @@ $(document).ready(function(){
 	
 	
 	$('#floorCarpetArea').change(function () {
-	   var floorCarpetArea = $('#floorCarpetArea').val();
+	   var floorCarpetArea =  parseInt($('#floorCarpetArea').val());
 	   var floorBuiltupArea = parseInt((floorCarpetArea*1.25));
 	   $("#floorBuiltupArea").val(floorBuiltupArea);
+
+/* 		var floorRef = parseInt($("#floorCarpetAreaRef").val());
+
+		if(floorRef<floorCarpetArea)
+			{
+			var  availableWarehouseFloor =  floorCarpetArea - floorRef;
+
+			$('#availableWarehouseFloor').val(availableWarehouseFloor);
+			$('#floorCarpetErrorLabel').text("");
+			$('#floorCarpetErrorLabel').hide();
+			
+			}
+		else
+			{
+			$('#floorCarpetErrorLabel').text("Sorry Cannot Reduce the value");
+			$('#floorCarpetErrorLabel').show();
+			}
+		
+ */	   
 	});
 	
 	
@@ -878,6 +944,8 @@ $(document).ready(function(){
 		   var rackBuiltupArea = parseInt((palette_positions*25));
 		   $("#rackBuiltupArea").val(rackBuiltupArea);
 		});
+
+
 
 	$('#estimated_palette_positions').change(function () {
 		   var estimated_palette_positions = $('#estimated_palette_positions').val();
@@ -931,14 +999,64 @@ $(document).ready(function(){
 	
 	/* Collects n Passes Warehouse Information from UI to the Warehouse Contoller
 	 */
+	 jQuery.validator.addMethod("floorAreaCheck", function (value, element) {
+				
+		        var floorBuiltupArea =  parseInt($('#floorBuiltupArea').val());
+		   		var floorRef = parseInt($("#floorCarpetAreaRef").val());
+
+			if(floorRef<=floorBuiltupArea)
+				{
+				var  availableWarehouseFloor =  floorBuiltupArea - floorRef;
+
+				$('#availableWarehouseFloor').val(availableWarehouseFloor);
+
+				return true;
+				
+				}
+			else
+				{
+				return false;
+				}
+			
+	    }, "You can't reduce the area");
 
 
-	 var validatorWarehouse = $("#warehouseForm").validate({
+		
+	 jQuery.validator.addMethod("rackAreaCheck", function (value, element) {
+			
+		 var rackBuiltupArea =  parseInt($('#rackBuiltupArea').val());
+		  
+			var rackRef = parseInt($("#rackBuiltupAreaRef").val());
+			
+			if(rackRef<=rackBuiltupArea)
+				{
+				var  availableWarehouseRack =  rackBuiltupArea - rackRef;
+				console.log(availableWarehouseRack);
+				$('#availableWarehouseRack').val(availableWarehouseRack);
+
+				return true;
+				
+				}
+			else{
+
+				return false;
+								}	 
+		
+ }, "You can't reduce the area");
+
+
+	  validatorWarehouse = $("#warehouseForm").validate({
 	        rules: {
 	        	warehouseName :"required",
-				floorBuiltupArea : "required",
+				floorBuiltupArea : {
+					required : true,
+					floorAreaCheck : true
+					},
 				floorCarpetArea : "required",
-				rackBuiltupArea : "required",
+				rackBuiltupArea : {
+					required : true,
+					rackAreaCheck : true
+					},
 				palette_positions : "required",
 				totalNumberOfDocks : {
 	        	      required: true,
@@ -947,9 +1065,7 @@ $(document).ready(function(){
 	        },
 	        messages: {
 	        	warehouseName :"Please specify Warehouse Name",
-				floorBuiltupArea : "What is the Built-up area",
-				floorCarpetArea : "What is the Built-up area",
-				rackBuiltupArea : "required",
+	        	floorCarpetArea : "What is the Built-up area",
 				palette_positions : "Whats the Carpet Area",
 				
 	           
@@ -1048,7 +1164,8 @@ $(document).ready(function(){
 		var rackBuiltupArea = $("#rackBuiltupArea").val();
 		var palette_positions = $("#palette_positions").val();
 		var totalNumberOfDocks = $("#totalNumberOfDocks").val();
-	
+		var availableWarehouseFloor = $('#availableWarehouseFloor').val();
+		var availableWarehouseRack = $('#availableWarehouseRack').val();
 		
 		$.ajax({
 			
@@ -1064,6 +1181,8 @@ $(document).ready(function(){
 				rackBuiltupArea : rackBuiltupArea,
 				palette_positions : palette_positions,
 				totalNumberOfDocks : totalNumberOfDocks,
+				availableWarehouseFloor : availableWarehouseFloor,
+				availableWarehouseRack : availableWarehouseRack,
 			   },
 			success : function(data) {
 				console.log("SUCCESS: ", data);
@@ -1076,7 +1195,7 @@ $(document).ready(function(){
 				$("#palette_positions").css("border-color","#d7d7d7");
 				$("#totalNumberOfDocks").css("border-color","#d7d7d7");
 				var msg="";
-				 $("#warehouseDivCount").html(msg).fadeIn().delay(2000);
+				// $("#warehouseDivCount").html(msg).fadeIn();
 			},
 			error : function(e) {
 				console.log("ERROR: ", e);
@@ -1117,25 +1236,29 @@ $(document).ready(function(){
 	 */
 
 
-	 var validatorCustomer = $("#myFormCustomer").validate({
+	  validatorCustomer = $("#myFormCustomer").validate({
 	        rules: {
 	        	customer_name :"required",
 				contact_name_1 : "required",
 				contact_number_1 : "required",
-				contact_emaill_id_1 : "required",
+				contact_email_id_1 : {
+				      required: true,
+				      email: true
+				    },
 				contact_name_2 : "required",
 				contact_number_2 : "required",
-				contact_emaill_id_2 : "required",
+				contact_email_id_2 :{
+				      required: true,
+				      email: true
+				    },
 				
 	        },
 	        messages: {
 	        	customer_name :"required",
 				contact_name_1 : "required",
 				contact_number_1 : "required",
-				contact_emaill_id_1 : "required",
 				contact_name_2 : "required",
 				contact_number_2 : "required",
-				contact_emaill_id_2 : "required",
 				
 	           
 	        }
@@ -1668,7 +1791,7 @@ console.log("hello");
 	 jQuery.validator.addMethod("availableAreaValidation", function (value, element) {
 
 			var availableFloor = parseInt($("#availableFloor2").val());
-			var actualFloorCarpetArea = parseInt($("#actualFloorCarpetArea").val());
+			var actualFloorCarpetArea = parseInt($("#actualFloorBuiltupArea").val());
 			var actualFloorCarpetAreaRef = parseInt($("#actualFloorCarpetAreaRef").val());
 			var availableMatchingValue;
 			console.log(availableFloor);
@@ -1788,6 +1911,10 @@ console.log("hello");
 					{
 					   return true;
 					}
+				else if(actualFloorCarpetArea!=0 && actualRackBuiltupArea!=0 && actual_palette_position != 0)
+				{
+				   return true;
+				}
 				else{
 					return false;
 					}
@@ -1799,7 +1926,7 @@ console.log("hello");
 
 
 		
-	var validatorUpdate = $("#myFormUpdate").validate({
+	 validatorUpdate = $("#myFormUpdate").validate({
 	        rules: {
 
 				actualFloorCarpetArea : {
@@ -1955,8 +2082,8 @@ console.log("hello");
 						    	$('#bulkUpdate').hide();
 						    	$("#grid4").trigger("reloadGrid");
 						*/
-						
-						$('#readinessTemplateCompanyName').val(customerName);
+						var customerValue = $("#customerName :selected").text();
+						$('#readinessTemplateCompanyName').val(customerValue);
 				    	$('#readinessSalesPipeLineId').val(salesPipeLineId);
 						
 						$("#inlineEditGrid").jqGrid('setGridParam', { 
@@ -2532,6 +2659,35 @@ console.log("hello");
 		 });	
 
 
+	 $('#doCustomerOperation').click(function()
+			 {
+
+				 var warehouseId = $('#alertPara').val();
+				// alert(id);
+				  $.ajax({
+		      		
+		      		type : "POST",
+		      		encoding : "UTF-8",
+		      		url : "deleteCustomer",
+		      		datatype :'json', 
+		      		data : {
+		      			customer_id : warehouseId,
+		      			        },
+		      		success : function(data) {
+		                    console.log("Marked for Deletion");
+		                    $("#grid").trigger("reloadGrid");
+		                    $('#alertDiv').hide();
+		      		           },
+		      		error : function(e) {
+		      			console.log("ERROR: ", e);
+		      		
+		      			}
+		      	});
+			      	
+				 });	
+
+	 
+
 	 $('#doReadinessOperation').click(function()
 			 {
 
@@ -2616,6 +2772,9 @@ console.log("hello");
 
 		today = yyyy+'-'+mm+'-'+dd;
 		document.getElementById('readinessTemplateEditStartDate').setAttribute("min", today);
+		document.getElementById('actualStartDate').setAttribute("min", today);
+		document.getElementById('estimatedStartDate').setAttribute("min", today);
+		
 		
 		start.addEventListener('change', function() {
 		    if (start.value)
@@ -2638,7 +2797,7 @@ console.log("hello");
 
 
 
-setInterval(dashboardValues,10000);
+//setInterval(dashboardValues,10000);
 
 
 </script>
@@ -2755,7 +2914,7 @@ setInterval(dashboardValues,10000);
                             
                              <div class="widget widget-default widget-item-icon">
                                 <div class="widget-item-left">
-                                    <span class="fa fa-home"></span>
+                                    <span class="fa fa-home" style="color: #1cb29a;"></span>
                                 </div>                             
                                 <div class="widget-data">
                                     <div class="widget-int num-count" ><input type="text" style="background:white;border:none;width:20px;" id="totalWarehouse" disabled /></div>
@@ -2771,7 +2930,7 @@ setInterval(dashboardValues,10000);
                             <!-- START WIDGET MESSAGES -->
                             <div class="widget widget-default widget-item-icon" >
                                 <div class="widget-item-left">
-                                    <span class="fa fa-user"></span>
+                                    <span class="fa fa-user" style="color: #428bca;"></span>
                                 </div>                             
                                 <div class="widget-data">
                                     <div class="widget-int num-count"><input type="text" style="background:white;border:none;width:20px" id="totalClientsCount" disabled /></div>
@@ -2788,7 +2947,7 @@ setInterval(dashboardValues,10000);
                             <!-- START WIDGET REGISTRED -->
                             <div class="widget widget-default widget-item-icon" >
                                 <div class="widget-item-left">
-                                    <span class="fa fa-database"></span>
+                                    <span class="fa fa-database" style="color: #0a7d0a;"></span>
                                 </div>
                                 <div class="widget-data">
                                     <div class="widget-int num-count"><input type="text"  style="background:white;border:none;width:150px;" id="totalSpaceAvailableCount" disabled /></div>
@@ -2806,7 +2965,7 @@ setInterval(dashboardValues,10000);
                             <!-- START WIDGET REGISTRED -->
                             <div class="widget widget-default widget-item-icon" >
                                 <div class="widget-item-left">
-                                    <span class="fa fa-database"></span>
+                                    <span class="fa fa-database" style="color: #fe970a;"></span>
                                 </div>
                                 <div class="widget-data">
                                     <div class="widget-int num-count"><input type="text"  style="background:white;border:none;width:150px;" id="totalSpaceUtilizedCount" disabled /></div>
@@ -2826,7 +2985,9 @@ setInterval(dashboardValues,10000);
                     <div class="col-md-8">
                     <jsp:include page="pie.jsp" />
                     </div>
-                 
+                 	<%-- <div class="col-md-8">
+                    <jsp:include page="piechart.jsp" />
+                    </div> --%>
                     </div>
                     
                     
@@ -3015,20 +3176,24 @@ setInterval(dashboardValues,10000);
                                            
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label" style="color:black;">Floor Carpet area :</label>                                       
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" id="floorCarpetArea" name="floorCarpetArea"/>
-                                             
-                                        </div>
-                                    </div>    
+                                    
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" style="color:black;">Floor Builtup Area :</label>                                        
                                         <div class="col-md-9">
                                             <input type="text" class="form-control" id="floorBuiltupArea" name="floorBuiltupArea"/>                                        
+                                            <input type="text" class="form-control" style="display:none;" id="floorCarpetAreaRef" name="floorCarpetAreaRef"/>
+                                            <input type="text" class="form-control" style="display:none;" id="availableWarehouseFloor"/>
                                             
                                         </div>
                                     </div> 
+                                    
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" style="color:black;">Floor Carpet area :</label>                                       
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="floorCarpetArea" name="floorCarpetArea"/>
+                                          </div>
+                                    </div>    
                                     
                                      <div class="form-group">                                        
                                         <label class="col-md-3 control-label" style="color:black;">Number of Palette Postions  :</label>          
@@ -3042,7 +3207,10 @@ setInterval(dashboardValues,10000);
                                         <label class="col-md-3 control-label" style="color:black;">Rack Builtup area :</label>
                                         <div class="col-md-9">
                                             <input type="text" value="" class="form-control" id="rackBuiltupArea" name="rackBuiltupArea"/>                                        
-                                            
+                                            <input type="text" value="" class="form-control" style="display:none;" id="rackBuiltupAreaRef" name="rackBuiltupAreaRef"/>                                        
+                                            <input type="text" class="form-control" style="display:none;" id="availableWarehouseRack"/>
+                                			<label id="rackErrorLabel" style="display:none;"></label>
+                                        
                                         </div>
                                     </div>
                                     
@@ -3455,6 +3623,21 @@ setInterval(dashboardValues,10000);
                                 </div> -->
                                 <div class="panel-body" style="padding: 22px 30px;">
 
+										<div class="row">
+                                       <div class="col-md-9">
+                                       <h3> </h3> 
+                                       </div>
+                                       <div class="col-md-3">
+                                       <select id="statusFilterSPL" class="form-control">
+                                       <option value="wIP"> Work in Progress</option>
+                                       <option value="confirmed"> Agreement Signed</option>
+                                       <option value="billable"> Billable</option>
+                                       <option value="closed"> Closed</option>
+                                       </select>
+                                        </div>
+                                       
+										</div>
+										<br/>
 										<table id="grid2" class="table"></table>
 										<div id="pagingDiv2"></div>
 
@@ -3633,7 +3816,7 @@ setInterval(dashboardValues,10000);
                                      <div class="form-group">
                                         <label class="col-md-6 control-label" style="color:black;">Remark : </label>
                                         <div class="col-md-6">
-                                            <textarea rows="10" cols="40" id="remark" name="remark" ></textarea>
+                                            <textarea rows="6" cols="120" id="remark" name="remark" ></textarea>
                                            
                                         </div>
                                     </div>
@@ -4386,9 +4569,7 @@ setInterval(dashboardValues,10000);
 
 								<!-- START BASIC TABLE SAMPLE -->
 								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h3 class="panel-title" style="margin-top: 5px;">Readiness Report</h3>
-									</div>
+									
 									<div class="panel-body" style="padding: 22px 30px;">
                                        <div class="row">
                                        <div class="col-md-2">

@@ -115,7 +115,7 @@ public SalesPipeLineDaoImpl() throws SQLException, ClassNotFoundException
 		
 		if(actualFloorCarpetAreaRef == 0 || actualRackBuiltupAreaRef == 0)
 		{
-			Integer newAvailableFloor = availableFloor - actualFloorCarpetArea;
+			Integer newAvailableFloor = availableFloor - actualFloorBuiltupArea;
 			Integer newAvailableRack = availableRack - actualRackBuiltupArea;
 		 spaceAvialabilityStatus = warehouseDao.updateSpaceAvialabilityWarehouse(warehouseId, newAvailableFloor, newAvailableRack);
 		}
@@ -576,6 +576,7 @@ public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 		Integer actualFloorBuiltupArea;
 		Integer estimatedFloorCarpetArea;
 		Integer actualFloorCarpetArea;
+		Integer actualRackBuiltUp;
 		Date estimatedStartDate ;
 		Date dateOfCreationSql;
 		String allocatedWarehouse ;
@@ -588,7 +589,7 @@ public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 		ResultSet res;
 		try{		        	
 			
-			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted,date_of_creation from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id=?");
+			PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name, estimated_floor_builtup,actual_floor_builtup, estimated_floor_carpet, actual_floor_carpet, status_id,estimated_start_date, warehouse_id,isActive,isDeleted,date_of_creation,actual_rack_builtup from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id=?");
 			prepare.setString(1, clientStatusFilter);
 			res=prepare.executeQuery();
 			
@@ -605,6 +606,7 @@ public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 				statusWork = res.getString("status_id");
 				estimatedStartDate = res.getDate("estimated_start_date");
 				dateOfCreationSql = res.getDate("date_of_creation");
+				actualRackBuiltUp = res.getInt("actual_rack_builtup");
 				allocatedWarehouse = res.getString("warehouse_id");
 				isActive = res.getString("isActive");
 				isDeleted = res.getString("isDeleted");
@@ -641,6 +643,9 @@ public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 					
 				}
 				
+				//Total Sellable area 
+				Integer sellableArea = actualRackBuiltUp + actualFloorBuiltupArea;
+				
 				//Date Of Creation
 				SimpleDateFormat sc=new SimpleDateFormat("dd-MM-yyyy");
 				String dateOfCreation = sc.format(dateOfCreationSql); 
@@ -659,6 +664,7 @@ public List<SalesPipeLine> areaReportController(String clientStatusFilter) {
 			    salesPipeLine.setSalesPipeLineId(salesPipeLineId);
 			    salesPipeLine.setAllocatedWarehouse(allocatedWarehouse);
 			    salesPipeLine.setAge(age);
+			    salesPipeLine.setTotalSellableArea(sellableArea);
 			    salesPipeLine.setIsActive(isActive);
 			    salesPipeLine.setIsDeleted(isDeleted);
 			    salesArrayList.add(salesPipeLine);
@@ -761,7 +767,7 @@ public List<SalesPipeLine> clientReportController(Integer clientWarehouseFilter)
 				
 			}
 			
-			Integer sellableArea = actualRackBuiltUp + actualFloorCarpetArea;
+			Integer sellableArea = actualRackBuiltUp + actualFloorBuiltupArea;
 			
 			salesPipeLine = new SalesPipeLine();
 			salesPipeLine.setSalesPipeLineId(salesPipeLineId);
@@ -845,6 +851,128 @@ public List<String> chartSalesPipeLine() {
 
 public static String nvl(String str) {
     return (str == null) ? "" : str.trim();
+}
+
+public List<SalesPipeLine> listSalesPipeLineByStatus(String status) {
+	
+	
+
+	Integer salesPipeLineId;
+	String customerName,customerNameValue;
+	String customerType;
+	Integer estimatedFloorBuiltupArea;
+	Integer estimatedFloorCarpetArea;
+	Integer estimatedRackBuiltupArea;
+	Integer estimated_palette_positions;
+	Date estimatedStartDate ;
+	String allocatedWarehouse ;
+	String statusWork ;
+	Integer actualFloorBuiltupArea;
+	Integer actualFloorCarpetArea;
+	Integer actualRackBuiltupArea;
+	Integer actual_palette_positions;
+	Date actualStartDate;
+	String remark;
+	String warehouseName;
+	Integer warehouseID;
+	List<CustomerEntity> customerList;
+	
+	List<SalesPipeLine> salesArrayList=new ArrayList<SalesPipeLine>();
+	SalesPipeLine salesPipeLine = null;
+	try{		        	
+		
+		PreparedStatement prepare=con.prepareStatement("select sp_id,customer_name,customer_type,estimated_floor_builtup, estimated_floor_carpet, estimated_rack_builtup, estimated_palette_positions, estimated_start_date, warehouse_id, status_id, actual_floor_builtup, actual_floor_carpet, actual_rack_builtup, actual_palette_positions, actual_start_date, remarks from salespipeline_master where isActive='Yes' and isDeleted='No' and status_id = ?");
+		prepare.setString(1, status);
+		res=prepare.executeQuery();
+		
+		
+		
+		while(res.next())
+		{
+			salesPipeLineId=res.getInt("sp_id");
+			customerName = res.getString("customer_name");
+			customerType= res.getString("customer_type");
+			estimatedFloorBuiltupArea = res.getInt("estimated_floor_builtup");
+			estimatedFloorCarpetArea = res.getInt("estimated_floor_carpet");
+			estimatedRackBuiltupArea = res.getInt("estimated_rack_builtup");
+			estimated_palette_positions = res.getInt("estimated_palette_positions");
+			estimatedStartDate = res.getDate("estimated_start_date");
+			allocatedWarehouse = res.getString("warehouse_id");
+			statusWork = res.getString("status_id");
+			actualFloorBuiltupArea = res.getInt("actual_floor_builtup");
+			actualFloorCarpetArea = res.getInt("actual_floor_carpet");
+			actualRackBuiltupArea = res.getInt("actual_rack_builtup");
+			actual_palette_positions = res.getInt("actual_palette_positions");
+			actualStartDate = res.getDate("actual_start_date");
+			remark = res.getString("remarks");
+			
+			warehouseName = warehouseDao.getWarehouseName(Integer.parseInt(allocatedWarehouse));
+			warehouseID = Integer.parseInt(allocatedWarehouse);
+			customerNameValue = "";
+			customerList = customerDao.getCustomerById(Integer.parseInt(customerName));
+			
+			for (int k = 0; k < customerList.size(); k++) {  
+				
+				customerNameValue = nvl(customerList.get(k).getCustomer_name());
+				
+			}
+			
+			String statusNew = null;
+			if(statusWork.equals("confirmed"))
+			{
+				statusNew = "Agreement Signed";
+				
+			}
+			if(statusWork.equals("wIP"))
+			{
+				
+				statusNew = "Work In Progress";
+			}
+			if(statusWork.equals("billable"))
+			{
+				
+				statusNew = "Billable";
+				
+			}
+			
+			
+			
+			salesPipeLine = new SalesPipeLine();
+			salesPipeLine.setSalesPipeLineId(salesPipeLineId);
+		    salesPipeLine.setCustomerName(customerNameValue);
+		    salesPipeLine.setCustomerType(customerType);
+		    salesPipeLine.setEstimatedFloorBuiltupArea(estimatedFloorBuiltupArea);
+		    salesPipeLine.setEstimatedFloorCarpetArea(estimatedFloorCarpetArea);
+		    salesPipeLine.setEstimatedRackBuiltupArea(estimatedRackBuiltupArea);
+		    salesPipeLine.setEstimated_palette_positions(estimated_palette_positions);
+		    salesPipeLine.setEstimatedStartDate(estimatedStartDate);
+		    salesPipeLine.setSalesPipeLineId(salesPipeLineId);
+		    salesPipeLine.setAllocatedWarehouse(warehouseName);
+		    salesPipeLine.setStatusWork(statusWork);
+		    salesPipeLine.setActualFloorBuiltupArea(actualFloorBuiltupArea);
+		    salesPipeLine.setActualFloorCarpetArea(actualFloorCarpetArea);
+		    salesPipeLine.setActualRackBuiltupArea(actualRackBuiltupArea);
+		    salesPipeLine.setActual_palette_positions(actual_palette_positions);
+		    salesPipeLine.setRemark(remark);
+		    salesPipeLine.setWarehouseId(warehouseID);
+		    salesPipeLine.setStatusNew(statusNew);
+		    salesArrayList.add(salesPipeLine);
+			
+			
+		}
+
+       
+	} 
+			catch (Exception e) {
+      e.printStackTrace();
+    }
+  
+		
+	return salesArrayList;
+	
+
+	
+	
 }
 	
 		

@@ -24,6 +24,8 @@ public interface SalesPipeLineDao {
 
 	public List<SalesPipeLine> listSalesPipeLine();
 	
+	public List<SalesPipeLine> listSalesPipeLineByStatus(String status);
+	
 	public List<String> chartSalesPipeLine();
 	
 	public HashMap<String, String> getSalesPipeLineDetailsById(Integer salesPipeLineId);

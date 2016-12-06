@@ -10,7 +10,7 @@ jQuery("#areaGrid").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Customer Name','Customer Name', 'Status Work','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Date of Creation'],
+    colNames:['Customer Name','Customer Name', 'Status Work','Sellable Area','Est.Floor Built-up Area', 'Actual Floor Built-up Area','Est.Floor Carpet Area', 'Actual Floor Carpet Area','Date of Creation'],
     colModel:[
 {
 	name:'customerName',
@@ -26,12 +26,13 @@ jQuery("#areaGrid").jqGrid({
         			name:'statusNew',
         			index:'statusNew', 
         			width:120,
-        		    // stype defines the search type control - in this case HTML select (dropdownlist)
-                    //stype: "select",
-                    // searchoptions value - name values pairs for the dropdown - they will appear as options
-                    //searchoptions: {value:"ALL;wIP:InProgress;confirmed:Confirmed"}
-                
-        		},
+      		},
+      		{
+				name:'totalSellableArea',
+				index:'totalSellableArea', 
+				width:110
+				
+			},
         {
         				name:'estimatedFloorBuiltupArea',
         				index:'estimatedFloorBuiltupArea', 
