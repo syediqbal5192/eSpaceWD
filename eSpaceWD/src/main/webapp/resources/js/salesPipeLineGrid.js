@@ -355,6 +355,7 @@ $.ajax({
 			console.log("Customer Id : ",posts.customerName);
 			
 			$("#sp_Id").val(posts.salePLId);
+			$('#salesPipeLineIdUpload').val(posts.salePLId);
 			$("#customerName").val(posts.customerName);     	
 			$('#customerType').append($('<option>').text(posts.customerType).attr('value', posts.customerType));
 			$("#estimatedFloorBuiltupArea").val(posts.estimatedFloorBuiltupArea);

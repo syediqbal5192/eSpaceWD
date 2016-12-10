@@ -5,7 +5,7 @@ jQuery("#customerGrid").jqGrid({
     async : false,
     datatype: "json",
     jsonReader: {repeatitems: false, id: "ref"},
-    colNames:['Id','Customer Name','Contact Name', 'Contact Number' , 'Email Id','Contact Name','Conatct Number','Email Id','Edit','Delete'],
+    colNames:['Id','Customer Name','Contact Name', 'Contact Number' , 'Email Id','Contact Name','Conatct Number','Email Id','Edit'],
     colModel:[
         {name:'customer_id',index:'customer_id', width:0.5},
         {name:'customer_name',index:'customer_name', width:100},
@@ -16,7 +16,7 @@ jQuery("#customerGrid").jqGrid({
         {name:'contact_number_2',index:'contact_number_2', width:120},
         {name:'contact_email_1',index:'contact_email_1', width:140},
         {name:'edit',search:false,index:'customer_id',width:55,sortable: false,formatter: editLinkCustomer},
-        {name:'delete',search:false,index:'customer_id',width:60,sortable: false,formatter: deleteLinkCustomer},
+      
          
     ],
     rowNum:10,

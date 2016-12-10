@@ -52,7 +52,7 @@ public String loginLogin(String userName, String Password) {
 		    	transaction.rollback();
 		    e.printStackTrace(); 
 		 }
-	 session.getTransaction().commit();	 
+	  
 	 return "failure";
 
 	}

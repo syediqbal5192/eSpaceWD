@@ -33,8 +33,14 @@ public class SalesPipeLineEntity {
 	String isDeleted;
 	Double expectedRevenue;
 	Double actualRevenue;
+	String existingBucketName;
+	String keyName;
 	
 	
+	public SalesPipeLineEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public SalesPipeLineEntity(String customerName, Double estimatedFloorBuiltupArea, Double estimatedFloorCarpetArea,
 			Double estimatedRackBuiltupArea, Double estimatedRackCarpetArea, Date estimatedStartDate,
 			Integer allocatedWarehouse, String statusWork, Double actualFloorBuiltupArea, Double actualFloorCarpetArea,
@@ -214,6 +220,22 @@ public class SalesPipeLineEntity {
 	}
 	public void setActualRevenue(Double actualRevenue) {
 		this.actualRevenue = actualRevenue;
+	}
+	
+	@Column(name = "existingBucketName")
+	public String getExistingBucketName() {
+		return existingBucketName;
+	}
+	public void setExistingBucketName(String existingBucketName) {
+		this.existingBucketName = existingBucketName;
+	}
+	
+	@Column(name = "keyName")
+	public String getKeyName() {
+		return keyName;
+	}
+	public void setKeyName(String keyName) {
+		this.keyName = keyName;
 	}
 	
 	

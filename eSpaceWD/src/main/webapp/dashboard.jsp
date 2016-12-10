@@ -2747,14 +2747,60 @@ console.log("hello");
 	              	
 				 });
 
-/* 	 $('#readinessTemplateEditStartDate').addEventListener('change', function() {
-		    if (start.value)
-		        end.min = start.value;
-		}, false);
-		$('#readinessTemplateEditEndDate').addEventLiseter('change', function() {
-		    if (end.value)
-		        start.max = end.value;
-		}, false); */
+
+
+	 $('#uploadDocument').click(function()
+			 {
+		 var salesPipeLineId = $("#sp_Id").val();
+		 
+		 sessionStorage.setItem("salesPipeLineId", salesPipeLineId); 
+		 
+		 window.open ("http://localhost:8080/eSpaceWD/uploadFile.jsp", "Janela", "status=no, width=360, height=300")
+		 
+		 });
+
+
+	 
+
+	 
+	 $('#downloadDocument').click(function()
+			 {
+
+		 
+
+		 var salesPipeLineIdUpload = $("#sp_Id").val();
+		
+			  $.ajax({
+      		
+      		type : "POST",
+      		encoding : "UTF-8",
+      		url : "getDownloadDocById",
+      		datatype :'json', 
+      		data : {
+      			salesPipeLineIdUpload : salesPipeLineIdUpload,
+      			
+      			        },
+      		success : function(data) {
+                    console.log(data);
+                   
+      		           },
+      		error : function(e) {
+      			console.log("ERROR: ", e);
+      		
+      		}
+      	});
+
+
+		 
+		 });
+
+/* 	 $("form#dataUpload").submit(function(){
+
+			alert($("#file").val());
+				
+		 });
+ */
+
 		
 		var start = document.getElementById('readinessTemplateEditStartDate');
 		var end = document.getElementById('readinessTemplateEditEndDate');
@@ -2797,7 +2843,7 @@ console.log("hello");
 
 
 
-//setInterval(dashboardValues,10000);
+setInterval(dashboardValues,10000);
 
 
 </script>
@@ -3820,9 +3866,11 @@ console.log("hello");
                                            
                                         </div>
                                     </div>
-                                    
+
                                     
                                     </form>
+                                     
+
                                  </div>
                          
                       <!--    <div class="col-md-6 actualData" id="wIP" style="display:none;">
@@ -3889,7 +3937,30 @@ console.log("hello");
                                         </div>
                                     </div>
                                     
-                                   
+                                     <br/><br/><br/><br/><br/><br/><br/>                                 
+                                     <div class="form-group" style="margin-left:120px;">
+                                        <div class="col-md-4">
+                                        <label></label>
+                                        </div>
+                                        <div class="col-md-4">
+                                        <label></label>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                        <div class="row">
+                                        <div class="col-md-5">
+                                          		 <button class="btn btn-info" id="uploadDocument"><span class="fa fa-upload fa-right"></span></button>
+                                          		 </div>
+                                          		 <div class="col-md-2">
+                                          		 <label></label>
+                                          		 </div>
+                                          		 <div class="col-md-5">   
+                                          	  <button class="btn btn-success" id="downloadDocument"><span class="fa fa-download fa-right"></span></button>
+												</div>	
+                                        </div>
+                                     	</div>
+                                    </div>
+                                    
                                     
                                     </form>
                                     </div>
@@ -4816,7 +4887,8 @@ console.log("hello");
             </div>
         </div>
         </div>
-        <div class="message-box animated fadeIn" data-sound="alert" id="editReadinessTemplateDiv" style="display:none;">
+        
+         <div class="message-box animated fadeIn" data-sound="alert" id="editReadinessTemplateDiv" style="display:none;">
             <div class="mb-container" style="background:#818181;width: 930px;margin-left: 376px;margin-top: -139px;height: 0px;">
                 <div class="mb-middle" style="left:0.1%;">
         <div class="panel panel-primary animated zoomIn xn-drop-left xn-panel-dragging" style="width: 470px;">
@@ -4926,6 +4998,8 @@ console.log("hello");
 		</div>
 		</div>
 		</div>
+		
+        
 		
 		
         <!-- END MESSAGE BOX-->
