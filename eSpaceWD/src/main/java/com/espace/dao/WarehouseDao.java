@@ -16,6 +16,7 @@ public interface WarehouseDao
 	
 	public List<Warehouse> listWarehouse();
 	
+	public List<Warehouse> listWarehouseSummary();
 
 	public List<Warehouse> listWarehouseByActive();
 	

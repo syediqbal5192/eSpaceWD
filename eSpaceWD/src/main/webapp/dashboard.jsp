@@ -37,6 +37,7 @@
  <spring:url value="/resources/js/clientGrid.js"  var="clientReportGrid" /> 
  <spring:url value="/resources/js/customerGrid.js"  var="customerGrid" /> 
  <spring:url value="/resources/js/readinessTemplateReportGrid.js"  var="readinessTemplateReportGridJS" /> 
+ <spring:url value="/resources/js/warehouseSummaryGrid.js"  var="warehouseSummaryGridJS" /> 
  
  <spring:url value="/resources/js/plugins/noty/jquery.noty.js"  var="notyJs" /> 
  <spring:url value="/resources/js/plugins/noty/layouts/topRight.js"  var="topCenterJs" />  
@@ -76,6 +77,7 @@
     <script src="${clientReportGrid}"></script>
     <script src="${readinessTemplateGridJS}"></script>    
     <script src="${readinessTemplateReportGridJS}"></script> 
+    <script src="${warehouseSummaryGridJS}"></script> 
     <script src="${inlineGrid}"></script>
     <script src="${inlineEditGrid}"></script>
     <script src="${notyJs}"></script>
@@ -253,6 +255,7 @@ $(document).ready(function(){
 	$('#salesPipeLineLink').css( 'cursor', 'pointer' );
 	$('#readinessLink').css( 'cursor', 'pointer' );
 	$('#graphicalReportLink').css( 'cursor', 'pointer' );
+	$('#summaryReportLink').css( 'cursor', 'pointer' );
 	$('#tabularReportLink').css( 'cursor', 'pointer' );
 	$('#areaReportLink').css( 'cursor', 'pointer' );
 	$('#clientReportLink').css( 'cursor', 'pointer' );
@@ -267,7 +270,7 @@ $(document).ready(function(){
 		 
 		 
 		});
-	graphicalChartDiv
+	
 	
 
 	$("#graphicalReportLink").click(function(){
@@ -279,10 +282,28 @@ $(document).ready(function(){
 		 $('#clientReportDiv').hide();
 		 $('#readinessTemplateReportDiv').hide();
 		 $('#reportDiv').hide();
+		 $("#customerDiv").hide();
+		 $("#viewCustomerDiv").hide();
+		 $("#summaryDiv").hide();
+		});
+
+
+	$("#summaryReportLink").click(function(){
+
+		 $("#summaryDiv").fadeIn(500);
+		 $("#graphicalChartDiv").hide();
+		 $("#dashboardDiv").hide(500);
+		 $("#salesPipeLineDiv").hide();
+		 $('#warehouseDiv').hide();
+		 $('#areaReportDiv').hide();
+		 $('#clientReportDiv').hide();
+		 $('#readinessTemplateReportDiv').hide();
+		 $('#reportDiv').hide();
 
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
 		});
+
 
 	
 	$("#dashboardLink").click(function(){
@@ -296,6 +317,7 @@ $(document).ready(function(){
 		 $('#reportDiv').hide();
 		 $('#readinessDiv').hide();
 
+		 $("#summaryDiv").hide();
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
 		});
@@ -318,6 +340,7 @@ $(document).ready(function(){
 		 $('#readinessTemplateReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 
+		 $("#summaryDiv").hide();
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();	
 		 
@@ -363,6 +386,7 @@ $(document).ready(function(){
 		 $("#graphicalChartDiv").hide();
 		 $("#areaGrid").trigger("reloadGrid");
 
+		 $("#summaryDiv").hide();
 
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
@@ -389,6 +413,7 @@ $(document).ready(function(){
 		 $("#clientGrid").trigger("reloadGrid");
 
 
+		 $("#summaryDiv").hide();
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
 		});
@@ -416,6 +441,7 @@ $(document).ready(function(){
 		 $('#updateWarehouseInfo').hide();
 		 $('#areaReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
+		 $("#summaryDiv").hide();
 		 $("#readinessTemplateReportGrid").trigger("reloadGrid");
 		});
 	
@@ -441,6 +467,7 @@ $(document).ready(function(){
 		 $("#graphicalChartDiv").hide();
 		 $('#readinessTemplateReportDiv').hide();
 
+		 $("#summaryDiv").hide();
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
 		 
@@ -463,6 +490,7 @@ $(document).ready(function(){
 		 $('#updateCustomerInfo').hide();
 		 $('#areaReportDiv').hide();
 		 $('#clientReportDiv').hide();
+		 $("#summaryDiv").hide();
 		 $("#graphicalChartDiv").hide();
 		 $('#readinessTemplateReportDiv').hide();
 		});
@@ -484,6 +512,7 @@ $(document).ready(function(){
 		 $('#clientReportDiv').hide();
 		 $("#graphicalChartDiv").hide();
 		 $('#readinessTemplateReportDiv').hide();
+		 $("#summaryDiv").hide();
 
 		 $("#customerDiv").hide();
 		 $("#viewCustomerDiv").hide();
@@ -516,7 +545,8 @@ $(document).ready(function(){
 			 $('#areaReportDiv').hide();
 			 $('#clientReportDiv').hide();
 			 $("#graphicalChartDiv").hide();
-			 $('#readinessTemplateReportDiv').hide();		
+			 $('#readinessTemplateReportDiv').hide();
+			 $("#summaryDiv").hide();		
 
 			 $("#customerDiv").hide();
 			 $("#viewCustomerDiv").hide();	 
@@ -533,6 +563,7 @@ $(document).ready(function(){
 		 $('#updateWarehouseInfo').hide();
 		 $("#viewWarehouseDiv").hide();
 		 $('#dashboardDiv').hide();
+		 $("#summaryDiv").hide();
 		 $('#updateTitle').hide();
 			$("#warehouseName").val("");
 			$("#floorBuiltupArea").val("");
@@ -2843,7 +2874,7 @@ console.log("hello");
 
 
 
-setInterval(dashboardValues,10000);
+//setInterval(dashboardValues,10000);
 
 
 </script>
@@ -2903,7 +2934,9 @@ setInterval(dashboardValues,10000);
 						<li class="xn-openable">
 					<a href="#"><span class="fa fa-money"></span> Reports</a>
 						<ul>
-				<li id="graphicalReportLink"><a><span class="fa fa-circle"></span>
+						<li id="summaryReportLink"><a><span class="fa fa-credit-card"></span>
+						<span class="xn-text">Summary Report</span></a></li>
+						<li id="graphicalReportLink"><a><span class="fa fa-circle"></span>
 						<span class="xn-text">Graphical Report</span></a></li>
 						<li id="tabularReportLink" ><a><span class="fa fa-arrows-h"></span>
 						<span class="xn-text">Aging Report </span></a>
@@ -3123,6 +3156,18 @@ setInterval(dashboardValues,10000);
                 <div class="row" >
                     <div class="col-md-12">
                     <jsp:include page="pie2.jsp" />
+                    </div>
+                 
+                    </div>
+				</div>
+				
+				
+				
+				<div id="summaryDiv" style="display:none;background:white;">
+                <div class="row" >
+                    <div class="col-md-12" style="margin-top: 140px">
+                   <table id="warehouseSummaryGrid" class="table" ></table>
+				   <div id="pagingDivWarehouse"></div>
                     </div>
                  
                     </div>

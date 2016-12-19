@@ -686,6 +686,68 @@ try{
 			  return warehouseId;
 	 
 	}
+
+
+
+	public List<Warehouse> listWarehouseSummary() {
+		
+		
+		Session session = HibernateUtil.getSesssion();
+		Transaction transaction = null; 
+		List<WarehouseEntity> warehouseList =null;
+		Warehouse warehouse;
+		List<Warehouse> warehouseCustomList = null;
+		 Integer totalSellableArea;
+		 Integer totalUtilizedSpace;
+		 Integer floorBuiltUp;
+		 Integer rackBuiltUp;
+		 Integer avialableSpace;
+		 Integer avialableSpace1;
+		 Integer avialableSpace2;
+		 
+		 try
+		 {
+			 transaction= session.beginTransaction();
+		 Criteria criteria = session.createCriteria(WarehouseEntity.class, "warehouse");
+		 criteria.add(Restrictions.eq("warehouse.isActive", "Yes"));
+	        criteria.add(Restrictions.eq("warehouse.isDeleted", "No"));    
+ 
+ 	        warehouseCustomList = new ArrayList<Warehouse>();
+   	        warehouseList = new ArrayList<WarehouseEntity>();
+	        warehouseList = (List<WarehouseEntity>) criteria.list();
+	        
+            for (int k = 0; k < warehouseList.size(); k++) {  
+				
+            	avialableSpace1 = warehouseList.get(k).getAvailable_floor_carpet_area();
+            	avialableSpace2 = warehouseList.get(k).getAvailable_rack_carpet_area();
+            	avialableSpace = avialableSpace1 + avialableSpace2;
+            	floorBuiltUp = warehouseList.get(k).getFloor_builtup_area();
+            	rackBuiltUp = warehouseList.get(k).getRack_builtup_area();
+            	totalSellableArea = floorBuiltUp + rackBuiltUp;
+            	totalUtilizedSpace = totalSellableArea - avialableSpace;
+            	
+            	
+            	warehouse = new Warehouse();
+				warehouse.setName(warehouseList.get(k).getWarehouse_name());
+				warehouse.setTotalSellableArea(totalSellableArea);
+				warehouse.setTotalUtilizedSpace(totalUtilizedSpace);
+				warehouse.setAvialableSpace(avialableSpace);
+				warehouseCustomList.add(warehouse);
+				 
+	        }
+	        
+	        session.getTransaction().commit();
+		 }
+		 catch (HibernateException e) {
+			 if (transaction!=null) 
+			    	transaction.rollback();
+			    e.printStackTrace(); 
+			 }
+			 
+		 return warehouseCustomList;
+		
+		
+	}
 	
 	
 

@@ -130,6 +130,16 @@ public class WarehouseController {
 		return json;
 	}
 	
+	@RequestMapping(value="/listWarehouseSummary",method=RequestMethod.GET)
+	public @ResponseBody String listWarehouseSummary(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+		response.setContentType("application/json");
+		
+		List<Warehouse> warehouseArrayList=new ArrayList<Warehouse>();
+		warehouseArrayList = warehouseManager.listWarehouseSummary(); 
+	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	    String json = gson.toJson(warehouseArrayList);
+		return json;
+	}
 	
 
 	@RequestMapping(value="/listWarehouseByActive",method=RequestMethod.GET)

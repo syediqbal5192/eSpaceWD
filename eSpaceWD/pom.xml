@@ -123,6 +123,12 @@
     <artifactId>poi</artifactId>
     <version>3.15</version>
 </dependency>
+
+<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>3.6.3.Final</version>
+		</dependency>
     
     
   </dependencies>

@@ -92,5 +92,15 @@ List<Warehouse> dashboardIconInfoList = warehouseDao.listWarehouseDrillDown(ware
 	return dashboardIconInfoList;
 }
 
+public List<Warehouse> listWarehouseSummary() {
+	
+	
+	List<Warehouse> warehouseArrayList = warehouseDao.listWarehouseSummary();
+	
+	return warehouseArrayList;
+	
+	
+}
+
 
 }

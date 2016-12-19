@@ -14,7 +14,9 @@ public class Warehouse {
 	 Integer total_docks;
 	 Integer occupiedSpace;
 	 Integer vaccantSpace;
-	 
+	 Integer totalSellableArea;
+	 Integer totalUtilizedSpace;
+	 Integer avialableSpace;
 	 String name;
 	 Integer x;
 	 Integer y;
@@ -111,7 +113,27 @@ public class Warehouse {
 	public void setDrilldown(Boolean drilldown) {
 		this.drilldown = drilldown;
 	}
+	public Integer getTotalSellableArea() {
+		return totalSellableArea;
+	}
+	public void setTotalSellableArea(Integer totalSellableArea) {
+		this.totalSellableArea = totalSellableArea;
+	}
+	public Integer getTotalUtilizedSpace() {
+		return totalUtilizedSpace;
+	}
+	public void setTotalUtilizedSpace(Integer totalUtilizedSpace) {
+		this.totalUtilizedSpace = totalUtilizedSpace;
+	}
+	public Integer getAvialableSpace() {
+		return avialableSpace;
+	}
+	public void setAvialableSpace(Integer avialableSpace) {
+		this.avialableSpace = avialableSpace;
+	}
 	 
+	
 	 
+	
 	
 }
