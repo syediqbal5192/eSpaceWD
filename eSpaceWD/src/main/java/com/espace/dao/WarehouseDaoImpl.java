@@ -632,9 +632,9 @@ return warehouseArrayList;
 try{		        	
 			
 			
-			prepare=con.prepareStatement("select warehouse_name from warehouse_master where warehouse_id=? ");
+			PreparedStatement prepare=con.prepareStatement("select warehouse_name from warehouse_master where warehouse_id=? ");
 			prepare.setInt(1,warehouseId);
-			res=prepare.executeQuery();
+			ResultSet res=prepare.executeQuery();
 			
 			while(res.next())
 			{
@@ -642,6 +642,8 @@ try{
 				
 			}
           
+			prepare.close();
+			res.close();
            
 		} 
 				catch (Exception e) {
@@ -704,6 +706,8 @@ try{
 		 Integer avialableSpace;
 		 Integer avialableSpace1;
 		 Integer avialableSpace2;
+		 Integer warehouseId;
+		 String perWarehouseRevenue;
 		 
 		 try
 		 {
@@ -725,6 +729,16 @@ try{
             	rackBuiltUp = warehouseList.get(k).getRack_builtup_area();
             	totalSellableArea = floorBuiltUp + rackBuiltUp;
             	totalUtilizedSpace = totalSellableArea - avialableSpace;
+            	warehouseId = warehouseList.get(k).getWarehouse_id();
+            	
+            	Criteria criteriaSum = session.createCriteria(SalesPipeLineEntity.class, "salesPipeLine");
+       	     criteriaSum.add(Restrictions.eq("salesPipeLine.allocatedWarehouse", warehouseId)); 
+       	     criteria.add(Restrictions.eq("salesPipeLine.statusWork", "billable")); 
+       	        
+              criteriaSum.setProjection(Projections.sum("actualRevenue"));
+              List sumSPL = criteriaSum.list();
+
+              perWarehouseRevenue = String.valueOf(sumSPL.get(0));
             	
             	
             	warehouse = new Warehouse();
@@ -732,6 +746,7 @@ try{
 				warehouse.setTotalSellableArea(totalSellableArea);
 				warehouse.setTotalUtilizedSpace(totalUtilizedSpace);
 				warehouse.setAvialableSpace(avialableSpace);
+				warehouse.setPerWarehouseRevenue(perWarehouseRevenue);
 				warehouseCustomList.add(warehouse);
 				 
 	        }

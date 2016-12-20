@@ -117,6 +117,14 @@ public List<SalesPipeLine> listSalesPipeLineByStatus(String customerName) {
 		
 			return salesArrayList;
 }
+
+public List<SalesPipeLine> listSalesPipeLineSummary() {
+	
+	List<SalesPipeLine> salesArrayList = salesPipeLineDao.listSalesPipeLineSummary();
+	
+	return salesArrayList;
+	
+}
 	
 	
 	

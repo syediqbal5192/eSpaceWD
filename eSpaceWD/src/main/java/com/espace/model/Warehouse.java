@@ -17,6 +17,7 @@ public class Warehouse {
 	 Integer totalSellableArea;
 	 Integer totalUtilizedSpace;
 	 Integer avialableSpace;
+	 String perWarehouseRevenue;
 	 String name;
 	 Integer x;
 	 Integer y;
@@ -130,6 +131,12 @@ public class Warehouse {
 	}
 	public void setAvialableSpace(Integer avialableSpace) {
 		this.avialableSpace = avialableSpace;
+	}
+	public String getPerWarehouseRevenue() {
+		return perWarehouseRevenue;
+	}
+	public void setPerWarehouseRevenue(String perWarehouseRevenue) {
+		this.perWarehouseRevenue = perWarehouseRevenue;
 	}
 	 
 	

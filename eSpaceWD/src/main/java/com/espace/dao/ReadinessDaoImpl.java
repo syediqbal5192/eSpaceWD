@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.espace.connection.DataSource;
 import com.espace.model.Readiness;
 import com.espace.model.ReadinessTemplateModel;
 import com.espace.model.Warehouse;
@@ -20,8 +19,7 @@ import com.espace.model.Warehouse;
 @Repository ("readinessDaoImpl")
 public class ReadinessDaoImpl implements ReadinessDao {
 
-	PreparedStatement prepare;		
-	DataSource dataSource;
+	PreparedStatement prepare;	
 	ResultSet res;
 	Connection con;
 	

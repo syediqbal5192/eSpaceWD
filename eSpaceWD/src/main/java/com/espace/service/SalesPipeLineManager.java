@@ -33,4 +33,6 @@ public interface SalesPipeLineManager {
 	public HashMap<String, String> getSalesPipeLineDetailsById(Integer salesPipeLineId);
 	
 	public String getCustomerNameById(Integer salesPipeLineId);
+	
+	public List<SalesPipeLine> listSalesPipeLineSummary();
 }

@@ -31,6 +31,9 @@ public class SalesPipeLine {
 	Integer warehouseId;
 	String dateOfCreation;
 	
+	Double totalSaleArea;
+	
+	
 	public Integer getSalesPipeLineId() {
 		return salesPipeLineId;
 	}
@@ -182,6 +185,12 @@ public class SalesPipeLine {
 	}
 	public void setDateOfCreation(String dateOfCreation) {
 		this.dateOfCreation = dateOfCreation;
+	}
+	public Double getTotalSaleArea() {
+		return totalSaleArea;
+	}
+	public void setTotalSaleArea(Double totalSaleArea) {
+		this.totalSaleArea = totalSaleArea;
 	}
 	
 	

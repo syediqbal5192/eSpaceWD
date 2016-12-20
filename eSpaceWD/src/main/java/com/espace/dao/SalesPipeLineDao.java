@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.espace.entity.SalesPipeLineEntity;
 import com.espace.model.SalesPipeLine;
 
 public interface SalesPipeLineDao {
@@ -25,6 +26,8 @@ public interface SalesPipeLineDao {
 	public List<SalesPipeLine> listSalesPipeLine();
 	
 	public List<SalesPipeLine> listSalesPipeLineByStatus(String status);
+	
+	public List<SalesPipeLine> listSalesPipeLineSummary();
 	
 	public List<String> chartSalesPipeLine();
 	

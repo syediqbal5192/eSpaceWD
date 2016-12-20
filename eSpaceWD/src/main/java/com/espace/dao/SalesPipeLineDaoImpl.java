@@ -12,12 +12,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.SimpleFormatter;
 
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.espace.entity.CustomerEntity;
+import com.espace.entity.SalesPipeLineEntity;
+import com.espace.entity.WarehouseEntity;
 import com.espace.model.SalesPipeLine;
 import com.espace.model.Warehouse;
+import com.espace.persistance.HibernateUtil;
 
 
 @Repository ("salesPipeLineDao")
@@ -974,6 +983,93 @@ public List<SalesPipeLine> listSalesPipeLineByStatus(String status) {
 	
 	
 }
+
+public List<SalesPipeLine> listSalesPipeLineSummary() {
+	
+	
+	
+	Session session = HibernateUtil.getSesssion();
+	Transaction transaction = null; 
+	List<SalesPipeLineEntity> salesPipeLineList =null;
+	SalesPipeLine salesPipeLine;
+	List<SalesPipeLine> salesList = null;
+
+	 Double totalSellableArea;
+	 String customerName;
+	 Integer warehouseId;
+	 Double actualFloorBuiltupArea;
+	 Double actualRackBuiltupArea;
+	 
+	 try
+	 {
+		 transaction= session.beginTransaction();
+	 Criteria criteria = session.createCriteria(SalesPipeLineEntity.class, "salesPipeLine");
+	 //Criterion rest1= Restrictions.eq("salesPipeLine.statusWork", "confirmed");
+	// Criterion rest2= Restrictions.eq("salesPipeLine.statusWork", "wIP");
+	 criteria.add(Restrictions.eq("salesPipeLine.isActive", "Yes"));
+     criteria.add(Restrictions.eq("salesPipeLine.isDeleted", "No"));    
+     criteria.add(Restrictions.eq("salesPipeLine.statusWork", "confirmed"));    
+     
+     //criteria.add(Restrictions.or(rest1, rest2));
+
+	        salesList = new ArrayList<SalesPipeLine>();
+	        salesPipeLineList = new ArrayList<SalesPipeLineEntity>();
+	        salesPipeLineList = (List<SalesPipeLineEntity>) criteria.list();
+        
+	        
+	        
+        for (int k = 0; k < salesPipeLineList.size(); k++) {  
+			
+        	actualFloorBuiltupArea = salesPipeLineList.get(k).getActualFloorBuiltupArea();
+        	actualRackBuiltupArea = salesPipeLineList.get(k).getActualRackBuiltupArea();
+        	totalSellableArea = actualFloorBuiltupArea + actualRackBuiltupArea;
+        	customerName = salesPipeLineList.get(k).getCustomerName();
+        	warehouseId = salesPipeLineList.get(k).getAllocatedWarehouse();
+        	
+        	String warehouseName = warehouseDao.getWarehouseName(warehouseId);
+        	String customerNameValue = "";
+        	
+             List<CustomerEntity> customerList ;
+			
+             Criteria criteria2 = session.createCriteria(CustomerEntity.class, "customer");
+    		 criteria2.add(Restrictions.eq("customer.customer_id", Integer.parseInt(customerName)));
+    	        
+    		 customerList = new ArrayList<CustomerEntity>();
+    		 customerList = (List<CustomerEntity>) criteria2.list();
+             
+			for (int i = 0; i < customerList.size(); i++) 
+			{  
+				
+				customerNameValue = nvl(customerList.get(i).getCustomer_name());
+				
+			}
+        	
+        	
+        	salesPipeLine = new SalesPipeLine();
+			salesPipeLine.setCustomerName(customerNameValue);
+			salesPipeLine.setTotalSaleArea(totalSellableArea);
+			salesPipeLine.setAllocatedWarehouse(warehouseName);
+			salesList.add(salesPipeLine);
+			 
+        }
+        
+        session.getTransaction().commit();
+	 }
+	 catch (HibernateException e) {
+		 if (transaction!=null) 
+		    	transaction.rollback();
+		    e.printStackTrace(); 
+		 }
+		 
+	 return salesList;
+	
+	
+}
+
+
+
+
+
 	
 		
 		}

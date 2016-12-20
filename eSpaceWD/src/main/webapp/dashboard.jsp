@@ -38,6 +38,8 @@
  <spring:url value="/resources/js/customerGrid.js"  var="customerGrid" /> 
  <spring:url value="/resources/js/readinessTemplateReportGrid.js"  var="readinessTemplateReportGridJS" /> 
  <spring:url value="/resources/js/warehouseSummaryGrid.js"  var="warehouseSummaryGridJS" /> 
+ <spring:url value="/resources/js/salesPipeLineGridSummary.js"  var="salesPipeLineGridSummaryJS" /> 
+ 
  
  <spring:url value="/resources/js/plugins/noty/jquery.noty.js"  var="notyJs" /> 
  <spring:url value="/resources/js/plugins/noty/layouts/topRight.js"  var="topCenterJs" />  
@@ -48,7 +50,7 @@
  <spring:url value="/resources/js/plugins/validationengine/jquery.validationEngine.js"  var="validationEngineJs2" /> 
  <spring:url value="/resources/js/plugins/jquery-validation/jquery.validate.js"  var="validateJs" /> 
  <spring:url value="/resources/img/SPARSH.PNG"  var="logoImg" /> 
-
+ <spring:url value="/resources/img/citisolutions.jpeg"  var="citiLogo" /> 
 
 
 	<link href="${themeCss}" rel="stylesheet" />	
@@ -77,7 +79,8 @@
     <script src="${clientReportGrid}"></script>
     <script src="${readinessTemplateGridJS}"></script>    
     <script src="${readinessTemplateReportGridJS}"></script> 
-    <script src="${warehouseSummaryGridJS}"></script> 
+    <script src="${warehouseSummaryGridJS}"></script>  
+    <script src="${salesPipeLineGridSummaryJS}"></script>
     <script src="${inlineGrid}"></script>
     <script src="${inlineEditGrid}"></script>
     <script src="${notyJs}"></script>
@@ -92,7 +95,8 @@
 <script type='text/javascript' src="http://trirand.com/blog/jqgrid/js/i18n/grid.locale-en.js"></script>
 <script type='text/javascript'  src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+    
 		
  <script type='text/javascript'>
  var readinessTemplateValues = [];
@@ -2825,13 +2829,25 @@ console.log("hello");
 		 
 		 });
 
-/* 	 $("form#dataUpload").submit(function(){
 
-			alert($("#file").val());
-				
-		 });
- */
+	 
 
+	 var pdfsize = 'a4';
+	  var doc = new jsPDF('l', 'pt', pdfsize);
+	 var specialElementHandlers = {
+	     '#editor': function (element, renderer) {
+	         return true;
+	     }
+	 };
+
+	 $('#downloadSummaryReport').click(function () {
+	     doc.fromHTML($('#summaryData').html(), 15, 15, {
+	         'width': 170,
+	             'elementHandlers': specialElementHandlers
+	     });
+	     doc.save('SummaryData.pdf');
+	 });
+	 
 		
 		var start = document.getElementById('readinessTemplateEditStartDate');
 		var end = document.getElementById('readinessTemplateEditEndDate');
@@ -3164,13 +3180,68 @@ console.log("hello");
 				
 				
 				<div id="summaryDiv" style="display:none;background:white;">
+				
+				<div class="row" style="background:#1caf9a;padding: 10px;">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+				<button class="btn btn-info btn-rounded" id="downloadSummaryReport" style="padding: 7px;background-color: white;float:right;"><span class="fa fa-download" ></span>Export as PDF</button>
+				</div>
+				</div>
+				
+				<div id="summaryData">
+				<div class="row">
+				<div class="col-md-4" style="margin-top: 30px;">
+				<%-- <img src="${citiLogo}" alt="Citi Solutions Warehousing and distribution" style="width: 40%;"/>
+				 --%></div>
+				</div>
+				
+				<div class="row">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+				<label style="font-size: x-large;font-weight: 300;"> Summary Report </label> 
+				</div>
+				<div class="col-md-4">
+				</div>
+				</div>
+				<hr/>
+				
+				<div class="row">
+				<div class="col-md-12">
+				<label style="font-size: large;font-weight: 300;"> Warehouse OverView </label> 
+				</div>
+				</div>
+				
+				
                 <div class="row" >
-                    <div class="col-md-12" style="margin-top: 140px">
+                    <div class="col-md-12" style="margin-top: 10px">
                    <table id="warehouseSummaryGrid" class="table" ></table>
 				   <div id="pagingDivWarehouse"></div>
                     </div>
+                 </div>
+                 
+                 <div class="row">
+				<div class="col-md-12">
+				<label style="font-size: large;font-weight: 300;"> Sales OverView </label> 
+				</div>
+				</div>
+				
+                 <div class="row">
+                 <div class="col-md-12" style="margin-top: 10px">
+                   <table id="salesPipeLineSummaryGrid" class="table" ></table>
+				   <div id="pagingDivSalesPipeLineSummary"></div>
+                    </div>
                  
                     </div>
+                    </div>
+                    
+                    
+                <div id="editor">
+				</div>
+                    
 				</div>
 
 				<div id="warehouseDiv" style="display:none;">

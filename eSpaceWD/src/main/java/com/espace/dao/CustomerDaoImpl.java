@@ -137,7 +137,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		Transaction transaction = null;
 		List<CustomerEntity> customerList = null;
 	      try{
-	         transaction = session.beginTransaction();
+	         session.beginTransaction();
 		 Criteria criteria = session.createCriteria(CustomerEntity.class, "customer");
 		 criteria.add(Restrictions.eq("customer.customer_id", customer_id));
 	        
@@ -148,8 +148,8 @@ public class CustomerDaoImpl implements CustomerDao {
 	    
 	      }
 			 catch (HibernateException e) {
-				 if (transaction!=null) 
-				    	transaction.rollback();
+				 //if (transaction!=null) 
+				    	//transaction.rollback();
 				    e.printStackTrace(); 
 				 }
 			  return customerList;

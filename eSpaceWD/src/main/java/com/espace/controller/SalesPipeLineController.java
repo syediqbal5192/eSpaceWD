@@ -240,10 +240,17 @@ public class SalesPipeLineController {
 		
 		
 		return "reload";
+	}
+	
+	@RequestMapping(value="/listSalesPipeLineSummary",method=RequestMethod.GET)
+	public @ResponseBody String listWarehouseSummary(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+		response.setContentType("application/json");
 		
-		
-		
-		
+		List<SalesPipeLine> salesPipeLineArrayList=new ArrayList<SalesPipeLine>();
+		salesPipeLineArrayList = salesPipeLineManager.listSalesPipeLineSummary(); 
+	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	    String json = gson.toJson(salesPipeLineArrayList);
+		return json;
 	}
 	
 	
